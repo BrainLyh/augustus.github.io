@@ -188,7 +188,7 @@
     
         
             
-            <li><div data-rel="docker">docker<small>(1)</small></div>
+            <li><div data-rel="serialize">serialize<small>(2)</small></div>
                 
             </li>
             
@@ -196,7 +196,7 @@
     
         
             
-            <li><div data-rel="serialize">serialize<small>(2)</small></div>
+            <li><div data-rel="docker">docker<small>(1)</small></div>
                 
             </li>
             
@@ -293,15 +293,15 @@
     </li>
     
     <li class="article-tag-list-item">
-        <a href="javascript:" class="color2">docker</a>
-    </li>
-    
-    <li class="article-tag-list-item">
         <a href="javascript:" class="color5">serialize</a>
     </li>
     
     <li class="article-tag-list-item">
         <a href="javascript:" class="color4">php</a>
+    </li>
+    
+    <li class="article-tag-list-item">
+        <a href="javascript:" class="color2">docker</a>
     </li>
     
     <li class="article-tag-list-item">
@@ -374,20 +374,20 @@
             <span class="post-date" title="2019-07-26 15:13:47">2019/07/26</span>
         </a>
         
-        <a  class="docker "
-           href="/2019/08/02/ubuntu配置docker/"
-           data-tag="docker"
-           data-author="" >
-            <span class="post-title" title="Ubuntu 16.04 配置docker">Ubuntu 16.04 配置docker</span>
-            <span class="post-date" title="2019-08-02 16:15:29">2019/08/02</span>
-        </a>
-        
         <a  class="serialize "
            href="/2019/03/23/序列化与反序列化/"
            data-tag="serialize,php"
            data-author="" >
             <span class="post-title" title="序列化与反序列化">序列化与反序列化</span>
             <span class="post-date" title="2019-03-23 15:13:47">2019/03/23</span>
+        </a>
+        
+        <a  class="docker "
+           href="/2019/08/02/ubuntu配置docker/"
+           data-tag="docker"
+           data-author="" >
+            <span class="post-title" title="Ubuntu 16.04 配置docker">Ubuntu 16.04 配置docker</span>
+            <span class="post-date" title="2019-08-02 16:15:29">2019/08/02</span>
         </a>
         
         <a  class="渗透测试 "
@@ -894,7 +894,7 @@ echo serialize($a);
     /*作者、标签的自动补全*/
     $(function () {
         $('.search').AutoComplete({
-            'data': ['#WP','#比赛回顾','#LSB','#MISC','#隐写','#工具','#渗透测试','#SQL基础','#RSA','#docker','#serialize','#php','#SQL','#哈希长度扩展攻击',],
+            'data': ['#WP','#比赛回顾','#LSB','#MISC','#隐写','#工具','#渗透测试','#SQL基础','#RSA','#serialize','#php','#docker','#SQL','#哈希长度扩展攻击',],
             'itemHeight': 20,
             'width': 418
         }).AutoComplete('show');
