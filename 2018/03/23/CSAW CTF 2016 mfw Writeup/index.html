@@ -6,23 +6,18 @@
   <meta name="keywords" content=" WP ">
   <meta name="description" content="CSAW CTF 2016 mfw Writeup | Hexo">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-<meta name="description" content="8/22/2019 11:39:23 AM  HostSplit-Exploitable-Antipatterns-In-Unicode-Normalization 学习IDN 与 UTF-8IDN  国际化域名IDNs (Internationalized Domain Names)也称多语种域名，是指非英语国家为推广本国语言的域名系统的一个总称，例如含有日文的为日文域名，含有中文的域名为中文域">
+<meta name="description" content="php 弱类型总结字符与数字的比较&amp;lt;?php  $a=1; if($a=TRUE)     echo &amp;quot;1111\n&amp;quot;; if($a=&amp;#39;a&amp;#39;)     echo &amp;quot;1111\n&amp;quot;;  结果 1111 1111联想到之前P神的文章，TRUE+TRUE=2 $_=(&amp;#39;&amp;gt;&amp;#39;&amp;gt;&amp;#39;&amp;lt;&amp;#39;)+(&amp;#3">
+<meta name="keywords" content="php,弱类型">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Hexo">
-<meta property="og:url" content="https://github.com/BrainLyh/2019/08/22/HostSplit/index.html">
+<meta property="og:title" content="black_magic">
+<meta property="og:url" content="https://github.com/BrainLyh/2019/08/19/Black_magic/index.html">
 <meta property="og:site_name" content="Hexo">
-<meta property="og:description" content="8/22/2019 11:39:23 AM  HostSplit-Exploitable-Antipatterns-In-Unicode-Normalization 学习IDN 与 UTF-8IDN  国际化域名IDNs (Internationalized Domain Names)也称多语种域名，是指非英语国家为推广本国语言的域名系统的一个总称，例如含有日文的为日文域名，含有中文的域名为中文域">
+<meta property="og:description" content="php 弱类型总结字符与数字的比较&amp;lt;?php  $a=1; if($a=TRUE)     echo &amp;quot;1111\n&amp;quot;; if($a=&amp;#39;a&amp;#39;)     echo &amp;quot;1111\n&amp;quot;;  结果 1111 1111联想到之前P神的文章，TRUE+TRUE=2 $_=(&amp;#39;&amp;gt;&amp;#39;&amp;gt;&amp;#39;&amp;lt;&amp;#39;)+(&amp;#3">
 <meta property="og:locale" content="default">
-<meta property="og:image" content="http://wx2.sinaimg.cn/mw690/006boCb9ly1g68vpab2bbj30qn08tq3k.jpg">
-<meta property="og:image" content="http://wx4.sinaimg.cn/mw690/006boCb9ly1g68vpd5xcfj30pa09pq3k.jpg">
-<meta property="og:image" content="http://wx1.sinaimg.cn/mw690/006boCb9ly1g68vpgbsavj30qj0dq765.jpg">
-<meta property="og:image" content="http://wx3.sinaimg.cn/mw690/006boCb9ly1g68vpjpmkej30oy0cgdh1.jpg">
-<meta property="og:image" content="http://wx4.sinaimg.cn/mw690/006boCb9ly1g68vpmmt76j30ok070dgl.jpg">
-<meta property="og:updated_time" content="2019-08-23T10:24:12.283Z">
+<meta property="og:updated_time" content="2019-08-19T11:18:36.793Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Hexo">
-<meta name="twitter:description" content="8/22/2019 11:39:23 AM  HostSplit-Exploitable-Antipatterns-In-Unicode-Normalization 学习IDN 与 UTF-8IDN  国际化域名IDNs (Internationalized Domain Names)也称多语种域名，是指非英语国家为推广本国语言的域名系统的一个总称，例如含有日文的为日文域名，含有中文的域名为中文域">
-<meta name="twitter:image" content="http://wx2.sinaimg.cn/mw690/006boCb9ly1g68vpab2bbj30qn08tq3k.jpg">
+<meta name="twitter:title" content="black_magic">
+<meta name="twitter:description" content="php 弱类型总结字符与数字的比较&amp;lt;?php  $a=1; if($a=TRUE)     echo &amp;quot;1111\n&amp;quot;; if($a=&amp;#39;a&amp;#39;)     echo &amp;quot;1111\n&amp;quot;;  结果 1111 1111联想到之前P神的文章，TRUE+TRUE=2 $_=(&amp;#39;&amp;gt;&amp;#39;&amp;gt;&amp;#39;&amp;lt;&amp;#39;)+(&amp;#3">
 
 
 <link rel="icon" href="/img/avatar.jpg">
@@ -266,10 +261,6 @@
     </li>
     
     <li class="article-tag-list-item">
-        <a href="javascript:" class="color1">mysql load data</a>
-    </li>
-    
-    <li class="article-tag-list-item">
         <a href="javascript:" class="color3">工具</a>
     </li>
     
@@ -278,15 +269,7 @@
     </li>
     
     <li class="article-tag-list-item">
-        <a href="javascript:" class="color2">Xdebuf</a>
-    </li>
-    
-    <li class="article-tag-list-item">
-        <a href="javascript:" class="color4">ctf</a>
-    </li>
-    
-    <li class="article-tag-list-item">
-        <a href="javascript:" class="color4">SQL</a>
+        <a href="javascript:" class="color1">mysql load data</a>
     </li>
     
     <li class="article-tag-list-item">
@@ -298,11 +281,19 @@
     </li>
     
     <li class="article-tag-list-item">
-        <a href="javascript:" class="color4">RSA</a>
+        <a href="javascript:" class="color4">SQL</a>
     </li>
     
     <li class="article-tag-list-item">
-        <a href="javascript:" class="color2">docker</a>
+        <a href="javascript:" class="color2">Xdebuf</a>
+    </li>
+    
+    <li class="article-tag-list-item">
+        <a href="javascript:" class="color4">ctf</a>
+    </li>
+    
+    <li class="article-tag-list-item">
+        <a href="javascript:" class="color4">RSA</a>
     </li>
     
     <li class="article-tag-list-item">
@@ -315,6 +306,10 @@
     
     <li class="article-tag-list-item">
         <a href="javascript:" class="color4">php</a>
+    </li>
+    
+    <li class="article-tag-list-item">
+        <a href="javascript:" class="color2">docker</a>
     </li>
     
     <li class="article-tag-list-item">
@@ -359,14 +354,6 @@
             <span class="post-date" title="2017-03-23 15:13:47">2017/03/23</span>
         </a>
         
-        <a  class=""
-           href="/2019/08/22/HostSplit/"
-           data-tag=""
-           data-author="" >
-            <span class="post-title" title=""></span>
-            <span class="post-date" title="2019-08-22 23:40:08">2019/08/22</span>
-        </a>
-        
         <a  class="比赛回顾 "
            href="/2018/07/22/ISCC线下赛回顾/"
            data-tag="比赛回顾"
@@ -375,20 +362,20 @@
             <span class="post-date" title="2018-07-22 15:00:00">2018/07/22</span>
         </a>
         
+        <a  class=""
+           href="/2019/08/22/HostSplit/"
+           data-tag=""
+           data-author="" >
+            <span class="post-title" title=""></span>
+            <span class="post-date" title="2019-08-22 23:40:08">2019/08/22</span>
+        </a>
+        
         <a  class="ctf "
            href="/2018/03/23/LSB隐写/"
            data-tag="LSB,MISC,隐写"
            data-author="" >
             <span class="post-title" title="LSB图片隐写">LSB图片隐写</span>
             <span class="post-date" title="2018-03-23 15:13:47">2018/03/23</span>
-        </a>
-        
-        <a  class="ctf "
-           href="/2019/08/07/MySQL LOAD DATA/"
-           data-tag="mysql load data"
-           data-author="" >
-            <span class="post-title" title="MYSQL LOAD DATA">MYSQL LOAD DATA</span>
-            <span class="post-date" title="2019-08-07 22:14:02">2019/08/07</span>
         </a>
         
         <a  class="渗透测试 "
@@ -400,11 +387,19 @@
         </a>
         
         <a  class="ctf "
-           href="/2019/08/17/Xdebug/"
-           data-tag="Xdebuf,ctf"
+           href="/2019/08/07/MySQL LOAD DATA/"
+           data-tag="mysql load data"
            data-author="" >
-            <span class="post-title" title="Xdebug">Xdebug</span>
-            <span class="post-date" title="2019-08-17 23:23:45">2019/08/17</span>
+            <span class="post-title" title="MYSQL LOAD DATA">MYSQL LOAD DATA</span>
+            <span class="post-date" title="2019-08-07 22:14:02">2019/08/07</span>
+        </a>
+        
+        <a  class="ctf "
+           href="/2019/08/16/SSRF/"
+           data-tag="redis,ssrf"
+           data-author="" >
+            <span class="post-title" title="redis与ssrf">redis与ssrf</span>
+            <span class="post-date" title="2019-08-16 16:11:22">2019/08/16</span>
         </a>
         
         <a  class="ctf "
@@ -416,27 +411,11 @@
         </a>
         
         <a  class="ctf "
-           href="/2019/08/16/SSRF/"
-           data-tag="redis,ssrf"
+           href="/2019/08/17/Xdebug/"
+           data-tag="Xdebuf,ctf"
            data-author="" >
-            <span class="post-title" title="redis与ssrf">redis与ssrf</span>
-            <span class="post-date" title="2019-08-16 16:11:22">2019/08/16</span>
-        </a>
-        
-        <a  class="WP "
-           href="/2019/07/26/peaCTF-WP/"
-           data-tag="WP,RSA"
-           data-author="" >
-            <span class="post-title" title="peaCTF WP">peaCTF WP</span>
-            <span class="post-date" title="2019-07-26 15:13:47">2019/07/26</span>
-        </a>
-        
-        <a  class="docker "
-           href="/2019/08/02/ubuntu配置docker/"
-           data-tag="docker"
-           data-author="" >
-            <span class="post-title" title="Ubuntu 16.04 配置docker">Ubuntu 16.04 配置docker</span>
-            <span class="post-date" title="2019-08-02 16:15:29">2019/08/02</span>
+            <span class="post-title" title="Xdebug">Xdebug</span>
+            <span class="post-date" title="2019-08-17 23:23:45">2019/08/17</span>
         </a>
         
         <a  class="ctf "
@@ -445,6 +424,14 @@
            data-author="" >
             <span class="post-title" title="redis与ssrf">redis与ssrf</span>
             <span class="post-date" title="2019-08-10 15:44:26">2019/08/10</span>
+        </a>
+        
+        <a  class="WP "
+           href="/2019/07/26/peaCTF-WP/"
+           data-tag="WP,RSA"
+           data-author="" >
+            <span class="post-title" title="peaCTF WP">peaCTF WP</span>
+            <span class="post-date" title="2019-07-26 15:13:47">2019/07/26</span>
         </a>
         
         <a  class="ctf "
@@ -461,6 +448,14 @@
            data-author="" >
             <span class="post-title" title="序列化与反序列化">序列化与反序列化</span>
             <span class="post-date" title="2019-03-23 15:13:47">2019/03/23</span>
+        </a>
+        
+        <a  class="docker "
+           href="/2019/08/02/ubuntu配置docker/"
+           data-tag="docker"
+           data-author="" >
+            <span class="post-title" title="Ubuntu 16.04 配置docker">Ubuntu 16.04 配置docker</span>
+            <span class="post-date" title="2019-08-02 16:15:29">2019/08/02</span>
         </a>
         
         <a  class="渗透测试 "
@@ -776,7 +771,7 @@ assert(&quot;file_exists(&#39;$file&#39;)&quot;) or die(&quot;That file doesn&#3
     /*作者、标签的自动补全*/
     $(function () {
         $('.search').AutoComplete({
-            'data': ['#WP','#比赛回顾','#LSB','#MISC','#隐写','#mysql load data','#工具','#渗透测试','#Xdebuf','#ctf','#SQL','#redis','#ssrf','#RSA','#docker','#xxe','#serialize','#php','#弱类型','#命令执行','#zip','#misc','#哈希长度扩展攻击',],
+            'data': ['#WP','#比赛回顾','#LSB','#MISC','#隐写','#工具','#渗透测试','#mysql load data','#redis','#ssrf','#SQL','#Xdebuf','#ctf','#RSA','#xxe','#serialize','#php','#docker','#弱类型','#命令执行','#zip','#misc','#哈希长度扩展攻击',],
             'itemHeight': 20,
             'width': 418
         }).AutoComplete('show');
