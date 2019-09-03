@@ -10,7 +10,7 @@
 
     <!--Description-->
     
-        <meta name="description" content="我才二十出头，为什么要承受这么多…">
+        <meta name="description" content="对未来的最大慷慨，就是把一切都献给现在！">
     
 
     <!--Author-->
@@ -25,9 +25,11 @@
 
     <!--Open Graph Description-->
     
+        <meta property="og:description" content="对未来的最大慷慨，就是把一切都献给现在！">
+    
 
     <!--Open Graph Site Name-->
-    <meta property="og:site_name" content="Hexo">
+    <meta property="og:site_name" content="Luc1fer&#39;blog">
 
     <!--Type page-->
     
@@ -42,7 +44,7 @@
 
     <!-- Title -->
     
-    <title>RSA - Hexo</title>
+    <title>RSA - Luc1fer&#39;blog</title>
 
     <!-- Bootstrap Core CSS -->
     <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.2/css/bootstrap.min.css" integrity="sha384-y3tfxAZXuh4HwSYylfB+J125MxIs6mR5FOHamPBG064zB+AFeWH94NdvaCBm8qnd" crossorigin="anonymous">
@@ -90,12 +92,6 @@
             <li class="menu-item">
                 <a href="/archives">
                     Archives
-                </a>
-            </li>
-            
-            <li class="menu-item">
-                <a href="/about.html">
-                    About
                 </a>
             </li>
             
@@ -149,8 +145,6 @@
                 <span class="date">2018-05-23</span>
             
             
-                <a href="#disqus_thread" class="comments">Comments</a>
-            
             
                 <span class="category">
                     <a href="/categories/ctf/">ctf</a>
@@ -199,8 +193,8 @@ q = 319576316814478949870590164193048041239
 n = 87924348264132406875276140514499937145050893665602592992418171647042491658461
 e = 65537
 d = gmpy2.invert(e, (p - 1) * (q - 1))
-with open(&#39;flag.enc&#39;, &#39;r&#39;) as f:
-        c = f.read().encode(&#39;hex&#39;)
+with open(&apos;flag.enc&apos;, &apos;r&apos;) as f:
+        c = f.read().encode(&apos;hex&apos;)
         c = int(c, 16)
 m = pow(c, d, n)
 print long_to_bytes(m)</code></pre><p>这里再说一下openssl</p>
@@ -261,19 +255,19 @@ n=163525789633723061316424075415670455337666911771383756764919138975924589655440
 e=65537
 d=9459928379973667430138068528059438139092368625339079253289560577985304435062213121398231875832264894458314629575455553485752685643743266654630829957442008775259776311585654014858165341757547284112061885158006881475740553532826576260839430343960738520822367975528644329172668877696208741007648370045520535298040161675407779239300466681615493892692265542290255408673533853011662134953869432632554008235340864803377610352438146264524770710345273439724107080190182918285547426166561803716644089414078389475072103315432638197578186106576626728869020366214077455194554930725576023274922741115941214789600089166754476449453
 getpq(n,e,d)
-if __name__ == &#39;__main__&#39;:
+if __name__ == &apos;__main__&apos;:
 main()</code></pre><h3 id="Wiener’s-Attack"><a href="#Wiener’s-Attack" class="headerlink" title="Wiener’s Attack"></a>Wiener’s Attack</h3><p>当d比较小时，攻击者可以使用该攻击获取私钥。</p>
 <pre><code>#coding:utf-8
 from Crypto.PublicKey import RSA
 from Crypto.Cipher import PKCS1_v1_5 as Cipher_pkcs1_v1_5
 import base64
 
-flag=raw_input(&#39;flag:&#39;)
+flag=raw_input(&apos;flag:&apos;)
 key=RSA.construct((1063045321283844468344531168992778520651192162100948533991539097447031440090068191835838938460807260866872379834796862916118785271062209281267667069640000501698142693389209275376843382863579650119977059768375028586326490055087394631528241983631462471709913758728591459476799115050977493979613545056736162868049L, 837165022918376318972691589160491375229372195625940137121740685432530132860541010174727630660292946071507342455170833392895060048564125597915757582027572284342507277083636059558106672685400173531425920294781499112027917632497954958437660357575400222692979844873372105801998210845285775146263117399191185379347L))
 cipher = Cipher_pkcs1_v1_5.new(key)
 cipher_text = base64.b64encode(cipher.encrypt(flag))
 print cipher_text
-#cipher_text = &#39;AGgt1h6dudnkeoCr7SFclkYYsYa65KZ8V29bbgbf+BDyjnyx5stCYjcyktat73aHs2EOaMgwGUwj3HwPTvT+T5LHIxM4uTnAgWOui4dnb7vF7QizN0ShY2O1h26CgLnf5I0vQWbY7WCC7kA/orNW7F5yxZiKRAawacS2M5ghP4/Q&#39;</code></pre><p>N,e都很大，使用脚本攻击<a href="https://github.com/pablocelayes/rsa-wiener-attack">https://github.com/pablocelayes/rsa-wiener-attack</a></p>
+#cipher_text = &apos;AGgt1h6dudnkeoCr7SFclkYYsYa65KZ8V29bbgbf+BDyjnyx5stCYjcyktat73aHs2EOaMgwGUwj3HwPTvT+T5LHIxM4uTnAgWOui4dnb7vF7QizN0ShY2O1h26CgLnf5I0vQWbY7WCC7kA/orNW7F5yxZiKRAawacS2M5ghP4/Q&apos;</code></pre><p>N,e都很大，使用脚本攻击<a href="https://github.com/pablocelayes/rsa-wiener-attack">https://github.com/pablocelayes/rsa-wiener-attack</a></p>
 <h3 id="模不互素"><a href="#模不互素" class="headerlink" title="模不互素"></a>模不互素</h3><p>2019强网杯后来的qwxf题</p>
 <pre><code>flag=open(&quot;flag&quot;,&quot;rb&quot;).read()
 
@@ -338,11 +332,11 @@ m2=hex(pow(c2,d2,n2))[2:].replace(&quot;L&quot;,&quot;&quot;)
 m1=hex(pow(c1,d1,n1))[2:].replace(&quot;L&quot;,&quot;&quot;)
 
 if(len(m2)%2==1):
-        m2=&#39;0&#39;+m2
+        m2=&apos;0&apos;+m2
 if(len(m1)%2==1):
-    m1 =&#39;0&#39;+ m1
-print m1.decode(&#39;hex&#39;)
-print m2.decode(&#39;hex&#39;)</code></pre><h3 id="共模攻击"><a href="#共模攻击" class="headerlink" title="共模攻击"></a>共模攻击</h3><p>当两个用户使用相同的模数 N、不同的私钥时，加密同一明文消息时即存在共模攻击。</p>
+    m1 =&apos;0&apos;+ m1
+print m1.decode(&apos;hex&apos;)
+print m2.decode(&apos;hex&apos;)</code></pre><h3 id="共模攻击"><a href="#共模攻击" class="headerlink" title="共模攻击"></a>共模攻击</h3><p>当两个用户使用相同的模数 N、不同的私钥时，加密同一明文消息时即存在共模攻击。</p>
 <pre><code>import gmpy2
 n = 6266565720726907265997241358331585417095726146341989755538017122981360742813498401533594757088796536341941659691259323065631249
 e1 = 773
@@ -376,16 +370,6 @@ print plain</code></pre><h3 id="小公钥指数攻击"><a href="#小公钥指数
 
     <!-- Comments -->
     
-    <div class="comments">
-        
-<div id="disqus_thread">
-    <noscript>Please enable JavaScript to view the <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
-</div>
-
-
-
-    </div>
-    
 
 </div>
         </section>
@@ -405,7 +389,7 @@ print plain</code></pre><h3 id="小公钥指数攻击"><a href="#小公钥指数
             <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6 footer-about">
                 <h2>About</h2>
                 <p>
-                    This theme was developed by <a href="https://github.com/klugjo">Jonathan Klughertz</a>. The source code is available on Github. Create Websites. Make Magic.
+                    This theme was developed by <a href="">Jonathan Klughertz</a>. The source code is available on Github. Create Websites. Make Magic.
                 </p>
             </div>
             
@@ -426,7 +410,7 @@ print plain</code></pre><h3 id="小公钥指数攻击"><a href="#小公钥指数
             </li>
             
             <li>
-                <a class="footer-post" href="/2019/08/19/Black_magic/">black_magic</a>
+                <a class="footer-post" href="/2019/08/19/Black-magic/">black_magic</a>
             </li>
             
         </ul>
@@ -444,11 +428,11 @@ print plain</code></pre><h3 id="小公钥指数攻击"><a href="#小公钥指数
         </li>
         
         <li>
-            <a class="footer-post" href="/categories/wp/">wp</a>
+            <a class="footer-post" href="/categories/docker/">docker</a>
         </li>
         
         <li>
-            <a class="footer-post" href="/categories/docker/">docker</a>
+            <a class="footer-post" href="/categories/wp/">wp</a>
         </li>
         
         <li>
@@ -524,18 +508,6 @@ print plain</code></pre><h3 id="小公钥指数攻击"><a href="#小公钥指数
 <script src="/js/main.js"></script>
 
 <!-- Disqus Comments -->
-
-<script type="text/javascript">
-    var disqus_shortname = 'klugjotest';
-
-    (function(){
-        var dsq = document.createElement('script');
-        dsq.type = 'text/javascript';
-        dsq.async = true;
-        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
-        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
-    }());
-</script>
 
 
 

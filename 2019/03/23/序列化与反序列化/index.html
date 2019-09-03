@@ -10,7 +10,7 @@
 
     <!--Description-->
     
-        <meta name="description" content="老生长谈了，可是我还是不会">
+        <meta name="description" content="对未来的最大慷慨，就是把一切都献给现在！">
     
 
     <!--Author-->
@@ -25,9 +25,11 @@
 
     <!--Open Graph Description-->
     
+        <meta property="og:description" content="对未来的最大慷慨，就是把一切都献给现在！">
+    
 
     <!--Open Graph Site Name-->
-    <meta property="og:site_name" content="Hexo">
+    <meta property="og:site_name" content="Luc1fer&#39;blog">
 
     <!--Type page-->
     
@@ -42,7 +44,7 @@
 
     <!-- Title -->
     
-    <title>序列化与反序列化 - Hexo</title>
+    <title>序列化与反序列化 - Luc1fer&#39;blog</title>
 
     <!-- Bootstrap Core CSS -->
     <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.2/css/bootstrap.min.css" integrity="sha384-y3tfxAZXuh4HwSYylfB+J125MxIs6mR5FOHamPBG064zB+AFeWH94NdvaCBm8qnd" crossorigin="anonymous">
@@ -90,12 +92,6 @@
             <li class="menu-item">
                 <a href="/archives">
                     Archives
-                </a>
-            </li>
-            
-            <li class="menu-item">
-                <a href="/about.html">
-                    About
                 </a>
             </li>
             
@@ -149,8 +145,6 @@
                 <span class="date">2019-03-23</span>
             
             
-                <a href="#disqus_thread" class="comments">Comments</a>
-            
             
                 <span class="category">
                     <a href="/categories/ctf/">ctf</a>
@@ -173,9 +167,9 @@
 <p>其中index.php代码如下：</p>
 <pre><code>&lt;?php 
 @highlight_file(__FILE__);
-require_once(&#39;shield.php&#39;);
+require_once(&apos;shield.php&apos;);
 $x = new Shield();
-isset($_GET[&#39;class&#39;]) &amp;&amp; $g = $_GET[&#39;class&#39;];
+isset($_GET[&apos;class&apos;]) &amp;&amp; $g = $_GET[&apos;class&apos;];
 if (!empty($g)) {
     $x = unserialize($g);
 }
@@ -187,16 +181,16 @@ echo $x-&gt;readfile();
 class Test
 {
 public $age = 0;
-public $name = &#39;brain&#39;;
+public $name = &apos;brain&apos;;
 
 public function PrintInfo()
 {
-    echo &#39;[+]User: &#39;.$this-&gt;name .&#39;: is&#39; . $this-&gt;age .&#39;years old.&#39;;
+    echo &apos;[+]User: &apos;.$this-&gt;name .&apos;: is&apos; . $this-&gt;age .&apos;years old.&apos;;
 }
 }
 $user =  new Test();
 $user-&gt;age = 20;
-$user-&gt;name = &#39;Jack&#39;;
+$user-&gt;name = &apos;Jack&apos;;
 $user-&gt;PrintInfo();
 echo serialize($user);
 
@@ -211,31 +205,31 @@ public $variable = &quot;BRAIN&quot;;
 public $variable1 = &quot;BRAVO&quot;;
 public function PrintVariable()
 {
-    echo $this-&gt;variable . &#39;&lt;br /&gt;&#39;;
+    echo $this-&gt;variable . &apos;&lt;br /&gt;&apos;;
 }
 public function __construct()
 {
-    echo &#39;__construct&#39;.&#39;&lt;br&gt;&#39;;
+    echo &apos;__construct&apos;.&apos;&lt;br&gt;&apos;;
 }
 public function __destruct()
 {
-    echo &#39;__destruct&lt;br /&gt;&#39;;
+    echo &apos;__destruct&lt;br /&gt;&apos;;
 }
 public function __wakeup()
 {
-    echo &#39;__wakeup&lt;br /&gt;&#39;;
+    echo &apos;__wakeup&lt;br /&gt;&apos;;
 }
 public function __sleep()
 {
-    echo &#39;__sleep&lt;br /&gt;&#39;;
-    return array(&#39;variable&#39; , &#39;variable1&#39;);
+    echo &apos;__sleep&lt;br /&gt;&apos;;
+    return array(&apos;variable&apos; , &apos;variable1&apos;);
 }
 }    
 $obj = new Test();  //创建对象时调用__construct
 
 $serialized = serialize($obj); //序列化对象时调用__sleep
 
-print(&#39;Serialized: &#39;.$serialized . &#39;&lt;br /&gt;&#39;);
+print(&apos;Serialized: &apos;.$serialized . &apos;&lt;br /&gt;&apos;);
 
 $obj2 = unserialize($serialized); //重建对象调用 __wakeup
 
@@ -250,9 +244,9 @@ $obj2-&gt;PrintVariable(); //调用方法输出数据
 
 &lt;?php 
 @highlight_file(__FILE__);
-require_once(&#39;shield.php&#39;);
+require_once(&apos;shield.php&apos;);
 $x = new Shield();
-isset($_GET[&#39;class&#39;]) &amp;&amp; $g = $_GET[&#39;class&#39;];
+isset($_GET[&apos;class&apos;]) &amp;&amp; $g = $_GET[&apos;class&apos;];
 if (!empty($g)) {
     $x = unserialize($g);
 }
@@ -266,12 +260,12 @@ shield.php
 //flag is in pctf.php
 class Shield {
     public $file;
-    function __construct($filename = &#39;&#39;) {
+    function __construct($filename = &apos;&apos;) {
         $this -&gt; file = $filename;
     }
     function readfile() {
-        if (!empty($this-&gt;file) &amp;&amp; stripos($this-&gt;file,&#39;..&#39;)===FALSE  
-        &amp;&amp; stripos($this-&gt;file,&#39;/&#39;)===FALSE &amp;&amp; stripos($this-&gt;file,&#39;\\&#39;)==FALSE) {
+        if (!empty($this-&gt;file) &amp;&amp; stripos($this-&gt;file,&apos;..&apos;)===FALSE  
+        &amp;&amp; stripos($this-&gt;file,&apos;/&apos;)===FALSE &amp;&amp; stripos($this-&gt;file,&apos;\\&apos;)==FALSE) {
             return @file_get_contents($this-&gt;file);
         }
     }
@@ -282,12 +276,12 @@ class Shield {
 //flag is in pctf.php
 class Shield {
     public $file;
-    function __construct($filename = &#39;&#39;) {
+    function __construct($filename = &apos;&apos;) {
         $this -&gt; file = $filename;
     }
     function readfile() {
-        if (!empty($this-&gt;file) &amp;&amp; stripos($this-&gt;file,&#39;..&#39;)===FALSE  
-        &amp;&amp; stripos($this-&gt;file,&#39;/&#39;)===FALSE &amp;&amp; stripos($this-&gt;file,&#39;\\&#39;)==FALSE) {
+        if (!empty($this-&gt;file) &amp;&amp; stripos($this-&gt;file,&apos;..&apos;)===FALSE  
+        &amp;&amp; stripos($this-&gt;file,&apos;/&apos;)===FALSE &amp;&amp; stripos($this-&gt;file,&apos;\\&apos;)==FALSE) {
             return @file_get_contents($this-&gt;file);
         }
     }
@@ -313,21 +307,11 @@ O:6:&quot;Shield&quot;:1:{s:4:&quot;file&quot;;s:8:&quot;pctf.php&quot;;}</code>
     
         <div class="post-tags">
             <i class="fa fa-tags" aria-hidden="true"></i>
-            <a href="/tags/php/">#php</a> <a href="/tags/serialize/">#serialize</a>
+            <a href="/tags/serialize/">#serialize</a> <a href="/tags/php/">#php</a>
         </div>
     
 
     <!-- Comments -->
-    
-    <div class="comments">
-        
-<div id="disqus_thread">
-    <noscript>Please enable JavaScript to view the <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
-</div>
-
-
-
-    </div>
     
 
 </div>
@@ -348,7 +332,7 @@ O:6:&quot;Shield&quot;:1:{s:4:&quot;file&quot;;s:8:&quot;pctf.php&quot;;}</code>
             <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6 footer-about">
                 <h2>About</h2>
                 <p>
-                    This theme was developed by <a href="https://github.com/klugjo">Jonathan Klughertz</a>. The source code is available on Github. Create Websites. Make Magic.
+                    This theme was developed by <a href="">Jonathan Klughertz</a>. The source code is available on Github. Create Websites. Make Magic.
                 </p>
             </div>
             
@@ -369,7 +353,7 @@ O:6:&quot;Shield&quot;:1:{s:4:&quot;file&quot;;s:8:&quot;pctf.php&quot;;}</code>
             </li>
             
             <li>
-                <a class="footer-post" href="/2019/08/19/Black_magic/">black_magic</a>
+                <a class="footer-post" href="/2019/08/19/Black-magic/">black_magic</a>
             </li>
             
         </ul>
@@ -387,11 +371,11 @@ O:6:&quot;Shield&quot;:1:{s:4:&quot;file&quot;;s:8:&quot;pctf.php&quot;;}</code>
         </li>
         
         <li>
-            <a class="footer-post" href="/categories/wp/">wp</a>
+            <a class="footer-post" href="/categories/docker/">docker</a>
         </li>
         
         <li>
-            <a class="footer-post" href="/categories/docker/">docker</a>
+            <a class="footer-post" href="/categories/wp/">wp</a>
         </li>
         
         <li>
@@ -467,18 +451,6 @@ O:6:&quot;Shield&quot;:1:{s:4:&quot;file&quot;;s:8:&quot;pctf.php&quot;;}</code>
 <script src="/js/main.js"></script>
 
 <!-- Disqus Comments -->
-
-<script type="text/javascript">
-    var disqus_shortname = 'klugjotest';
-
-    (function(){
-        var dsq = document.createElement('script');
-        dsq.type = 'text/javascript';
-        dsq.async = true;
-        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
-        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
-    }());
-</script>
 
 
 

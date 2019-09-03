@@ -10,11 +10,7 @@
 
     <!--Description-->
     
-        <meta name="description" content="JavaScript Prototype 污染攻击JS基本语法输出
-window.alert();弹出警告框
-
-console.log();将内容写到控制台
-  a = 5;  b = 6;  c = a + b;  console.log(c);  11 debugger eval code:1:">
+        <meta name="description" content="对未来的最大慷慨，就是把一切都献给现在！">
     
 
     <!--Author-->
@@ -29,9 +25,11 @@ console.log();将内容写到控制台
 
     <!--Open Graph Description-->
     
+        <meta property="og:description" content="对未来的最大慷慨，就是把一切都献给现在！">
+    
 
     <!--Open Graph Site Name-->
-    <meta property="og:site_name" content="Hexo">
+    <meta property="og:site_name" content="Luc1fer&#39;blog">
 
     <!--Type page-->
     
@@ -46,7 +44,7 @@ console.log();将内容写到控制台
 
     <!-- Title -->
     
-    <title>JavaScript Prototype 污染攻击 - Hexo</title>
+    <title>JavaScript Prototype 污染攻击 - Luc1fer&#39;blog</title>
 
     <!-- Bootstrap Core CSS -->
     <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.2/css/bootstrap.min.css" integrity="sha384-y3tfxAZXuh4HwSYylfB+J125MxIs6mR5FOHamPBG064zB+AFeWH94NdvaCBm8qnd" crossorigin="anonymous">
@@ -94,12 +92,6 @@ console.log();将内容写到控制台
             <li class="menu-item">
                 <a href="/archives">
                     Archives
-                </a>
-            </li>
-            
-            <li class="menu-item">
-                <a href="/about.html">
-                    About
                 </a>
             </li>
             
@@ -153,8 +145,6 @@ console.log();将内容写到控制台
                 <span class="date">2019-08-31</span>
             
             
-                <a href="#disqus_thread" class="comments">Comments</a>
-            
             
                 <span class="category">
                     <a href="/categories/ctf/">ctf</a>
@@ -169,7 +159,11 @@ console.log();将内容写到控制台
         
 
         <!-- Post Content -->
-        <h1 id="JavaScript-Prototype-污染攻击"><a href="#JavaScript-Prototype-污染攻击" class="headerlink" title="JavaScript Prototype 污染攻击"></a>JavaScript Prototype 污染攻击</h1><h2 id="JS基本语法"><a href="#JS基本语法" class="headerlink" title="JS基本语法"></a>JS基本语法</h2><h3 id="输出"><a href="#输出" class="headerlink" title="输出"></a>输出</h3><ul>
+        <p>JS真有趣！</p>
+<a id="more"></a>
+
+
+<h1 id="JavaScript-Prototype-污染攻击"><a href="#JavaScript-Prototype-污染攻击" class="headerlink" title="JavaScript Prototype 污染攻击"></a>JavaScript Prototype 污染攻击</h1><h2 id="JS基本语法"><a href="#JS基本语法" class="headerlink" title="JS基本语法"></a>JS基本语法</h2><h3 id="输出"><a href="#输出" class="headerlink" title="输出"></a>输出</h3><ul>
 <li><p>window.alert();弹出警告框</p>
 </li>
 <li><p>console.log();将内容写到控制台</p>
@@ -248,12 +242,12 @@ true</code></pre><p><img src="https://cdn.nlark.com/yuque/0/2019/png/258679/1560
 </ol>
 <h2 id="JavaScript原型链继承"><a href="#JavaScript原型链继承" class="headerlink" title="JavaScript原型链继承"></a>JavaScript原型链继承</h2><p>所有类对象在实例化的时候将会拥有prototype中的属性和方法，这个特性被用来实现JavaScript中的继承</p>
 <pre><code>function Father() {
-    this.first_name = &#39;Donald&#39;
-    this.last_name = &#39;Trump&#39;
+    this.first_name = &apos;Donald&apos;
+    this.last_name = &apos;Trump&apos;
 }
 
 function Son() {
-    this.first_name = &#39;Melania&#39;
+    this.first_name = &apos;Melania&apos;
 }
 
 Son.prototype = new Father()
@@ -297,16 +291,6 @@ a.admintoken
 
     <!-- Comments -->
     
-    <div class="comments">
-        
-<div id="disqus_thread">
-    <noscript>Please enable JavaScript to view the <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
-</div>
-
-
-
-    </div>
-    
 
 </div>
         </section>
@@ -326,7 +310,7 @@ a.admintoken
             <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6 footer-about">
                 <h2>About</h2>
                 <p>
-                    This theme was developed by <a href="https://github.com/klugjo">Jonathan Klughertz</a>. The source code is available on Github. Create Websites. Make Magic.
+                    This theme was developed by <a href="">Jonathan Klughertz</a>. The source code is available on Github. Create Websites. Make Magic.
                 </p>
             </div>
             
@@ -347,7 +331,7 @@ a.admintoken
             </li>
             
             <li>
-                <a class="footer-post" href="/2019/08/19/Black_magic/">black_magic</a>
+                <a class="footer-post" href="/2019/08/19/Black-magic/">black_magic</a>
             </li>
             
         </ul>
@@ -365,11 +349,11 @@ a.admintoken
         </li>
         
         <li>
-            <a class="footer-post" href="/categories/wp/">wp</a>
+            <a class="footer-post" href="/categories/docker/">docker</a>
         </li>
         
         <li>
-            <a class="footer-post" href="/categories/docker/">docker</a>
+            <a class="footer-post" href="/categories/wp/">wp</a>
         </li>
         
         <li>
@@ -445,18 +429,6 @@ a.admintoken
 <script src="/js/main.js"></script>
 
 <!-- Disqus Comments -->
-
-<script type="text/javascript">
-    var disqus_shortname = 'klugjotest';
-
-    (function(){
-        var dsq = document.createElement('script');
-        dsq.type = 'text/javascript';
-        dsq.async = true;
-        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
-        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
-    }());
-</script>
 
 
 

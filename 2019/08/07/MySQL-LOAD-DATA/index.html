@@ -20,7 +20,7 @@
 
     <!--Open Graph Title-->
     
-        <meta property="og:title" content="Luc1fer&#39;blog">
+        <meta property="og:title" content="MYSQL LOAD DATA">
     
 
     <!--Open Graph Description-->
@@ -33,7 +33,7 @@
 
     <!--Type page-->
     
-        <meta property="og:type" content="website">
+        <meta property="og:type" content="article">
     
 
     <!--Page Cover-->
@@ -44,7 +44,7 @@
 
     <!-- Title -->
     
-    <title>docker - Luc1fer&#39;blog</title>
+    <title>MYSQL LOAD DATA - Luc1fer&#39;blog</title>
 
     <!-- Bootstrap Core CSS -->
     <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.2/css/bootstrap.min.css" integrity="sha384-y3tfxAZXuh4HwSYylfB+J125MxIs6mR5FOHamPBG064zB+AFeWH94NdvaCBm8qnd" crossorigin="anonymous">
@@ -119,9 +119,7 @@
 <div class="container">
 
     <!-- Main Content -->
-    
-
-<div class="row">
+    <div class="row">
     <div class="col-sm-12">
 
         <!--Title and Logo-->
@@ -129,25 +127,105 @@
     <div class="logo">
         <a href="/"><i class="logo-icon fa fa-cube" aria-hidden="true"></i></a>
         
-            <h1 id="main-title" class="title">docker</h1>
-        
     </div>
 </header>
 
-        <section class="main archive-container">
+        <section class="main">
             
-                <div class="archive-post">
-    <a href="/2019/08/02/ubuntu配置docker/">
-        <span class="archive-date">
-            Aug 2019
-        </span>
-        Ubuntu 16.04 配置docker
-    </a>
+<div class="post">
+
+    <div class="post-header">
+        <h1 class="title">
+            <a href="/2019/08/07/MySQL-LOAD-DATA/">
+                MYSQL LOAD DATA
+            </a>
+        </h1>
+        <div class="post-info">
+            
+                <span class="date">2019-08-07</span>
+            
+            
+            
+                <span class="category">
+                    <a href="/categories/ctf/">ctf</a>
+                </span>
+            
+        </div>
+    </div>
+
+    <div class="content">
+
+        <!-- Gallery -->
+        
+
+        <!-- Post Content -->
+        <p>通过伪造恶意服务器造成的攻击<br>😫😄</p>
+<a id="more"></a>
+<h1 id="配置mysql"><a href="#配置mysql" class="headerlink" title="配置mysql"></a>配置mysql</h1><h2 id="启动mysql服务"><a href="#启动mysql服务" class="headerlink" title="启动mysql服务"></a>启动mysql服务</h2><pre><code>service mysql start
+
+MariaDB [mysql]&gt; create database test;
+
+MariaDB [test]&gt; create table users(
+    -&gt; id int auto_increment primary key,
+    -&gt; username varchar(30),
+    -&gt; password varchar(30));
+Query OK, 0 rows affected (0.026 sec)
+
+MariaDB [test]&gt; insert into users (id,username,password) values (1,&quot;admin&quot;,&quot;admin&quot;);</code></pre><h2 id="设置密码"><a href="#设置密码" class="headerlink" title="设置密码"></a>设置密码</h2><pre><code>use mysql
+update user set password=PASSWORD(&apos;admin&apos;) where User=&apos;root&apos;;
+flush privileges;
+quit
+service mysql restart
+mysql -h 127.0.0.1 -u root -p  #如果tcpdump抓不到包就尝试设置 -h参数指定为本地回环地址</code></pre><h2 id="抓包"><a href="#抓包" class="headerlink" title="抓包"></a>抓包</h2><pre><code>tcpdump -i lo port 3306 -w test.cap</code></pre><p>tcpdump使用指南：<a href="https://www.cnblogs.com/pyng/p/9698723.html" title="tcpdump使用" target="_blank" rel="noopener">https://www.cnblogs.com/pyng/p/9698723.html</a></p>
+<h1 id="LOAD-DATA-INFILE"><a href="#LOAD-DATA-INFILE" class="headerlink" title="LOAD DATA INFILE"></a>LOAD DATA INFILE</h1><p>load data infile 主要是读取一个文件的内容并且放到一个表中，通常有两种用法</p>
+<pre><code>load data infile &quot;/data/data.csv&quot; into table TestTable fields terminated by &apos;分隔符;            //读取服务器文件
+load data local infile &quot;/home/lightless/data.csv&quot; into table TestTable fields terminated by &apos;分隔符; //读取本地文件</code></pre><p>查看官方文档<br><img src="https://upload-images.jianshu.io/upload_images/9113969-2c46042011a696ea.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt></p>
+<p>我们读取本地文件，并抓取3306端口流量分析</p>
+<p><img src="http://wx4.sinaimg.cn/mw690/006boCb9ly1g5rdhx9h84j30jx02lt9b.jpg" alt="读取本地文件 test.txt"></p>
+<p>文件内容是 <code>hello world!</code></p>
+<p>抓取流量</p>
+<p><img src="http://wx1.sinaimg.cn/mw690/006boCb9ly1g5rdhzvg9vj30k602n0u2.jpg" alt="抓取3306端口流量"></p>
+<p>丢进wireshark</p>
+<p><img src="http://wx4.sinaimg.cn/mw690/006boCb9ly1g5rdi51lqsj30l20kz77j.jpg" alt="客户端请求服务器"></p>
+<p>第一个包看起来比较正常，是客户端发起的<code>Request Query</code>，如果你无法使用<code>LOAD DATA INFILE</code>语法的话，考虑在连接 <code>MySQL</code> 的时候加上<code>--enable-local-infile</code>选项，或者设置<code>local_infile</code>全局变量为<code>ON</code>。我们可以看到第一个数据包是客户端发送的请求包，包含了请求命令。</p>
+<p><img src="http://wx3.sinaimg.cn/mw690/006boCb9ly1g5rdi2fq31j30kd0cgjt2.jpg" alt="服务器应答"></p>
+<p>服务器对请求做出响应，响应内容包含了文件名。</p>
+<p><img src="http://wx1.sinaimg.cn/mw690/006boCb9ly1g5rdi7lfm1j30kx0dyjtf.jpg" alt="客户端发出请求，发送文件内容"></p>
+<p>客户端发送服务器返回的文件名的文件内容给服务器。</p>
+<p>于是我们想到，如果我们在客户端发送查询之后，返回一个Response TABULAR数据包，并附上我们指定的文件，是不是就可以读取客户端的文件了，答案是肯定的。引用大佬<a href="https://lightless.me/archives/read-mysql-client-file.html" title="大佬" target="_blank" rel="noopener">https://lightless.me/archives/read-mysql-client-file.html</a>的文章</p>
+<blockquote>
+<pre><code>客户端：hi~ 我将把我的 data.csv 文件给你插入到 test 表中！
+服务端：OK，读取你本地 data.csv 文件并发给我！
+客户端：这是文件内容：balabal！</code></pre><p>正常情况下，这个流程不会有什么问题，但是如果我们制作了恶意的客户端，并且回复服务端任意一个我们想要获取的文件，那么情况就不一样了。</p>
+<pre><code>客户端：hi~ 我将把我的 data.csv 文件给你插入到 test 表中！
+服务端：OK，读取你本地的 / etc/passwd 文件并发给我！
+客户端：这是文件内容：balabal（/etc/passwd 文件的内容）！</code></pre></blockquote>
+<p>伪造的服务端可以在任何时候回复一个 file-transfer 请求，不一定非要是在LOAD DATA LOCAL的时候。</p>
+<h1 id="伪造服务端"><a href="#伪造服务端" class="headerlink" title="伪造服务端"></a>伪造服务端</h1><p>利用github上项目： <a href="https://github.com/allyshka/Rogue-MySql-Server">https://github.com/allyshka/Rogue-MySql-Server</a></p>
+<h1 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h1><blockquote>
+<p><a href="https://lightless.me/archives/read-mysql-client-file.html" target="_blank" rel="noopener">https://lightless.me/archives/read-mysql-client-file.html</a><br><a href="https://xz.aliyun.com/t/3277" target="_blank" rel="noopener">https://xz.aliyun.com/t/3277</a><br><a href="https://www.smi1e.top/mysql-load-data-%E8%AF%BB%E5%8F%96%E5%AE%A2%E6%88%B7%E7%AB%AF%E4%BB%BB%E6%84%8F%E6%96%87%E4%BB%B6/" target="_blank" rel="noopener">https://www.smi1e.top/mysql-load-data-%E8%AF%BB%E5%8F%96%E5%AE%A2%E6%88%B7%E7%AB%AF%E4%BB%BB%E6%84%8F%E6%96%87%E4%BB%B6/</a><br><a href="https://xz.aliyun.com/t/3973" target="_blank" rel="noopener">https://xz.aliyun.com/t/3973</a></p>
+</blockquote>
+
+    </div>
+
+    
+
+    
+        <div class="post-tags">
+            <i class="fa fa-tags" aria-hidden="true"></i>
+            <a href="/tags/mysql-load-data/">#mysql load data</a>
+        </div>
+    
+
+    <!-- Comments -->
+    
+
 </div>
-            
         </section>
+
     </div>
 </div>
+
 
 </div>
 

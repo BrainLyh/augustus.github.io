@@ -10,12 +10,7 @@
 
     <!--Description-->
     
-        <meta name="description" content="##0x01 zip文件组成 ##
-压缩源文件数据区+压缩源文件目录区+压缩源文件目录结束标志
-1 压缩源文件数据区在这个数据区中每个压缩文件的源文件/目录都是一条记录，记录格式如下[文件头+文件数据+数据描述符]
-文件头结构
-          组成    　                长度
-">
+        <meta name="description" content="对未来的最大慷慨，就是把一切都献给现在！">
     
 
     <!--Author-->
@@ -30,9 +25,11 @@
 
     <!--Open Graph Description-->
     
+        <meta property="og:description" content="对未来的最大慷慨，就是把一切都献给现在！">
+    
 
     <!--Open Graph Site Name-->
-    <meta property="og:site_name" content="Hexo">
+    <meta property="og:site_name" content="Luc1fer&#39;blog">
 
     <!--Type page-->
     
@@ -47,7 +44,7 @@
 
     <!-- Title -->
     
-    <title>ZIP&#39;s things - Hexo</title>
+    <title>ZIP&#39;s things - Luc1fer&#39;blog</title>
 
     <!-- Bootstrap Core CSS -->
     <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.2/css/bootstrap.min.css" integrity="sha384-y3tfxAZXuh4HwSYylfB+J125MxIs6mR5FOHamPBG064zB+AFeWH94NdvaCBm8qnd" crossorigin="anonymous">
@@ -95,12 +92,6 @@
             <li class="menu-item">
                 <a href="/archives">
                     Archives
-                </a>
-            </li>
-            
-            <li class="menu-item">
-                <a href="/about.html">
-                    About
                 </a>
             </li>
             
@@ -154,8 +145,6 @@
                 <span class="date">2019-03-23</span>
             
             
-                <a href="#disqus_thread" class="comments">Comments</a>
-            
             
                 <span class="category">
                     <a href="/categories/ctf/">ctf</a>
@@ -170,25 +159,27 @@
         
 
         <!-- Post Content -->
-        <a id="more"></a>
+        <p>只要我E的够快，寂寞就追不上我！</p>
+<p>对不起，走错片场了~😄</p>
+<a id="more"></a>
 <p>##0x01 zip文件组成 ##</p>
 <p><strong>压缩源文件数据区+压缩源文件目录区+压缩源文件目录结束标志</strong></p>
 <h3 id="1-压缩源文件数据区"><a href="#1-压缩源文件数据区" class="headerlink" title="1 压缩源文件数据区"></a>1 压缩源文件数据区</h3><p>在这个数据区中每个压缩文件的源文件/目录都是一条记录，记录格式如下[文件头+文件数据+数据描述符]</p>
 <h4 id="文件头结构"><a href="#文件头结构" class="headerlink" title="文件头结构"></a>文件头结构</h4><hr>
-<pre><code>          组成    　                长度
-      文件头标记                  4 bytes  (0x04034b50)
-      解压文件所需 pkware 版本    2 bytes
-     全局方式位标记              2 bytes
-    压缩方式                    2 bytes
-    最后修改文件时间             2 bytes
-    最后修改文件日期             2 bytes
-    CRC-32校验                  4 bytes
-    压缩后尺寸                  4 bytes
-    未压缩尺寸                  4 bytes
-    文件名长度                  2 bytes
-      扩展记录长度                2 bytes
-    文件名                     （不定长度）
-    扩展字段                   （不定长度）</code></pre><h4 id="文件数据"><a href="#文件数据" class="headerlink" title="文件数据"></a>文件数据</h4><p>就是数据</p>
+<pre><code>      组成    　                长度
+  文件头标记                  4 bytes  (0x04034b50)
+  解压文件所需 pkware 版本    2 bytes
+ 全局方式位标记              2 bytes
+压缩方式                    2 bytes
+最后修改文件时间             2 bytes
+最后修改文件日期             2 bytes
+CRC-32校验                  4 bytes
+压缩后尺寸                  4 bytes
+未压缩尺寸                  4 bytes
+文件名长度                  2 bytes
+  扩展记录长度                2 bytes
+文件名                     （不定长度）
+扩展字段                   （不定长度）</code></pre><h4 id="文件数据"><a href="#文件数据" class="headerlink" title="文件数据"></a>文件数据</h4><p>就是数据</p>
 <h4 id="数据描述符"><a href="#数据描述符" class="headerlink" title="数据描述符"></a>数据描述符</h4><hr>
 <pre><code> 　　　组成    　长度
 CRC-32校验                  4 bytes
@@ -213,14 +204,14 @@ CRC-32校验                  4 bytes
 　　磁盘开始号                      2 bytes
 　　内部文件属性                    2 bytes
 　　外部文件属性                    4 bytes
-    局部头部偏移量                  4 bytes
+局部头部偏移量                  4 bytes
 　　文件名                       （不定长度）
 　　扩展字段                     （不定长度）
-    文件注释                     （不定长度）</code></pre><h3 id="3-压缩源文件目录结束标志"><a href="#3-压缩源文件目录结束标志" class="headerlink" title="3.压缩源文件目录结束标志"></a>3.压缩源文件目录结束标志</h3><hr>
+文件注释                     （不定长度）</code></pre><h3 id="3-压缩源文件目录结束标志"><a href="#3-压缩源文件目录结束标志" class="headerlink" title="3.压缩源文件目录结束标志"></a>3.压缩源文件目录结束标志</h3><hr>
 <pre><code>　　　组成               　          长度
-    目录结束标记                    4 bytes  (0x02014b50)
-    当前磁盘编号                    2 bytes
-    目录区开始磁盘编号              2 bytes
+目录结束标记                    4 bytes  (0x02014b50)
+当前磁盘编号                    2 bytes
+目录区开始磁盘编号              2 bytes
 　　本磁盘上纪录总数                 2 bytes
 　　目录区中纪录总数                 2 bytes
 　　目录区尺寸大小                   4 bytes
@@ -253,8 +244,8 @@ CRC-32校验                  4 bytes
 <p>打开.sh文件是这样的内容</p>
 <pre><code>#!/bin/bash
 #
-zip -e --password=`python -c &quot;print(__import__(&#39;time&#39;).time())&quot;` flag.zip flag</code></pre><p>跑一下命令</p>
-<pre><code>&gt;&gt;&gt; print(__import__(&#39;time&#39;).time())
+zip -e --password=`python -c &quot;print(__import__(&apos;time&apos;).time())&quot;` flag.zip flag</code></pre><p>跑一下命令</p>
+<pre><code>&gt;&gt;&gt; print(__import__(&apos;time&apos;).time())
 1558685006.11</code></pre><p>大概形式知道了尝试掩码攻击</p>
 <p><img src="http://wx3.sinaimg.cn/mw690/006boCb9ly1g5kb0ltqooj30fh0f0gp8.jpg" alt></p>
 <p><img src="http://wx3.sinaimg.cn/mw690/006boCb9ly1g5kb0oiik6j30f206d0tr.jpg" alt></p>
@@ -328,16 +319,6 @@ MIDI (mid)，                              文件头：4D546864</code></pre><h3 
 
     <!-- Comments -->
     
-    <div class="comments">
-        
-<div id="disqus_thread">
-    <noscript>Please enable JavaScript to view the <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
-</div>
-
-
-
-    </div>
-    
 
 </div>
         </section>
@@ -357,7 +338,7 @@ MIDI (mid)，                              文件头：4D546864</code></pre><h3 
             <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6 footer-about">
                 <h2>About</h2>
                 <p>
-                    This theme was developed by <a href="https://github.com/klugjo">Jonathan Klughertz</a>. The source code is available on Github. Create Websites. Make Magic.
+                    This theme was developed by <a href="">Jonathan Klughertz</a>. The source code is available on Github. Create Websites. Make Magic.
                 </p>
             </div>
             
@@ -378,7 +359,7 @@ MIDI (mid)，                              文件头：4D546864</code></pre><h3 
             </li>
             
             <li>
-                <a class="footer-post" href="/2019/08/19/Black_magic/">black_magic</a>
+                <a class="footer-post" href="/2019/08/19/Black-magic/">black_magic</a>
             </li>
             
         </ul>
@@ -396,11 +377,11 @@ MIDI (mid)，                              文件头：4D546864</code></pre><h3 
         </li>
         
         <li>
-            <a class="footer-post" href="/categories/wp/">wp</a>
+            <a class="footer-post" href="/categories/docker/">docker</a>
         </li>
         
         <li>
-            <a class="footer-post" href="/categories/docker/">docker</a>
+            <a class="footer-post" href="/categories/wp/">wp</a>
         </li>
         
         <li>
@@ -476,18 +457,6 @@ MIDI (mid)，                              文件头：4D546864</code></pre><h3 
 <script src="/js/main.js"></script>
 
 <!-- Disqus Comments -->
-
-<script type="text/javascript">
-    var disqus_shortname = 'klugjotest';
-
-    (function(){
-        var dsq = document.createElement('script');
-        dsq.type = 'text/javascript';
-        dsq.async = true;
-        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
-        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
-    }());
-</script>
 
 
 

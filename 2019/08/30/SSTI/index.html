@@ -10,11 +10,7 @@
 
     <!--Description-->
     
-        <meta name="description" content="SSTI-服务器端模板注入8/30/2019 3:28:13 PM 
-注入原理使用PHP模板引擎Twig作例子演示注入原理
-&amp;lt;?php
-require_once dirname(__FILE__).&amp;#39;/../lib/Twig/Autoloader.php&amp;#39;;
-Twig_Auto">
+        <meta name="description" content="对未来的最大慷慨，就是把一切都献给现在！">
     
 
     <!--Author-->
@@ -29,9 +25,11 @@ Twig_Auto">
 
     <!--Open Graph Description-->
     
+        <meta property="og:description" content="对未来的最大慷慨，就是把一切都献给现在！">
+    
 
     <!--Open Graph Site Name-->
-    <meta property="og:site_name" content="Hexo">
+    <meta property="og:site_name" content="Luc1fer&#39;blog">
 
     <!--Type page-->
     
@@ -46,7 +44,7 @@ Twig_Auto">
 
     <!-- Title -->
     
-    <title>SSTI-服务器端模板注入 - Hexo</title>
+    <title>SSTI-服务器端模板注入 - Luc1fer&#39;blog</title>
 
     <!-- Bootstrap Core CSS -->
     <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.2/css/bootstrap.min.css" integrity="sha384-y3tfxAZXuh4HwSYylfB+J125MxIs6mR5FOHamPBG064zB+AFeWH94NdvaCBm8qnd" crossorigin="anonymous">
@@ -94,12 +92,6 @@ Twig_Auto">
             <li class="menu-item">
                 <a href="/archives">
                     Archives
-                </a>
-            </li>
-            
-            <li class="menu-item">
-                <a href="/about.html">
-                    About
                 </a>
             </li>
             
@@ -153,8 +145,6 @@ Twig_Auto">
                 <span class="date">2019-08-30</span>
             
             
-                <a href="#disqus_thread" class="comments">Comments</a>
-            
             
                 <span class="category">
                     <a href="/categories/ctf/">ctf</a>
@@ -169,10 +159,12 @@ Twig_Auto">
         
 
         <!-- Post Content -->
-        <h1 id="SSTI-服务器端模板注入"><a href="#SSTI-服务器端模板注入" class="headerlink" title="SSTI-服务器端模板注入"></a>SSTI-服务器端模板注入</h1><p>8/30/2019 3:28:13 PM </p>
+        <p>终于到了学习SSTI的时间呢！</p>
+<a id="more"></a>
+<h1 id="SSTI-服务器端模板注入"><a href="#SSTI-服务器端模板注入" class="headerlink" title="SSTI-服务器端模板注入"></a>SSTI-服务器端模板注入</h1><p>8/30/2019 3:28:13 PM </p>
 <h2 id="注入原理"><a href="#注入原理" class="headerlink" title="注入原理"></a>注入原理</h2><p>使用PHP模板引擎Twig作例子演示注入原理</p>
 <pre><code>&lt;?php
-require_once dirname(__FILE__).&#39;/../lib/Twig/Autoloader.php&#39;;
+require_once dirname(__FILE__).&apos;/../lib/Twig/Autoloader.php&apos;;
 Twig_Autoloader::register(true);
 
 $twig = new Twig_Environment(new Twig_Loader_String());
@@ -183,20 +175,20 @@ echo $output;</code></pre><blockquote>
 <p><code></code>模板变量值作为参数来自于<code>GET</code>请求<code>$_GET[&quot;name&quot;]</code>。这段代码没什么问题。模板引擎默认会对渲染的变量值进行编码和转义，所以并不会造成<code>XSS</code>等。</p>
 <p>但是如果我们修改代码</p>
 <pre><code>&lt;?php
-require_once dirname(__FILE__).&#39;/../lib/Twig/Autoloader.php&#39;;
+require_once dirname(__FILE__).&apos;/../lib/Twig/Autoloader.php&apos;;
 Twig_Autoloader::register(true);
 
 $twig = new Twig_Environment(new Twig_Loader_String());
-$output = $twig-&gt;render(&quot;Hello {$_GET[&#39;name&#39;]}&quot;);  // 将用户输入作为模版内容的一部分
+$output = $twig-&gt;render(&quot;Hello {$_GET[&apos;name&apos;]}&quot;);  // 将用户输入作为模版内容的一部分
 echo $output;</code></pre><p>我们将<code>GET</code>的参数直接作为模板的内容，不再对其进行编码和转义了则很容易出现攻击点。于是我们知道漏洞的原因是服务器端相信了用户的输入。</p>
 <h2 id="检测"><a href="#检测" class="headerlink" title="检测"></a>检测</h2><p>如何判断是否存在<code>SSTI</code>？</p>
 <p>我们还以上面的代码为例：</p>
 <pre><code>&lt;?php
-require_once dirname(__FILE__).&#39;/../lib/Twig/Autoloader.php&#39;;
+require_once dirname(__FILE__).&apos;/../lib/Twig/Autoloader.php&apos;;
 Twig_Autoloader::register(true);
 
 $twig = new Twig_Environment(new Twig_Loader_String());
-$output = $twig-&gt;render(&quot;Hello {$_GET[&#39;name&#39;]}&quot;);  // 将用户输入作为模版内容的一部分
+$output = $twig-&gt;render(&quot;Hello {$_GET[&apos;name&apos;]}&quot;);  // 将用户输入作为模版内容的一部分
 echo $output;</code></pre><p>在Twing模板引擎里<code></code>不仅可以输出传递的变量外，还能执行一些基本的表达式然后将其作为模板变量的值。我们输入<code>name=20</code>,服务端得到内容为 <code>Hello 20</code>，会输出 <code>Hello 20</code>.</p>
 <p>我们现在修改数据为</p>
 <pre><code>IsVuln{{2*8}}OK</code></pre><p>服务器端收到内容为</p>
@@ -230,15 +222,15 @@ echo $output;</code></pre><p>在Twing模板引擎里<code></code>不仅可以输
 <h2 id="OGeak-ctf-Render"><a href="#OGeak-ctf-Render" class="headerlink" title="OGeak-ctf Render"></a>OGeak-ctf Render</h2><p>题目链接：<a href="http://47.107.244.251:18080/" title="点这里" target="_blank" rel="noopener">http://47.107.244.251:18080/</a></p>
 <p>查看后端代码</p>
 <pre><code>var app = new Vue({
-    el: &#39;#app&#39;,
+    el: &apos;#app&apos;,
     data: {
-        content: &#39;&#39;,
-        result: &#39;&#39;
+        content: &apos;&apos;,
+        result: &apos;&apos;
     },
     methods: {
         request: function(event) {
             var vm = this
-            axios.post(&#39;/render&#39;, {
+            axios.post(&apos;/render&apos;, {
                 content: vm.content
             })
                 .then(function (response) {
@@ -274,16 +266,6 @@ echo $output;</code></pre><p>在Twing模板引擎里<code></code>不仅可以输
 
     <!-- Comments -->
     
-    <div class="comments">
-        
-<div id="disqus_thread">
-    <noscript>Please enable JavaScript to view the <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
-</div>
-
-
-
-    </div>
-    
 
 </div>
         </section>
@@ -303,7 +285,7 @@ echo $output;</code></pre><p>在Twing模板引擎里<code></code>不仅可以输
             <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6 footer-about">
                 <h2>About</h2>
                 <p>
-                    This theme was developed by <a href="https://github.com/klugjo">Jonathan Klughertz</a>. The source code is available on Github. Create Websites. Make Magic.
+                    This theme was developed by <a href="">Jonathan Klughertz</a>. The source code is available on Github. Create Websites. Make Magic.
                 </p>
             </div>
             
@@ -324,7 +306,7 @@ echo $output;</code></pre><p>在Twing模板引擎里<code></code>不仅可以输
             </li>
             
             <li>
-                <a class="footer-post" href="/2019/08/19/Black_magic/">black_magic</a>
+                <a class="footer-post" href="/2019/08/19/Black-magic/">black_magic</a>
             </li>
             
         </ul>
@@ -342,11 +324,11 @@ echo $output;</code></pre><p>在Twing模板引擎里<code></code>不仅可以输
         </li>
         
         <li>
-            <a class="footer-post" href="/categories/wp/">wp</a>
+            <a class="footer-post" href="/categories/docker/">docker</a>
         </li>
         
         <li>
-            <a class="footer-post" href="/categories/docker/">docker</a>
+            <a class="footer-post" href="/categories/wp/">wp</a>
         </li>
         
         <li>
@@ -422,18 +404,6 @@ echo $output;</code></pre><p>在Twing模板引擎里<code></code>不仅可以输
 <script src="/js/main.js"></script>
 
 <!-- Disqus Comments -->
-
-<script type="text/javascript">
-    var disqus_shortname = 'klugjotest';
-
-    (function(){
-        var dsq = document.createElement('script');
-        dsq.type = 'text/javascript';
-        dsq.async = true;
-        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
-        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
-    }());
-</script>
 
 
 

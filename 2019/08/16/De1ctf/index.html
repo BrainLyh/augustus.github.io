@@ -10,14 +10,7 @@
 
     <!--Description-->
     
-        <meta name="description" content="De1ctf 2019 WPssrfme源码 
-#! /usr/bin/env python
-#encoding=utf-8
-from flask import Flask
-from flask import request
-import socket
-import hashlib
-import u">
+        <meta name="description" content="对未来的最大慷慨，就是把一切都献给现在！">
     
 
     <!--Author-->
@@ -32,9 +25,11 @@ import u">
 
     <!--Open Graph Description-->
     
+        <meta property="og:description" content="对未来的最大慷慨，就是把一切都献给现在！">
+    
 
     <!--Open Graph Site Name-->
-    <meta property="og:site_name" content="Hexo">
+    <meta property="og:site_name" content="Luc1fer&#39;blog">
 
     <!--Type page-->
     
@@ -49,7 +44,7 @@ import u">
 
     <!-- Title -->
     
-    <title>De1ctf - Hexo</title>
+    <title>De1ctf - Luc1fer&#39;blog</title>
 
     <!-- Bootstrap Core CSS -->
     <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.2/css/bootstrap.min.css" integrity="sha384-y3tfxAZXuh4HwSYylfB+J125MxIs6mR5FOHamPBG064zB+AFeWH94NdvaCBm8qnd" crossorigin="anonymous">
@@ -97,12 +92,6 @@ import u">
             <li class="menu-item">
                 <a href="/archives">
                     Archives
-                </a>
-            </li>
-            
-            <li class="menu-item">
-                <a href="/about.html">
-                    About
                 </a>
             </li>
             
@@ -156,8 +145,6 @@ import u">
                 <span class="date">2019-08-16</span>
             
             
-                <a href="#disqus_thread" class="comments">Comments</a>
-            
             
                 <span class="category">
                     <a href="/categories/wp/">wp</a>
@@ -172,7 +159,9 @@ import u">
         
 
         <!-- Post Content -->
-        <h1 id="De1ctf-2019-WP"><a href="#De1ctf-2019-WP" class="headerlink" title="De1ctf 2019 WP"></a>De1ctf 2019 WP</h1><h2 id="ssrfme"><a href="#ssrfme" class="headerlink" title="ssrfme"></a>ssrfme</h2><p>源码 </p>
+        <p>这次比赛真的超有意思的！我超级喜欢的！做了半天啥都没做出来，看着那个樱花🌸全程陶醉~</p>
+<a id="more"></a>
+<h1 id="De1ctf-2019-WP"><a href="#De1ctf-2019-WP" class="headerlink" title="De1ctf 2019 WP"></a>De1ctf 2019 WP</h1><h2 id="ssrfme"><a href="#ssrfme" class="headerlink" title="ssrfme"></a>ssrfme</h2><p>源码 </p>
 <pre><code>#! /usr/bin/env python
 #encoding=utf-8
 from flask import Flask
@@ -184,7 +173,7 @@ import sys
 import os
 import json
 reload(sys)
-sys.setdefaultencoding(&#39;latin1&#39;)
+sys.setdefaultencoding(&apos;latin1&apos;)
 
 app = Flask(__name__)
 
@@ -202,27 +191,27 @@ class Task:
 
     def Exec(self):
         result = {}
-        result[&#39;code&#39;] = 500
+        result[&apos;code&apos;] = 500
         if (self.checkSign()):
             if &quot;scan&quot; in self.action:
-                tmpfile = open(&quot;./%s/result.txt&quot; % self.sandbox, &#39;w&#39;)
+                tmpfile = open(&quot;./%s/result.txt&quot; % self.sandbox, &apos;w&apos;)
                 resp = scan(self.param)
                 if (resp == &quot;Connection Timeout&quot;):
-                    result[&#39;data&#39;] = resp
+                    result[&apos;data&apos;] = resp
                 else:
                     print resp
                     tmpfile.write(resp)
                     tmpfile.close()
-                result[&#39;code&#39;] = 200
+                result[&apos;code&apos;] = 200
             if &quot;read&quot; in self.action:
-                f = open(&quot;./%s/result.txt&quot; % self.sandbox, &#39;r&#39;)
-                result[&#39;code&#39;] = 200
-                result[&#39;data&#39;] = f.read()
-            if result[&#39;code&#39;] == 500:
-                result[&#39;data&#39;] = &quot;Action Error&quot;
+                f = open(&quot;./%s/result.txt&quot; % self.sandbox, &apos;r&apos;)
+                result[&apos;code&apos;] = 200
+                result[&apos;data&apos;] = f.read()
+            if result[&apos;code&apos;] == 500:
+                result[&apos;data&apos;] = &quot;Action Error&quot;
         else:
-            result[&#39;code&#39;] = 500
-            result[&#39;msg&#39;] = &quot;Sign Error&quot;
+            result[&apos;code&apos;] = 500
+            result[&apos;msg&apos;] = &quot;Sign Error&quot;
         return result
 
     def checkSign(self):
@@ -233,14 +222,14 @@ class Task:
 
 
 #generate Sign For Action Scan.
-@app.route(&quot;/geneSign&quot;, methods=[&#39;GET&#39;, &#39;POST&#39;])
+@app.route(&quot;/geneSign&quot;, methods=[&apos;GET&apos;, &apos;POST&apos;])
 def geneSign():
     param = urllib.unquote(request.args.get(&quot;param&quot;, &quot;&quot;))
     action = &quot;scan&quot;
     return getSign(action, param)
 
 
-@app.route(&#39;/De1ta&#39;,methods=[&#39;GET&#39;,&#39;POST&#39;])
+@app.route(&apos;/De1ta&apos;,methods=[&apos;GET&apos;,&apos;POST&apos;])
 def challenge():
     action = urllib.unquote(request.cookies.get(&quot;action&quot;))
     param = urllib.unquote(request.args.get(&quot;param&quot;, &quot;&quot;))
@@ -250,7 +239,7 @@ def challenge():
         return &quot;No Hacker!!!!&quot;
     task = Task(action, param, sign, ip)
     return json.dumps(task.Exec())
-@app.route(&#39;/&#39;)
+@app.route(&apos;/&apos;)
 def index():
     return open(&quot;code.txt&quot;,&quot;r&quot;).read()
 
@@ -280,32 +269,32 @@ def waf(param):
         return False
 
 
-if __name__ == &#39;__main__&#39;:
+if __name__ == &apos;__main__&apos;:
     app.debug = False
-    app.run(host=&#39;0.0.0.0&#39;,port=80)</code></pre><h3 id="源码分析"><a href="#源码分析" class="headerlink" title="源码分析"></a>源码分析</h3><p><code>Exec()</code>函数首先调用<code>checkSign()</code>进行md5校验，我们可以通过长度扩展攻击绕过。接下来对scan行为进行打开文本文件，调用<code>scan()</code>读取内容，然后将目标文件内容写入文件。对read行为进行刚刚写入文件的读取。</p>
+    app.run(host=&apos;0.0.0.0&apos;,port=80)</code></pre><h3 id="源码分析"><a href="#源码分析" class="headerlink" title="源码分析"></a>源码分析</h3><p><code>Exec()</code>函数首先调用<code>checkSign()</code>进行md5校验，我们可以通过长度扩展攻击绕过。接下来对scan行为进行打开文本文件，调用<code>scan()</code>读取内容，然后将目标文件内容写入文件。对read行为进行刚刚写入文件的读取。</p>
 <pre><code>def Exec(self):
     result = {}
-    result[&#39;code&#39;] = 500
+    result[&apos;code&apos;] = 500
     if (self.checkSign()):
         if &quot;scan&quot; in self.action:
-            tmpfile = open(&quot;./%s/result.txt&quot; % self.sandbox, &#39;w&#39;)
+            tmpfile = open(&quot;./%s/result.txt&quot; % self.sandbox, &apos;w&apos;)
             resp = scan(self.param)
             if (resp == &quot;Connection Timeout&quot;):
-                result[&#39;data&#39;] = resp
+                result[&apos;data&apos;] = resp
             else:
                 print resp
                 tmpfile.write(resp)
                 tmpfile.close()
-            result[&#39;code&#39;] = 200
+            result[&apos;code&apos;] = 200
         if &quot;read&quot; in self.action:
-            f = open(&quot;./%s/result.txt&quot; % self.sandbox, &#39;r&#39;)
-            result[&#39;code&#39;] = 200
-            result[&#39;data&#39;] = f.read()
-        if result[&#39;code&#39;] == 500:
-            result[&#39;data&#39;] = &quot;Action Error&quot;
+            f = open(&quot;./%s/result.txt&quot; % self.sandbox, &apos;r&apos;)
+            result[&apos;code&apos;] = 200
+            result[&apos;data&apos;] = f.read()
+        if result[&apos;code&apos;] == 500:
+            result[&apos;data&apos;] = &quot;Action Error&quot;
     else:
-        result[&#39;code&#39;] = 500
-        result[&#39;msg&#39;] = &quot;Sign Error&quot;
+        result[&apos;code&apos;] = 500
+        result[&apos;msg&apos;] = &quot;Sign Error&quot;
     return result
 
 def checkSign(self):
@@ -314,12 +303,12 @@ def checkSign(self):
     else:
         return False</code></pre><p><code>/geneSign</code>路由负责生成Sign。同时<code>action</code>被限定为<code>scan</code></p>
 <pre><code>#generate Sign For Action Scan.
-@app.route(&quot;/geneSign&quot;, methods=[&#39;GET&#39;, &#39;POST&#39;])
+@app.route(&quot;/geneSign&quot;, methods=[&apos;GET&apos;, &apos;POST&apos;])
 def geneSign():
     param = urllib.unquote(request.args.get(&quot;param&quot;, &quot;&quot;))
     action = &quot;scan&quot;
     return getSign(action, param)</code></pre><p><code>/De1ta</code>路由对请求的<code>param</code>参数进行检查，然后通过对<code>Task</code>类传入相应参数打印<code>Exec()</code>函数的结果</p>
-<pre><code>@app.route(&#39;/De1ta&#39;,methods=[&#39;GET&#39;,&#39;POST&#39;])
+<pre><code>@app.route(&apos;/De1ta&apos;,methods=[&apos;GET&apos;,&apos;POST&apos;])
 def challenge():
     action = urllib.unquote(request.cookies.get(&quot;action&quot;))
     param = urllib.unquote(request.args.get(&quot;param&quot;, &quot;&quot;))
@@ -375,7 +364,7 @@ cookie = {
 print cookie
 
 
-re2 = requests.get(url+&#39;De1ta?&#39;+&quot;param=&quot;+payload,cookies=cookie)
+re2 = requests.get(url+&apos;De1ta?&apos;+&quot;param=&quot;+payload,cookies=cookie)
 
 print re2.content</code></pre><p>在使用扩展攻击的时候我们需要把所得签名前面的信息去掉</p>
 <pre><code>Input Signature: 785f9921864e8704e5e44e15c8f3d6ce
@@ -415,21 +404,11 @@ print(answer)</code></pre>
     
         <div class="post-tags">
             <i class="fa fa-tags" aria-hidden="true"></i>
-            <a href="/tags/RSA/">#RSA</a> <a href="/tags/ssrf/">#ssrf</a>
+            <a href="/tags/ssrf/">#ssrf</a> <a href="/tags/RSA/">#RSA</a>
         </div>
     
 
     <!-- Comments -->
-    
-    <div class="comments">
-        
-<div id="disqus_thread">
-    <noscript>Please enable JavaScript to view the <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
-</div>
-
-
-
-    </div>
     
 
 </div>
@@ -450,7 +429,7 @@ print(answer)</code></pre>
             <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6 footer-about">
                 <h2>About</h2>
                 <p>
-                    This theme was developed by <a href="https://github.com/klugjo">Jonathan Klughertz</a>. The source code is available on Github. Create Websites. Make Magic.
+                    This theme was developed by <a href="">Jonathan Klughertz</a>. The source code is available on Github. Create Websites. Make Magic.
                 </p>
             </div>
             
@@ -471,7 +450,7 @@ print(answer)</code></pre>
             </li>
             
             <li>
-                <a class="footer-post" href="/2019/08/19/Black_magic/">black_magic</a>
+                <a class="footer-post" href="/2019/08/19/Black-magic/">black_magic</a>
             </li>
             
         </ul>
@@ -489,11 +468,11 @@ print(answer)</code></pre>
         </li>
         
         <li>
-            <a class="footer-post" href="/categories/wp/">wp</a>
+            <a class="footer-post" href="/categories/docker/">docker</a>
         </li>
         
         <li>
-            <a class="footer-post" href="/categories/docker/">docker</a>
+            <a class="footer-post" href="/categories/wp/">wp</a>
         </li>
         
         <li>
@@ -569,18 +548,6 @@ print(answer)</code></pre>
 <script src="/js/main.js"></script>
 
 <!-- Disqus Comments -->
-
-<script type="text/javascript">
-    var disqus_shortname = 'klugjotest';
-
-    (function(){
-        var dsq = document.createElement('script');
-        dsq.type = 'text/javascript';
-        dsq.async = true;
-        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
-        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
-    }());
-</script>
 
 
 

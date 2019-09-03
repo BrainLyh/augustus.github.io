@@ -10,7 +10,7 @@
 
     <!--Description-->
     
-        <meta name="description" content="和同学报名了这个比赛，全英文果然有压力，半天找不到怎么答题，哭了">
+        <meta name="description" content="对未来的最大慷慨，就是把一切都献给现在！">
     
 
     <!--Author-->
@@ -25,9 +25,11 @@
 
     <!--Open Graph Description-->
     
+        <meta property="og:description" content="对未来的最大慷慨，就是把一切都献给现在！">
+    
 
     <!--Open Graph Site Name-->
-    <meta property="og:site_name" content="Hexo">
+    <meta property="og:site_name" content="Luc1fer&#39;blog">
 
     <!--Type page-->
     
@@ -42,7 +44,7 @@
 
     <!-- Title -->
     
-    <title>peaCTF WP - Hexo</title>
+    <title>peaCTF WP - Luc1fer&#39;blog</title>
 
     <!-- Bootstrap Core CSS -->
     <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.2/css/bootstrap.min.css" integrity="sha384-y3tfxAZXuh4HwSYylfB+J125MxIs6mR5FOHamPBG064zB+AFeWH94NdvaCBm8qnd" crossorigin="anonymous">
@@ -90,12 +92,6 @@
             <li class="menu-item">
                 <a href="/archives">
                     Archives
-                </a>
-            </li>
-            
-            <li class="menu-item">
-                <a href="/about.html">
-                    About
                 </a>
             </li>
             
@@ -149,8 +145,6 @@
                 <span class="date">2019-07-26</span>
             
             
-                <a href="#disqus_thread" class="comments">Comments</a>
-            
             
                 <span class="category">
                     <a href="/categories/WP/">WP</a>
@@ -165,7 +159,7 @@
         
 
         <!-- Post Content -->
-        <p>和同学报名了这个比赛，全英文果然有压力，半天找不到怎么答题，哭了</p>
+        <p>和同学报名了这个比赛，全英文果然有压力，半天找不到怎么答题，哭了😭</p>
 <a id="more"></a>
 
 <h2 id="RSA"><a href="#RSA" class="headerlink" title="RSA"></a>RSA</h2><p>题目描述：Can you help Bob retrieve the two messages for a flag? Authenticated Channel Encrypted Channel</p>
@@ -201,7 +195,7 @@ m1 = gmpy2.powmod(c,d,n)
 
 print m
 flag = hex(m)[2:]
-print flag.decode(&#39;hex&#39;)</code></pre><p>发现只有第二个文件可以正常解密</p>
+print flag.decode(&apos;hex&apos;)</code></pre><p>发现只有第二个文件可以正常解密</p>
 <pre><code>8904929771347223901285886734450
 peaCTF{f4ct0r</code></pre><p>第一个文件报错，奇数长度无法正常decode。</p>
 <p>这个地方卡了一会，还尝试拼接了两段m，哈哈。</p>
@@ -223,16 +217,6 @@ peaCTF{f4ct0r</code></pre><p>第一个文件报错，奇数长度无法正常dec
 
     <!-- Comments -->
     
-    <div class="comments">
-        
-<div id="disqus_thread">
-    <noscript>Please enable JavaScript to view the <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
-</div>
-
-
-
-    </div>
-    
 
 </div>
         </section>
@@ -252,7 +236,7 @@ peaCTF{f4ct0r</code></pre><p>第一个文件报错，奇数长度无法正常dec
             <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6 footer-about">
                 <h2>About</h2>
                 <p>
-                    This theme was developed by <a href="https://github.com/klugjo">Jonathan Klughertz</a>. The source code is available on Github. Create Websites. Make Magic.
+                    This theme was developed by <a href="">Jonathan Klughertz</a>. The source code is available on Github. Create Websites. Make Magic.
                 </p>
             </div>
             
@@ -273,7 +257,7 @@ peaCTF{f4ct0r</code></pre><p>第一个文件报错，奇数长度无法正常dec
             </li>
             
             <li>
-                <a class="footer-post" href="/2019/08/19/Black_magic/">black_magic</a>
+                <a class="footer-post" href="/2019/08/19/Black-magic/">black_magic</a>
             </li>
             
         </ul>
@@ -291,11 +275,11 @@ peaCTF{f4ct0r</code></pre><p>第一个文件报错，奇数长度无法正常dec
         </li>
         
         <li>
-            <a class="footer-post" href="/categories/wp/">wp</a>
+            <a class="footer-post" href="/categories/docker/">docker</a>
         </li>
         
         <li>
-            <a class="footer-post" href="/categories/docker/">docker</a>
+            <a class="footer-post" href="/categories/wp/">wp</a>
         </li>
         
         <li>
@@ -371,18 +355,6 @@ peaCTF{f4ct0r</code></pre><p>第一个文件报错，奇数长度无法正常dec
 <script src="/js/main.js"></script>
 
 <!-- Disqus Comments -->
-
-<script type="text/javascript">
-    var disqus_shortname = 'klugjotest';
-
-    (function(){
-        var dsq = document.createElement('script');
-        dsq.type = 'text/javascript';
-        dsq.async = true;
-        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
-        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
-    }());
-</script>
 
 
 

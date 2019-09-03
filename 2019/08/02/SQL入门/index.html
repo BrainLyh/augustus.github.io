@@ -10,16 +10,7 @@
 
     <!--Description-->
     
-        <meta name="description" content="开始之前常用函数系统函数
-version() mysql版本
-user() 数据库用户名
-database() 数据库名
-@@datadir 数据库路径
-@@version_compile_os 操作系统版本
-
-字符串连接函数
-concat(str1,str2, …) 没有分隔符的连接字符串
-con">
+        <meta name="description" content="对未来的最大慷慨，就是把一切都献给现在！">
     
 
     <!--Author-->
@@ -34,9 +25,11 @@ con">
 
     <!--Open Graph Description-->
     
+        <meta property="og:description" content="对未来的最大慷慨，就是把一切都献给现在！">
+    
 
     <!--Open Graph Site Name-->
-    <meta property="og:site_name" content="Hexo">
+    <meta property="og:site_name" content="Luc1fer&#39;blog">
 
     <!--Type page-->
     
@@ -51,7 +44,7 @@ con">
 
     <!-- Title -->
     
-    <title>SQL入门 - Hexo</title>
+    <title>SQL入门 - Luc1fer&#39;blog</title>
 
     <!-- Bootstrap Core CSS -->
     <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.2/css/bootstrap.min.css" integrity="sha384-y3tfxAZXuh4HwSYylfB+J125MxIs6mR5FOHamPBG064zB+AFeWH94NdvaCBm8qnd" crossorigin="anonymous">
@@ -99,12 +92,6 @@ con">
             <li class="menu-item">
                 <a href="/archives">
                     Archives
-                </a>
-            </li>
-            
-            <li class="menu-item">
-                <a href="/about.html">
-                    About
                 </a>
             </li>
             
@@ -158,8 +145,6 @@ con">
                 <span class="date">2019-08-02</span>
             
             
-                <a href="#disqus_thread" class="comments">Comments</a>
-            
             
                 <span class="category">
                     <a href="/categories/ctf/">ctf</a>
@@ -174,7 +159,9 @@ con">
         
 
         <!-- Post Content -->
-        <h1 id="开始之前"><a href="#开始之前" class="headerlink" title="开始之前"></a>开始之前</h1><h2 id="常用函数"><a href="#常用函数" class="headerlink" title="常用函数"></a>常用函数</h2><h3 id="系统函数"><a href="#系统函数" class="headerlink" title="系统函数"></a>系统函数</h3><ul>
+        <p>Sql注入真的超神奇的，我怎么都学不会呢！<br>😀</p>
+<a id="more"></a>
+<h1 id="开始之前"><a href="#开始之前" class="headerlink" title="开始之前"></a>开始之前</h1><h2 id="常用函数"><a href="#常用函数" class="headerlink" title="常用函数"></a>常用函数</h2><h3 id="系统函数"><a href="#系统函数" class="headerlink" title="系统函数"></a>系统函数</h3><ul>
 <li>version() mysql版本</li>
 <li>user() 数据库用户名</li>
 <li>database() 数据库名</li>
@@ -197,7 +184,7 @@ con">
 <li>–+可以用#替换</li>
 </ul>
 <p>查询语句一般为</p>
-<pre><code>$sql=&quot;SELECT * from users where id = &#39;$id&#39; limit 0,1&quot;</code></pre><p>从上面的尝试语句我们可以看出来语句的作用有两个，一个是人为闭合 <code>$id</code> 后面的半个单引号，一个是注释整个语句后的引号。</p>
+<pre><code>$sql=&quot;SELECT * from users where id = &apos;$id&apos; limit 0,1&quot;</code></pre><p>从上面的尝试语句我们可以看出来语句的作用有两个，一个是人为闭合 <code>$id</code> 后面的半个单引号，一个是注释整个语句后的引号。</p>
 <h3 id="union-操作符"><a href="#union-操作符" class="headerlink" title="union 操作符"></a>union 操作符</h3><p>union操作符用来合并两个或多个SELECT语句的结果集。使用union时的select语句必须拥有相同数量的列，同时列也必须有相似的数据类型，且每条select语句中列的顺序必须相同。</p>
 <p>例如这两有三个数据表</p>
 <pre><code>+-----------------+
@@ -304,9 +291,9 @@ ERROR 1222 (21000): The used SELECT statements have a different number of column
 |  5 | stupid   | stupidity  |
 +----+----------+------------+</code></pre><p>如果我们查询一个不存在的栏位呢？</p>
 <pre><code>select * from users order by 4;</code></pre><p>数据库将会报错</p>
-<pre><code>ERROR 1054 (42S22): Unknown column &#39;4&#39; in &#39;order clause&#39;</code></pre><p>基于此，我们可以利用二分法来对列数进行猜解。</p>
+<pre><code>ERROR 1054 (42S22): Unknown column &apos;4&apos; in &apos;order clause&apos;</code></pre><p>基于此，我们可以利用二分法来对列数进行猜解。</p>
 <p>我们使用UNION来判断回显位，UNION的作用是将两个select查询结果合并</p>
-<pre><code> select id,username from users where id=4 union select 1,2;</code></pre><p>查询结果如下</p>
+<pre><code>select id,username from users where id=4 union select 1,2;</code></pre><p>查询结果如下</p>
 <pre><code>+----+----------+
 | id | username |
 +----+----------+
@@ -321,7 +308,7 @@ ERROR 1222 (21000): The used SELECT statements have a different number of column
 +----+----------+</code></pre><p>得到回显位之后，获取数据库名就在回显位使用database()函数</p>
 <pre><code>select id,username from users where id=-4 union select 1,database();</code></pre><p>接下来查询库中所有表名，仍然是在回显位进行查询</p>
 <pre><code>select id,username from users where id=-4 union select 1,group_concat(table_name) from information_schema.tables where table_schema=database();</code></pre><p>然后是表中的列名</p>
-<pre><code>select id,username from users where id=-4 union select 1,group_concat(column_name) from information_schema.columns where table_name=&#39;users&#39;;</code></pre><p>最后是数据</p>
+<pre><code>select id,username from users where id=-4 union select 1,group_concat(column_name) from information_schema.columns where table_name=&apos;users&apos;;</code></pre><p>最后是数据</p>
 <pre><code>select id,username from users where id=-4 union select 1,username from users;</code></pre>
     </div>
 
@@ -335,16 +322,6 @@ ERROR 1222 (21000): The used SELECT statements have a different number of column
     
 
     <!-- Comments -->
-    
-    <div class="comments">
-        
-<div id="disqus_thread">
-    <noscript>Please enable JavaScript to view the <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
-</div>
-
-
-
-    </div>
     
 
 </div>
@@ -365,7 +342,7 @@ ERROR 1222 (21000): The used SELECT statements have a different number of column
             <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6 footer-about">
                 <h2>About</h2>
                 <p>
-                    This theme was developed by <a href="https://github.com/klugjo">Jonathan Klughertz</a>. The source code is available on Github. Create Websites. Make Magic.
+                    This theme was developed by <a href="">Jonathan Klughertz</a>. The source code is available on Github. Create Websites. Make Magic.
                 </p>
             </div>
             
@@ -386,7 +363,7 @@ ERROR 1222 (21000): The used SELECT statements have a different number of column
             </li>
             
             <li>
-                <a class="footer-post" href="/2019/08/19/Black_magic/">black_magic</a>
+                <a class="footer-post" href="/2019/08/19/Black-magic/">black_magic</a>
             </li>
             
         </ul>
@@ -404,11 +381,11 @@ ERROR 1222 (21000): The used SELECT statements have a different number of column
         </li>
         
         <li>
-            <a class="footer-post" href="/categories/wp/">wp</a>
+            <a class="footer-post" href="/categories/docker/">docker</a>
         </li>
         
         <li>
-            <a class="footer-post" href="/categories/docker/">docker</a>
+            <a class="footer-post" href="/categories/wp/">wp</a>
         </li>
         
         <li>
@@ -484,18 +461,6 @@ ERROR 1222 (21000): The used SELECT statements have a different number of column
 <script src="/js/main.js"></script>
 
 <!-- Disqus Comments -->
-
-<script type="text/javascript">
-    var disqus_shortname = 'klugjotest';
-
-    (function(){
-        var dsq = document.createElement('script');
-        dsq.type = 'text/javascript';
-        dsq.async = true;
-        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
-        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
-    }());
-</script>
 
 
 

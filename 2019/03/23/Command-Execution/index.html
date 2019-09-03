@@ -10,7 +10,7 @@
 
     <!--Description-->
     
-        <meta name="description" content="当应用需要调用一些外部程序去处理内容的情况下，就会用到一些执行系统命令的函数。如PHP中的system,exec,shell_exec等，当用户可以执行函数中的参数时，将可注入恶意系统命令到正常命令中，造成命令执行漏洞。">
+        <meta name="description" content="对未来的最大慷慨，就是把一切都献给现在！">
     
 
     <!--Author-->
@@ -25,9 +25,11 @@
 
     <!--Open Graph Description-->
     
+        <meta property="og:description" content="对未来的最大慷慨，就是把一切都献给现在！">
+    
 
     <!--Open Graph Site Name-->
-    <meta property="og:site_name" content="Hexo">
+    <meta property="og:site_name" content="Luc1fer&#39;blog">
 
     <!--Type page-->
     
@@ -42,7 +44,7 @@
 
     <!-- Title -->
     
-    <title>命令执行漏洞(Command Execution) - Hexo</title>
+    <title>命令执行漏洞(Command Execution) - Luc1fer&#39;blog</title>
 
     <!-- Bootstrap Core CSS -->
     <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.2/css/bootstrap.min.css" integrity="sha384-y3tfxAZXuh4HwSYylfB+J125MxIs6mR5FOHamPBG064zB+AFeWH94NdvaCBm8qnd" crossorigin="anonymous">
@@ -90,12 +92,6 @@
             <li class="menu-item">
                 <a href="/archives">
                     Archives
-                </a>
-            </li>
-            
-            <li class="menu-item">
-                <a href="/about.html">
-                    About
                 </a>
             </li>
             
@@ -149,8 +145,6 @@
                 <span class="date">2019-03-23</span>
             
             
-                <a href="#disqus_thread" class="comments">Comments</a>
-            
             
                 <span class="category">
                     <a href="/categories/ctf/">ctf</a>
@@ -191,7 +185,7 @@
 </blockquote>
 <pre><code>mixed eval( string $code)
 &lt;?php
-    eval($_GET[&#39;a&#39;]);
+    eval($_GET[&apos;a&apos;]);
     ?&gt;</code></pre><p>常见的一句话木马，访问：</p>
 <pre><code>http://xxx/php_cmd.php?a=phpinfo();</code></pre><p>得到phpinfo页面。这里注意将字符串当作code执行，也就是说我们传入的字符串要符合php规范，分号不能忘。</p>
 <p>assert()</p>
@@ -204,7 +198,7 @@
 <p>如果 assertion 是字符串，它将会被 assert() 当做 PHP 代码来执行。 assertion 是字符串的优势是当禁用断言时它的开销会更小，并且在断言失败时消息会包含 assertion 表达式。这意味着如果你传入了 boolean 的条件作为 assertion，这个条件将不会显示为断言函数的参数；在调用你定义的 assert_options() 处理函数时，条件会转换为字符串，而布尔值 FALSE 会被转换成空字符串。 </p>
 </blockquote>
 <pre><code>&lt;?php
-    assert($_GET[&#39;a&#39;]);
+    assert($_GET[&apos;a&apos;]);
     ?&gt;</code></pre><p>此时访问phpinfo()不用加分号也能得到对应页面。</p>
 <p>preg_replace</p>
 <blockquote>
@@ -221,7 +215,7 @@
 <pre><code>mixed call_user_func( callable $callback[, mixed $parameter[, mixed $...]] )
 
 &lt;?php
-    call_user_func($_GET[&#39;a&#39;],$_GET[&#39;b&#39;]);
+    call_user_func($_GET[&apos;a&apos;],$_GET[&apos;b&apos;]);
 ?&gt;</code></pre><p>访问：</p>
 <pre><code>http://xxx/php_cmd.php?a=assert&amp;b=phpinfo()</code></pre><p>call_user_func_array()</p>
 <blockquote>
@@ -229,7 +223,7 @@
 </blockquote>
 <pre><code>mixed call_user_func_array( callable $callback, array $param_arr)</code></pre><p>把第一个参数作为回调函数（callback）调用，把参数数组作（param_arr）为回调函数的的参数传入。 </p>
 <pre><code>&lt;?php
-    call_user_func_array($_GET[&#39;a&#39;],$_GET[&#39;b&#39;]);
+    call_user_func_array($_GET[&apos;a&apos;],$_GET[&apos;b&apos;]);
 ?&gt;</code></pre><p>访问：</p>
 <pre><code>http://xxx/php_cmd.php?a=assert&amp;b[]=phpinfo()</code></pre><p>create_function</p>
 <blockquote>
@@ -240,9 +234,9 @@
 <p>This function internally performs an eval() and as such has thesame security issues as eval(). </p>
 </blockquote>
 <pre><code>&lt;?php
-    $a = $_GET[&#39;c&#39;];
-    $b = create_function(&#39;$a&#39;,&quot;echo $a&quot;);
-    $b(&#39;&#39;);
+    $a = $_GET[&apos;c&apos;];
+    $b = create_function(&apos;$a&apos;,&quot;echo $a&quot;);
+    $b(&apos;&apos;);
 ?&gt;</code></pre><p>访问</p>
 <pre><code>http://xxx/php_cmd.php?c=phpinfo();</code></pre><p>array_map</p>
 <blockquote>
@@ -251,7 +245,7 @@
 <pre><code>array array_map( callable $callback, array $array1[, array $...] )</code></pre><p>array_map()：返回数组，是为 array1 每个元素应用 callback函数之后的数组。 callback 函数形参的数量和传给 array_map() 数组数量，两者必须一样。 </p>
 <pre><code>&lt;?php
     $array = array(0,1,2,3,4,5);
-    array_map($_GET[&#39;a&#39;],$array);
+    array_map($_GET[&apos;a&apos;],$array);
 ?&gt;</code></pre><p>访问</p>
 <pre><code>http://xxx/php_cmd.php?a=phpinfo</code></pre><p>没有分号<code>;</code>也没有括号<code>()</code>！同时从返回结果也可以看出array中的数组数量决定了返回值的数量。</p>
 <h3 id="系统命令执行"><a href="#系统命令执行" class="headerlink" title="系统命令执行"></a>系统命令执行</h3><p>system()</p>
@@ -263,7 +257,7 @@
 <p>如果 PHP 运行在服务器模块中， system() 函数还会尝试在每行输出完毕之后，自动刷新 web 服务器的输出缓存。 </p>
 </blockquote>
 <pre><code>&lt;?php
-    system(&#39;whoami&#39;);
+    system(&apos;whoami&apos;);
 ?&gt;</code></pre><p>passthru()</p>
 <blockquote>
 <p>passthru — 执行外部程序并且显示原始输出</p>
@@ -329,7 +323,7 @@ $handle = popen(&quot;/bin/ls&quot;, &quot;r&quot;);
 </blockquote>
 <p>下面的代码，由于调用了ob_end_flush()，所以会调用ob_start(cmd)中的cmd，把我们输入的_GET[a]作为cmd的参数。</p>
 <pre><code>&lt;?php
-    $cmd = &#39;system&#39;;
+    $cmd = &apos;system&apos;;
     ob_start($cmd);
     echo &quot;$_GET[a]&quot;;
     ob_end_flush();
@@ -364,16 +358,6 @@ $handle = popen(&quot;/bin/ls&quot;, &quot;r&quot;);
 
     <!-- Comments -->
     
-    <div class="comments">
-        
-<div id="disqus_thread">
-    <noscript>Please enable JavaScript to view the <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
-</div>
-
-
-
-    </div>
-    
 
 </div>
         </section>
@@ -393,7 +377,7 @@ $handle = popen(&quot;/bin/ls&quot;, &quot;r&quot;);
             <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6 footer-about">
                 <h2>About</h2>
                 <p>
-                    This theme was developed by <a href="https://github.com/klugjo">Jonathan Klughertz</a>. The source code is available on Github. Create Websites. Make Magic.
+                    This theme was developed by <a href="">Jonathan Klughertz</a>. The source code is available on Github. Create Websites. Make Magic.
                 </p>
             </div>
             
@@ -414,7 +398,7 @@ $handle = popen(&quot;/bin/ls&quot;, &quot;r&quot;);
             </li>
             
             <li>
-                <a class="footer-post" href="/2019/08/19/Black_magic/">black_magic</a>
+                <a class="footer-post" href="/2019/08/19/Black-magic/">black_magic</a>
             </li>
             
         </ul>
@@ -432,11 +416,11 @@ $handle = popen(&quot;/bin/ls&quot;, &quot;r&quot;);
         </li>
         
         <li>
-            <a class="footer-post" href="/categories/wp/">wp</a>
+            <a class="footer-post" href="/categories/docker/">docker</a>
         </li>
         
         <li>
-            <a class="footer-post" href="/categories/docker/">docker</a>
+            <a class="footer-post" href="/categories/wp/">wp</a>
         </li>
         
         <li>
@@ -512,18 +496,6 @@ $handle = popen(&quot;/bin/ls&quot;, &quot;r&quot;);
 <script src="/js/main.js"></script>
 
 <!-- Disqus Comments -->
-
-<script type="text/javascript">
-    var disqus_shortname = 'klugjotest';
-
-    (function(){
-        var dsq = document.createElement('script');
-        dsq.type = 'text/javascript';
-        dsq.async = true;
-        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
-        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
-    }());
-</script>
 
 
 
