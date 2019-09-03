@@ -1,849 +1,1002 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
+
+<!-- Head tag -->
 <head><meta name="generator" content="Hexo 3.9.0">
-  <meta charset="utf-8">
-  <title>Hexo</title>
-  <meta name="keywords" content>
-  <meta name="description" content="Hexo">
-    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-<meta name="description" content="JavaScript Prototype 污染攻击JS基本语法输出 window.alert();弹出警告框  console.log();将内容写到控制台   a = 5;  b = 6;  c = a + b;  console.log(c);  11 debugger eval code:1:9  undefined   语法JS使用对象(Object)定义一个对象 var person =">
-<meta name="keywords" content="javascript">
-<meta property="og:type" content="article">
-<meta property="og:title" content="JavaScript Prototype 污染攻击">
-<meta property="og:url" content="https://github.com/BrainLyh/2019/08/31/JavaScript原型污染/index.html">
-<meta property="og:site_name" content="Hexo">
-<meta property="og:description" content="JavaScript Prototype 污染攻击JS基本语法输出 window.alert();弹出警告框  console.log();将内容写到控制台   a = 5;  b = 6;  c = a + b;  console.log(c);  11 debugger eval code:1:9  undefined   语法JS使用对象(Object)定义一个对象 var person =">
-<meta property="og:locale" content="default">
-<meta property="og:image" content="https://cdn.nlark.com/yuque/0/2019/png/258679/1560690468868-ed7f7f4f-6356-49eb-bb93-8f73aea44ae0.png#align=left&display=inline&height=209&name=image.png&originHeight=418&originWidth=952&size=54718&status=done&width=476">
-<meta property="og:image" content="https://cdn.nlark.com/yuque/0/2019/png/258679/1560691466319-0c780440-b626-4d58-a3c0-315ccc5c3210.png#align=left&display=inline&height=444&name=image.png&originHeight=888&originWidth=1110&size=127913&status=done&width=555">
-<meta property="og:updated_time" content="2019-08-31T13:55:46.686Z">
-<meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="JavaScript Prototype 污染攻击">
-<meta name="twitter:description" content="JavaScript Prototype 污染攻击JS基本语法输出 window.alert();弹出警告框  console.log();将内容写到控制台   a = 5;  b = 6;  c = a + b;  console.log(c);  11 debugger eval code:1:9  undefined   语法JS使用对象(Object)定义一个对象 var person =">
-<meta name="twitter:image" content="https://cdn.nlark.com/yuque/0/2019/png/258679/1560690468868-ed7f7f4f-6356-49eb-bb93-8f73aea44ae0.png#align=left&display=inline&height=209&name=image.png&originHeight=418&originWidth=952&size=54718&status=done&width=476">
 
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
 
-<link rel="icon" href="/img/avatar.jpg">
+    <!--Description-->
+    
 
-<link href="/css/style.css?v=1.0.1" rel="stylesheet">
+    <!--Author-->
+    
+        <meta name="author" content="Luc1fer">
+    
 
-<link href="/css/hl_theme/gruvbox-dark.css?v=1.0.1" rel="stylesheet">
+    <!--Open Graph Title-->
+    
+        <meta property="og:title" content="Hexo">
+    
 
-<link href="//cdn.bootcss.com/animate.css/3.5.2/animate.min.css" rel="stylesheet">
-<link href="//cdn.bootcss.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    <!--Open Graph Description-->
+    
 
-<script src="//cdn.bootcss.com/jquery/2.2.4/jquery.min.js"></script>
-<script src="/js/jquery.autocomplete.min.js?v=1.0.1"></script>
+    <!--Open Graph Site Name-->
+    <meta property="og:site_name" content="Hexo">
 
-<script src="//cdn.bootcss.com/highlight.js/9.12.0/highlight.min.js"></script>
-<script>
-    hljs.initHighlightingOnLoad();
-</script>
+    <!--Type page-->
+    
+        <meta property="og:type" content="website">
+    
 
-<script src="//cdn.bootcss.com/nprogress/0.2.0/nprogress.min.js"></script>
+    <!--Page Cover-->
+    
 
+    <meta name="twitter:card" content="summary">
+    
 
+    <!-- Title -->
+    
+    <title>page - Hexo</title>
 
-<script src="//cdn.bootcss.com/jquery-cookie/1.4.1/jquery.cookie.min.js"></script>
+    <!-- Bootstrap Core CSS -->
+    <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.2/css/bootstrap.min.css" integrity="sha384-y3tfxAZXuh4HwSYylfB+J125MxIs6mR5FOHamPBG064zB+AFeWH94NdvaCBm8qnd" crossorigin="anonymous">
 
-<script src="/js/iconfont.js?v=1.0.1"></script>
+    <!-- Custom Fonts -->
+    <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        <script src="//oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="//oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- Gallery -->
+    <link href="//cdnjs.cloudflare.com/ajax/libs/featherlight/1.3.5/featherlight.min.css" type="text/css" rel="stylesheet">
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/css/style.css">
+
+    <!-- Google Analytics -->
+    
+
 
 </head>
-<div style="display: none">
-  <input class="theme_disqus_on" value="false">
-  <input class="theme_preload_comment" value="false">
-  <input class="theme_blog_path" value>
-</div>
+
 
 <body>
-<aside class="nav mobile">
-    <div class="nav-left">
-        <a href="/" class="avatar_target">
-    <img class="avatar" src="/img/avatar.jpg" />
-</a>
-<div class="author">
-    <span>Luc1fer</span>
-</div>
 
-<div class="icon">
-    
-        
-        <a title="rss" href="/atom.xml" target="_blank">
-            
-                <svg class="iconfont-svg" aria-hidden="true">
-                    <use xlink:href="#icon-rss"></use>
-                </svg>
-            
-        </a>
-        
-    
-        
-        <a title="github" href="https://github.com/BrainLyh" target="_blank">
-            
-                <svg class="iconfont-svg" aria-hidden="true">
-                    <use xlink:href="#icon-github"></use>
-                </svg>
-            
-        </a>
-        
-    
-        
-    
-        
-    
-        
-    
-        
-    
-        
-    
-        
-    
-        
-    
-        
-    
-        
-    
-        
-    
-        
-    
-        
-        <a title="email" href="mailto:brainsemail@163.com" target="_blank">
-            
-                <svg class="iconfont-svg" aria-hidden="true">
-                    <use xlink:href="#icon-email"></use>
-                </svg>
-            
-        </a>
-        
-    
-        
-        <a title="qq" href="http://wpa.qq.com/msgrd?v=3&uin=12128&site=qq&menu=yes" target="_blank">
-            
-                <svg class="iconfont-svg" aria-hidden="true">
-                    <use xlink:href="#icon-qq"></use>
-                </svg>
-            
-        </a>
-        
-    
-        
-    
-        
-        <a title="neteasemusic" href="https://music.163.com/#/user/home?id=125977062" target="_blank">
-            
-                <svg class="iconfont-svg" aria-hidden="true">
-                    <use xlink:href="#icon-neteasemusic"></use>
-                </svg>
-            
-        </a>
-        
-    
-</div>
+<div class="bg-gradient"></div>
+<div class="bg-pattern"></div>
 
-
-
-
-<ul>
-    <li><div class="all active">全部文章<small>(27)</small></div></li>
-    
-        
-            
-            <li><div data-rel="WP">WP<small>(5)</small></div>
-                
-            </li>
-            
-        
-    
-        
-            
-            <li><div data-rel="ctf">ctf<small>(17)</small></div>
-                
-            </li>
-            
-        
-    
-        
-            
-            <li><div data-rel="比赛回顾">比赛回顾<small>(1)</small></div>
-                
-            </li>
-            
-        
-    
-        
-            
-            <li><div data-rel="渗透测试">渗透测试<small>(2)</small></div>
-                
-            </li>
-            
-        
-    
-        
-            
-            <li><div data-rel="docker">docker<small>(1)</small></div>
-                
-            </li>
-            
-        
-    
-        
-            
-            <li><div data-rel="wp">wp<small>(1)</small></div>
-                
-            </li>
-            
-        
-    
-</ul>
-<div class="left-bottom">
-    <div class="menus">
-    
-    
-    
-    
-    </div>
-    <div><a  class="friends">友链</a></div>
-</div>
-<input type="hidden" id="yelog_site_posts_number" value="27">
-
-<div style="display: none">
-    <span id="busuanzi_value_site_uv"></span>
-    <span id="busuanzi_value_site_pv"></span>
-</div>
-
-    </div>
-    <div class="nav-right">
-        <div class="friends-area">
-    <div class="friends-title">
-        友情链接
-        <i class="back-title-list"></i>
-    </div>
-    <div class="friends-content">
+<!-- Menu -->
+<!--Menu Links and Overlay-->
+<div class="menu-bg">
+    <div class="menu-container">
         <ul>
             
-            <li><a target="_blank" href="http://www.gtfly.top/">gtfly</a></li>
+            <li class="menu-item">
+                <a href="/">
+                    Home
+                </a>
+            </li>
             
-            <li><a target="_blank" href="https://www.leavesongs.com/">P神</a></li>
+            <li class="menu-item">
+                <a href="/archives">
+                    Archives
+                </a>
+            </li>
+            
+            <li class="menu-item">
+                <a href="/about.html">
+                    About
+                </a>
+            </li>
+            
+            <li class="menu-item">
+                <a href="/tags">
+                    Tags
+                </a>
+            </li>
+            
+            <li class="menu-item">
+                <a href="/categories">
+                    Categories
+                </a>
+            </li>
             
         </ul>
     </div>
 </div>
-        <div class="title-list">
-    <form onkeydown="if(event.keyCode==13){return false;}">
-        <input class="search" type="text" placeholder="Search..." autocomplete="off"id="local-search-input" >
-        <i class="cross"></i>
-        <span>
-            <label for="tagswitch">Tags:</label>
-            <input id="tagswitch" type="checkbox" style="display: none" />
-            <i id="tagsWitchIcon"></i>
-        </span>
-    </form>
-    <div class="tags-list">
-    
-    <li class="article-tag-list-item">
-        <a href="javascript:" class="color3">WP</a>
-    </li>
-    
-    <li class="article-tag-list-item">
-        <a href="javascript:" class="color2">python</a>
-    </li>
-    
-    <li class="article-tag-list-item">
-        <a href="javascript:" class="color5">比赛回顾</a>
-    </li>
-    
-    <li class="article-tag-list-item">
-        <a href="javascript:" class="color4">LSB</a>
-    </li>
-    
-    <li class="article-tag-list-item">
-        <a href="javascript:" class="color5">MISC</a>
-    </li>
-    
-    <li class="article-tag-list-item">
-        <a href="javascript:" class="color3">隐写</a>
-    </li>
-    
-    <li class="article-tag-list-item">
-        <a href="javascript:" class="color1">javascript</a>
-    </li>
-    
-    <li class="article-tag-list-item">
-        <a href="javascript:" class="color1">mysql load data</a>
-    </li>
-    
-    <li class="article-tag-list-item">
-        <a href="javascript:" class="color3">工具</a>
-    </li>
-    
-    <li class="article-tag-list-item">
-        <a href="javascript:" class="color5">渗透测试</a>
-    </li>
-    
-    <li class="article-tag-list-item">
-        <a href="javascript:" class="color1">redis</a>
-    </li>
-    
-    <li class="article-tag-list-item">
-        <a href="javascript:" class="color5">ssrf</a>
-    </li>
-    
-    <li class="article-tag-list-item">
-        <a href="javascript:" class="color4">SQL</a>
-    </li>
-    
-    <li class="article-tag-list-item">
-        <a href="javascript:" class="color5">SSTI</a>
-    </li>
-    
-    <li class="article-tag-list-item">
-        <a href="javascript:" class="color2">Xdebuf</a>
-    </li>
-    
-    <li class="article-tag-list-item">
-        <a href="javascript:" class="color4">ctf</a>
-    </li>
-    
-    <li class="article-tag-list-item">
-        <a href="javascript:" class="color4">RSA</a>
-    </li>
-    
-    <li class="article-tag-list-item">
-        <a href="javascript:" class="color2">docker</a>
-    </li>
-    
-    <li class="article-tag-list-item">
-        <a href="javascript:" class="color5">serialize</a>
-    </li>
-    
-    <li class="article-tag-list-item">
-        <a href="javascript:" class="color4">php</a>
-    </li>
-    
-    <li class="article-tag-list-item">
-        <a href="javascript:" class="color4">弱类型</a>
-    </li>
-    
-    <li class="article-tag-list-item">
-        <a href="javascript:" class="color5">命令执行</a>
-    </li>
-    
-    <li class="article-tag-list-item">
-        <a href="javascript:" class="color4">zip</a>
-    </li>
-    
-    <li class="article-tag-list-item">
-        <a href="javascript:" class="color5">misc</a>
-    </li>
-    
-    <li class="article-tag-list-item">
-        <a href="javascript:" class="color4">xxe</a>
-    </li>
-    
-    <li class="article-tag-list-item">
-        <a href="javascript:" class="color4">哈希长度扩展攻击</a>
-    </li>
-    
-    <div class="clearfix"></div>
-</div>
 
-    
-    <nav id="title-list-nav">
+<!--Hamburger Icon-->
+<nav>
+    <a href="#menu"></a>
+</nav>
+
+<div class="container">
+
+    <!-- Main Content -->
+    <div class="row">
+    <div class="col-sm-12">
+
+        <!--Title and Logo-->
+        <header>
+    <div class="logo">
+        <a href="/"><i class="logo-icon fa fa-cube" aria-hidden="true"></i></a>
         
-        <a  class="WP "
-           href="/2018/03/23/CSAW CTF 2016 mfw Writeup/"
-           data-tag="WP"
-           data-author="" >
-            <span class="post-title" title="CSAW CTF 2016 mfw Writeup">CSAW CTF 2016 mfw Writeup</span>
-            <span class="post-date" title="2018-03-23 15:13:47">2018/03/23</span>
-        </a>
+            <h1 id="main-title" class="title">Hexo</h1>
         
-        <a  class="WP "
-           href="/2017/03/23/HackLu Flatscience WP/"
-           data-tag="WP"
-           data-author="" >
-            <span class="post-title" title="HackLu FlatScience WP">HackLu FlatScience WP</span>
-            <span class="post-date" title="2017-03-23 15:13:47">2017/03/23</span>
-        </a>
-        
-        <a  class="ctf "
-           href="/2019/08/22/HostSplit/"
-           data-tag="python"
-           data-author="" >
-            <span class="post-title" title="HostSplit-Exploitable">HostSplit-Exploitable</span>
-            <span class="post-date" title="2019-08-22 11:39:23">2019/08/22</span>
-        </a>
-        
-        <a  class="比赛回顾 "
-           href="/2018/07/22/ISCC线下赛回顾/"
-           data-tag="比赛回顾"
-           data-author="" >
-            <span class="post-title" title="2019 ISCC线下赛回顾">2019 ISCC线下赛回顾</span>
-            <span class="post-date" title="2018-07-22 15:00:00">2018/07/22</span>
-        </a>
-        
-        <a  class="ctf "
-           href="/2018/03/23/LSB隐写/"
-           data-tag="LSB,MISC,隐写"
-           data-author="" >
-            <span class="post-title" title="LSB图片隐写">LSB图片隐写</span>
-            <span class="post-date" title="2018-03-23 15:13:47">2018/03/23</span>
-        </a>
-        
-        <a  class="ctf "
-           href="/2019/08/31/JavaScript原型污染/"
-           data-tag="javascript"
-           data-author="" >
-            <span class="post-title" title="JavaScript Prototype 污染攻击">JavaScript Prototype 污染攻击</span>
-            <span class="post-date" title="2019-08-31 21:55:35">2019/08/31</span>
-        </a>
-        
-        <a  class="ctf "
-           href="/2019/08/07/MySQL LOAD DATA/"
-           data-tag="mysql load data"
-           data-author="" >
-            <span class="post-title" title="MYSQL LOAD DATA">MYSQL LOAD DATA</span>
-            <span class="post-date" title="2019-08-07 22:14:02">2019/08/07</span>
-        </a>
-        
-        <a  class="渗透测试 "
-           href="/2018/02/23/Nessus使用指南/"
-           data-tag="工具,渗透测试"
-           data-author="" >
-            <span class="post-title" title="Nessus 使用指南">Nessus 使用指南</span>
-            <span class="post-date" title="2018-02-23 15:13:47">2018/02/23</span>
-        </a>
-        
-        <a  class="ctf "
-           href="/2019/08/16/SSRF/"
-           data-tag="redis,ssrf"
-           data-author="" >
-            <span class="post-title" title="redis与ssrf">redis与ssrf</span>
-            <span class="post-date" title="2019-08-16 16:11:22">2019/08/16</span>
-        </a>
-        
-        <a  class="ctf "
-           href="/2019/08/02/SQL入门/"
-           data-tag="SQL"
-           data-author="" >
-            <span class="post-title" title="SQL入门">SQL入门</span>
-            <span class="post-date" title="2019-08-02 09:43:50">2019/08/02</span>
-        </a>
-        
-        <a  class="ctf "
-           href="/2019/08/30/SSTI/"
-           data-tag="SSTI"
-           data-author="" >
-            <span class="post-title" title="SSTI-服务器端模板注入">SSTI-服务器端模板注入</span>
-            <span class="post-date" title="2019-08-30 15:28:13">2019/08/30</span>
-        </a>
-        
-        <a  class="ctf "
-           href="/2019/08/17/Xdebug/"
-           data-tag="Xdebuf,ctf"
-           data-author="" >
-            <span class="post-title" title="Xdebug">Xdebug</span>
-            <span class="post-date" title="2019-08-17 23:23:45">2019/08/17</span>
-        </a>
-        
-        <a  class="WP "
-           href="/2019/07/26/peaCTF-WP/"
-           data-tag="WP,RSA"
-           data-author="" >
-            <span class="post-title" title="peaCTF WP">peaCTF WP</span>
-            <span class="post-date" title="2019-07-26 15:13:47">2019/07/26</span>
-        </a>
-        
-        <a  class="ctf "
-           href="/2019/08/10/redis/"
-           data-tag="redis,ssrf"
-           data-author="" >
-            <span class="post-title" title="redis与ssrf">redis与ssrf</span>
-            <span class="post-date" title="2019-08-10 15:44:26">2019/08/10</span>
-        </a>
-        
-        <a  class="docker "
-           href="/2019/08/02/ubuntu配置docker/"
-           data-tag="docker"
-           data-author="" >
-            <span class="post-title" title="Ubuntu 16.04 配置docker">Ubuntu 16.04 配置docker</span>
-            <span class="post-date" title="2019-08-02 16:15:29">2019/08/02</span>
-        </a>
-        
-        <a  class="ctf "
-           href="/2019/03/23/序列化与反序列化/"
-           data-tag="serialize,php"
-           data-author="" >
-            <span class="post-title" title="序列化与反序列化">序列化与反序列化</span>
-            <span class="post-date" title="2019-03-23 15:13:47">2019/03/23</span>
-        </a>
-        
-        <a  class="渗透测试 "
-           href="/2018/03/23/渗透测试-信息收集/"
-           data-tag="渗透测试"
-           data-author="" >
-            <span class="post-title" title="渗透测试-信息收集">渗透测试-信息收集</span>
-            <span class="post-date" title="2018-03-23 15:13:47">2018/03/23</span>
-        </a>
-        
-        <a  class="ctf "
-           href="/2019/08/19/Black_magic/"
-           data-tag="php,弱类型"
-           data-author="" >
-            <span class="post-title" title="black_magic">black_magic</span>
-            <span class="post-date" title="2019-08-19 18:59:50">2019/08/19</span>
-        </a>
-        
-        <a  class="ctf "
-           href="/2019/03/23/Command-Execution/"
-           data-tag="php,命令执行"
-           data-author="" >
-            <span class="post-title" title="命令执行漏洞(Command Execution)">命令执行漏洞(Command Execution)</span>
-            <span class="post-date" title="2019-03-23 15:13:47">2019/03/23</span>
-        </a>
-        
-        <a  class="wp "
-           href="/2019/08/16/De1ctf/"
-           data-tag="ssrf,RSA"
-           data-author="" >
-            <span class="post-title" title="De1ctf">De1ctf</span>
-            <span class="post-date" title="2019-08-16 20:00:50">2019/08/16</span>
-        </a>
-        
-        <a  class="WP "
-           href="/2018/03/23/HITCON-Babytrick/"
-           data-tag="WP,SQL,serialize"
-           data-author="" >
-            <span class="post-title" title="HITCON-babytrick">HITCON-babytrick</span>
-            <span class="post-date" title="2018-03-23 15:13:47">2018/03/23</span>
-        </a>
-        
-        <a  class="ctf "
-           href="/2018/05/23/RSA/"
-           data-tag="RSA"
-           data-author="" >
-            <span class="post-title" title="RSA">RSA</span>
-            <span class="post-date" title="2018-05-23 15:13:47">2018/05/23</span>
-        </a>
-        
-        <a  class="ctf "
-           href="/2019/03/23/ZIP伪加密/"
-           data-tag="zip,misc"
-           data-author="" >
-            <span class="post-title" title="ZIP&#39;s things">ZIP&#39;s things</span>
-            <span class="post-date" title="2019-03-23 15:13:47">2019/03/23</span>
-        </a>
-        
-        <a  class="ctf "
-           href="/2019/08/01/session_unserialize/"
-           data-tag="serialize,php"
-           data-author="" >
-            <span class="post-title" title="Session_unserlize">Session_unserlize</span>
-            <span class="post-date" title="2019-08-01 19:33:07">2019/08/01</span>
-        </a>
-        
-        <a  class="ctf "
-           href="/2019/08/17/xxe/"
-           data-tag="xxe"
-           data-author="" >
-            <span class="post-title" title="xxe">xxe</span>
-            <span class="post-date" title="2019-08-17 15:23:51">2019/08/17</span>
-        </a>
-        
-        <a  class="WP "
-           href="/2019/08/01/JarvisOJ/"
-           data-tag="WP,SQL,serialize,哈希长度扩展攻击"
-           data-author="" >
-            <span class="post-title" title="JarvisOJ WP">JarvisOJ WP</span>
-            <span class="post-date" title="2019-08-01 19:37:28">2019/08/01</span>
-        </a>
-        
-        <a  class="ctf "
-           href="/2019/07/28/SQL/"
-           data-tag="SQL"
-           data-author="" >
-            <span class="post-title" title="SQL">SQL</span>
-            <span class="post-date" title="2019-07-28 15:13:47">2019/07/28</span>
-        </a>
-        
-    </nav>
-</div>
     </div>
-    <div class="hide-list">
-        <div class="semicircle">
-            <div class="brackets first"><</div>
-            <div class="brackets">&gt;</div>
+</header>
+
+        <section class="main">
+            
+                
+<div class="post">
+
+    <div class="post-header index">
+        <h1 class="title">
+            <a href="/2019/08/02/ubuntu配置docker/">
+                Ubuntu 16.04 配置docker
+            </a>
+        </h1>
+        <div class="post-info">
+            
+                <span class="date">2019-08-02</span>
+            
+            
+                <a href="https://github.com/BrainLyh/2019/08/02/ubuntu配置docker/#disqus_thread" class="comments article-comment-link">Comments</a>
+            
+            
+                <span class="category">
+                    <a href="/categories/docker/">docker</a>
+                </span>
+            
         </div>
     </div>
-</aside>
-<div class="post index">
-    <div class="pjax">
-        <article class="index">
-            <div class="toc-ref">
+
     
-        <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#Why-Blog"><span class="toc-text">Why Blog</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#对博客的理解"><span class="toc-text">对博客的理解</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#关于叶落阁"><span class="toc-text">关于叶落阁</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#博客平台"><span class="toc-text">博客平台</span></a></li></ol></li></ol>
+        <div class="content">
+            <h1 id="Ubuntu-16-04-配置docker"><a href="#Ubuntu-16-04-配置docker" class="headerlink" title="Ubuntu 16.04 配置docker"></a>Ubuntu 16.04 配置docker</h1><p>想装个docker好好学学p神的vulhub:<a href="https://github.com/vulhub/vulhub" title="p神-vulhub">https://github.com/vulhub/vulhub</a></p>
+<h2 id="更新源"><a href="#更新源" class="headerlink" title="更新源"></a>更新源</h2><p>先备份</p>
+<pre><code>sudo cp /etc/apt/sources.list /etc/apt/sources_init.list</code></pre><p>更换</p>
+<pre><code>sudo gedit /etc/apt/sources.list</code></pre><p>阿里</p>
+<pre><code>deb http://mirrors.aliyun.com/ubuntu/ xenial main
+deb-src http://mirrors.aliyun.com/ubuntu/ xenial main
+
+deb http://mirrors.aliyun.com/ubuntu/ xenial-updates main
+deb-src http://mirrors.aliyun.com/ubuntu/ xenial-updates main
+
+deb http://mirrors.aliyun.com/ubuntu/ xenial universe
+deb-src http://mirrors.aliyun.com/ubuntu/ xenial universe
+deb http://mirrors.aliyun.com/ubuntu/ xenial-updates universe
+deb-src http://mirrors.aliyun.com/ubuntu/ xenial-updates universe
+
+deb http://mirrors.aliyun.com/ubuntu/ xenial-security main
+deb-src http://mirrors.aliyun.com/ubuntu/ xenial-security main
+deb http://mirrors.aliyun.com/ubuntu/ xenial-security universe
+deb-src http://mirrors.aliyun.com/ubuntu/ xenial-security universe</code></pre><p>清华</p>
+<pre><code>deb https://mirrors.tuna.tsinghua.edu.cn/ubuntu/ xenial main restricted universe multiverse
+# deb-src https://mirrors.tuna.tsinghua.edu.cn/ubuntu/ xenial main restricted universe multiverse
+deb https://mirrors.tuna.tsinghua.edu.cn/ubuntu/ xenial-updates main restricted universe multiverse
+# deb-src https://mirrors.tuna.tsinghua.edu.cn/ubuntu/ xenial-updates main restricted universe multiverse
+deb https://mirrors.tuna.tsinghua.edu.cn/ubuntu/ xenial-backports main restricted universe multiverse
+# deb-src https://mirrors.tuna.tsinghua.edu.cn/ubuntu/ xenial-backports main restricted universe multiverse
+deb https://mirrors.tuna.tsinghua.edu.cn/ubuntu/ xenial-security main restricted universe multiverse
+# deb-src https://mirrors.tuna.tsinghua.edu.cn/ubuntu/ xenial-security main restricted universe multiverse</code></pre><p>网易</p>
+<pre><code>deb http://mirrors.163.com/ubuntu/ wily main restricted universe multiverse
+deb http://mirrors.163.com/ubuntu/ wily-security main restricted universe multiverse
+deb http://mirrors.163.com/ubuntu/ wily-updates main restricted universe multiverse
+deb http://mirrors.163.com/ubuntu/ wily-proposed main restricted universe multiverse
+deb http://mirrors.163.com/ubuntu/ wily-backports main restricted universe multiverse
+deb-src http://mirrors.163.com/ubuntu/ wily main restricted universe multiverse
+deb-src http://mirrors.163.com/ubuntu/ wily-security main restricted universe multiverse
+deb-src http://mirrors.163.com/ubuntu/ wily-updates main restricted universe multiverse
+deb-src http://mirrors.163.com/ubuntu/ wily-proposed main restricted universe multiverse
+deb-src http://mirrors.163.com/ubuntu/ wily-backports main restricted universe multiverse</code></pre><p>执行更新</p>
+<pre><code>sudo apt-get update</code></pre><h2 id="安装"><a href="#安装" class="headerlink" title="安装"></a>安装</h2><p>查看内核版本</p>
+<pre><code>uname -r</code></pre><p>启动服务</p>
+<pre><code>sudo service docker start</code></pre><p>测试</p>
+<pre><code>docker run hello-world</code></pre><h2 id="镜像加速"><a href="#镜像加速" class="headerlink" title="镜像加速"></a>镜像加速</h2><p>新建<code>/etc/docker/daemon.json</code>文件来配置daemon，在该文件中加入</p>
+<pre><code>{
+  &quot;registry-mirrors&quot;: [&quot;http://hub-mirror.c.163.com&quot;]
+}</code></pre><h2 id="docker使用"><a href="#docker使用" class="headerlink" title="docker使用"></a>docker使用</h2><p>我们通过使用<code>-t -i</code>参数来进入交互式终端</p>
+<pre><code>docker run -i -t ubuntu:15.10 /bin/bash</code></pre><p>我们已进入终端，可以使用<code>ls</code>，<code>cat /proc/version</code>查看信息.</p>
+<p>我们使用 -d 参数创建一个以进程方式运行的容器</p>
+<p>docker -d </p>
+<p>我们使用 ps 来查看容器信息</p>
+<pre><code>docker ps</code></pre><p>我们使用 stop 来停止容器</p>
+<pre><code>docker stop name</code></pre><p>我们使用<code>docker images</code> 来列出本地镜像列表</p>
+<p>使用 <code>docker pull</code> 来获得一个镜像</p>
+<p>使用 <code>docker search name</code> 来查找一个镜像</p>
+<h3 id="运行一个web应用"><a href="#运行一个web应用" class="headerlink" title="运行一个web应用"></a>运行一个web应用</h3><p>在docker中运行一个Python flask 应用来运行一个web应用。</p>
+<pre><code>docker pull training/webapp #载入镜像
+docker run -d -P training/webapp python app.py</code></pre><p>-P将容器内部使用的网络端口随机映射到我们使用的主机高端口上<br>-p容器内部端口绑定到指定主机端口</p>
+<p>另外 我们也可以指定IP地址。</p>
+<h2 id="下载vulhub"><a href="#下载vulhub" class="headerlink" title="下载vulhub"></a>下载vulhub</h2><pre><code>wget https://github.com/vulhub/vulhub/archive/master.zip -O vulhub-master.zip
+unzip vulhub-master.zip</code></pre><p>解压时候可能会报错</p>
+<pre><code>unzip:  cannot find zipfile directory in one of vulhub-master.zip or
+vulhub-master.zip.zip, and cannot find vulhub-master.zip.ZIP, period.</code></pre><p>我们换个压缩方式就成</p>
+<pre><code>sudo apt-get install fastjar
+jar xvf vulhub-master.zip</code></pre><p>然后</p>
+<pre><code>cd vulhub-master
+
+# Enter the directory of vulnerability/environment
+cd flask/ssti
+
+# Compile environment
+docker-compose build
+
+# Run environment
+docker-compose up -d</code></pre><p>愉快的学习吧！</p>
+<h2 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h2><blockquote>
+<p><a href="https://github.com/vulhub/vulhub">https://github.com/vulhub/vulhub</a><br><a href="https://www.runoob.com/docker/docker-container-connection.html" target="_blank" rel="noopener">https://www.runoob.com/docker/docker-container-connection.html</a><br><a href="https://askubuntu.com/questions/54904/unzip-error-end-of-central-directory-signature-not-found" target="_blank" rel="noopener">https://askubuntu.com/questions/54904/unzip-error-end-of-central-directory-signature-not-found</a><br><a href="https://blog.csdn.net/qq_35451572/article/details/79516563" target="_blank" rel="noopener">https://blog.csdn.net/qq_35451572/article/details/79516563</a></p>
+</blockquote>
+
+        </div>
     
-<style>
-    .left-col .switch-btn,
-    .left-col .switch-area {
-        display: none;
-    }
-    .toc-level-3 i,
-    .toc-level-3 ol {
-        display: none !important;
-    }
-</style>
+
 </div>
-            <h1 id="Why-Blog"><a href="#Why-Blog" class="headerlink" title="Why Blog"></a>Why Blog</h1><h2 id="对博客的理解"><a href="#对博客的理解" class="headerlink" title="对博客的理解"></a>对博客的理解</h2><p>喜欢写Blog的人，会经历三个阶段。</p>
-<blockquote>
-<p>第一阶段，刚接触Blog，觉得很新鲜，试着选择一个免费空间来写。</p>
-</blockquote>
-<blockquote>
-<p>第二阶段，发现免费空间限制太多，就自己购买域名和空间，搭建独立博客。</p>
-</blockquote>
-<blockquote>
-<p>第三阶段，觉得独立博客的管理太麻烦，最好在保留控制权的前提下，让别人来管，自己只负责写文章。</p>
-</blockquote>
-<p>我们每个人的在网络上产生的数据越来越多，这些信息是我们在互联网上存在过的痕迹，值得我们认真对待。但是它们被分散分布在各个网站上。很多时候我们很难将它们聚合在一起，而且各个网站的信息排布方式也没有办法自由控制，所以我们需要一个可以由自己主宰的空间——博客。</p>
-<p>通过博客，我们可以记录自己的生活和成长的轨迹。它不像 Twitter 那样碎片化，也不像 Facebook 那样关系化，它是私人的空间。</p>
-<h2 id="关于叶落阁"><a href="#关于叶落阁" class="headerlink" title="关于叶落阁"></a>关于叶落阁</h2><p><strong>叶落阁</strong> 是阿杰（杨玉杰）的个人站。</p>
-<p>到目前为止已经写了<code class="article_number"></code>篇文章， 共<code class="site_word_count"></code>字。</p>
-<p>本站访问人数：<code class="site_uv"></code>人次 ， 访问量：<code class="site_pv"></code>次</p>
-<h2 id="博客平台"><a href="#博客平台" class="headerlink" title="博客平台"></a>博客平台</h2><p>这个博客通过 <a href="https://hexo.io/">Hexo</a> 生成，部署在 <a href="https://pages.github.com/">GitHub Pages</a>，主题 <a href="https://github.com/yelog/hexo-theme-3-hexo">3-hexo</a> 已经在github上开源</p>
-<p>主要功能：</p>
-<ul>
-<li>搜索支持文章标题、标签(#标签)、作者(@作者)</li>
-<li>pad/手机等移动端适配</li>
-<li>页面全局快捷键 <a href='http://yelog.org/2017/03/24/3-hexo-shortcuts/'>3-hexo快捷键说明</a></li>
+            
+                
+<div class="post">
+
+    <div class="post-header index">
+        <h1 class="title">
+            <a href="/2019/08/02/SQL入门/">
+                SQL入门
+            </a>
+        </h1>
+        <div class="post-info">
+            
+                <span class="date">2019-08-02</span>
+            
+            
+                <a href="https://github.com/BrainLyh/2019/08/02/SQL入门/#disqus_thread" class="comments article-comment-link">Comments</a>
+            
+            
+                <span class="category">
+                    <a href="/categories/ctf/">ctf</a>
+                </span>
+            
+        </div>
+    </div>
+
+    
+        <div class="content">
+            <h1 id="开始之前"><a href="#开始之前" class="headerlink" title="开始之前"></a>开始之前</h1><h2 id="常用函数"><a href="#常用函数" class="headerlink" title="常用函数"></a>常用函数</h2><h3 id="系统函数"><a href="#系统函数" class="headerlink" title="系统函数"></a>系统函数</h3><ul>
+<li>version() mysql版本</li>
+<li>user() 数据库用户名</li>
+<li>database() 数据库名</li>
+<li>@@datadir 数据库路径</li>
+<li>@@version_compile_os 操作系统版本</li>
 </ul>
+<h3 id="字符串连接函数"><a href="#字符串连接函数" class="headerlink" title="字符串连接函数"></a>字符串连接函数</h3><ul>
+<li>concat(str1,str2, …) 没有分隔符的连接字符串</li>
+<li>concat_ws(separator,str1,str2,…) 有分隔符的连接字符串</li>
+<li>group_concat(str1,str2,…) 连接一个组的所有字符串，并以逗号分隔每一条数据</li>
+</ul>
+<h3 id="常用尝试语句"><a href="#常用尝试语句" class="headerlink" title="常用尝试语句"></a>常用尝试语句</h3><ul>
+<li>or 1=1 –+(注释符)</li>
+<li>‘ or 1=1 –+</li>
+<li>“ or 1=1 –+</li>
+<li>) or 1=1 –+</li>
+<li>‘) or 1=1 –+</li>
+<li>“) or 1=1 –+</li>
+<li>“)) or 1=1 –+</li>
+<li>–+可以用#替换</li>
+</ul>
+<p>查询语句一般为</p>
+<pre><code>$sql=&quot;SELECT * from users where id = &#39;$id&#39; limit 0,1&quot;</code></pre><p>从上面的尝试语句我们可以看出来语句的作用有两个，一个是人为闭合 <code>$id</code> 后面的半个单引号，一个是注释整个语句后的引号。</p>
+<h3 id="union-操作符"><a href="#union-操作符" class="headerlink" title="union 操作符"></a>union 操作符</h3><p>union操作符用来合并两个或多个SELECT语句的结果集。使用union时的select语句必须拥有相同数量的列，同时列也必须有相似的数据类型，且每条select语句中列的顺序必须相同。</p>
+<p>例如这两有三个数据表</p>
+<pre><code>+-----------------+
+| Tables_in_test1 |
++-----------------+
+| emails          |
+| user            |
+| users           |
++-----------------+
 
-        </article>
-        
-        <p>
-            <a href="javascript:void(0)" class="dashang" onclick="dashangToggle()">赏</a>
-        </p>
-        
-        
-    </div>
-    <div class="copyright">
-        <p class="footer-entry">©2016-2019 Yelog</p>
-<p class="footer-entry">Built with <a href="https://hexo.io/" target="_blank">Hexo</a> and <a href="https://github.com/yelog/hexo-theme-3-hexo" target="_blank">3-hexo</a> theme</p>
+select * from emails;
++--------+-------------+
+| number | addr        |
++--------+-------------+
+|  1     | 123@126.com |
++--------+-------------+
+1 row in set (0.00 sec)
 
-    </div>
-    <div class="full-toc">
-        <button class="full"><span class="min "></span></button>
-<button class="post-toc-menu"><span class="post-toc-menu-icons"></span></button>
-<div class="post-toc"><span class="post-toc-title">目录</span>
-    <div class="post-toc-content">
++----+--------------------------------+----------+
+| id | username                       | password |
++----+--------------------------------+----------+
+|  1 | admin                          | 1234567  |
+|  2 | 012345678901234567890123456789 | 1234567  |</code></pre><p>两个表的列数量不同则我们就无法使用UNION</p>
+<pre><code>mysql&gt; select * from emails UNION select * from user;
+ERROR 1222 (21000): The used SELECT statements have a different number of columns</code></pre><p>默认的，UNION操作符选取不同的值，如果允许重复的话请使用UNION ALL。另外，UNION结果集中的列名总是等于UNION中第一个SELECT结果的列名。</p>
+<h3 id="逻辑运算"><a href="#逻辑运算" class="headerlink" title="逻辑运算"></a>逻辑运算</h3><p>为什么我们称 <code>&#39; or 1=1#</code> 为万能密码？</p>
+<p>查询语句是<code>select * from admin where username = &#39;admin&#39; and passwd = &#39;&#39; or 1=1#&#39;</code> 时我们可以不输入密码进行登陆账户，原因在于where 后面的三个条件语句<code>username = &#39;admin&#39;</code>  <code>and passwd=&#39;&#39;</code>  <code>or 1=1</code>。三个子句用 and 、 or 连接，在sql语句中 and 运算符的优先级高于 or 运算符。在计算时第一个子句为真，第二个为假，二者and以后为假，这个假的结果再与第三个or ，结果为真，所以这整句的结果就恒真了。</p>
+<h2 id="UNION-联合查询注入"><a href="#UNION-联合查询注入" class="headerlink" title="UNION 联合查询注入"></a>UNION 联合查询注入</h2><p>关于UNION 的用法请参考第一节。</p>
+<p>使用联合查询注入利用的前提是页面有回显位。</p>
+<p>所谓回显位是指在一个网站的正常页面，服务端执行SQL语句查询数据库中的数据，客户端将数据展现在页面中，这个展示数据的位置就叫回显位。</p>
+<p>联合查询的基本步骤</p>
+<ol>
+<li>找到注入点判断闭合方式</li>
+<li>判断数据库类型</li>
+<li>判断查询列数</li>
+<li>判断回显位</li>
+<li>获取数据库名</li>
+<li>获取表名</li>
+<li>获取字段名</li>
+<li>获取字段中的数据</li>
+</ol>
+<p>ORDER BY子句是基于一个或多个字段按照升序或降序对其中的数据进行排序。一些数据库默认的对查询结果进行升序排序，例如mysql。</p>
+<p>我们可以指定字段名进行排序。这里我们有一张表</p>
+<pre><code>+----+----------+-----+-----------+----------+
+| ID | NAME     | AGE | ADDRESS   | SALARY   |
++----+----------+-----+-----------+----------+
+|  1 | Ramesh   |  32 | Ahmedabad |  2000.00 |
+|  2 | Khilan   |  25 | Delhi     |  1500.00 |
+|  3 | kaushik  |  23 | Kota      |  2000.00 |
+|  4 | Chaitali |  25 | Mumbai    |  6500.00 |
+|  5 | Hardik   |  27 | Bhopal    |  8500.00 |
+|  6 | Komal    |  22 | MP        |  4500.00 |
+|  7 | Muffy    |  24 | Indore    | 10000.00 |
++----+----------+-----+-----------+----------+</code></pre><p>查询语句例如 </p>
+<pre><code>SELECT * FROM CUSTOMERS
+   ORDER BY NAME, SALARY;</code></pre><p>查询结果如下</p>
+<pre><code>+----+----------+-----+-----------+----------+
+| ID | NAME     | AGE | ADDRESS   | SALARY   |
++----+----------+-----+-----------+----------+
+|  4 | Chaitali |  25 | Mumbai    |  6500.00 |
+|  5 | Hardik   |  27 | Bhopal    |  8500.00 |
+|  3 | kaushik  |  23 | Kota      |  2000.00 |
+|  2 | Khilan   |  25 | Delhi     |  1500.00 |
+|  6 | Komal    |  22 | MP        |  4500.00 |
+|  7 | Muffy    |  24 | Indore    | 10000.00 |
+|  1 | Ramesh   |  32 | Ahmedabad |  2000.00 |
++----+----------+-----+-----------+----------+</code></pre><p>同时，我们也可以指定字段的栏位进行排序，第一个字段为1，第二个为2，以此类推。</p>
+<p>这里我们有一张表</p>
+<pre><code>+----+----------+------------+
+| id | username | password   |
++----+----------+------------+
+|  1 | Dumb     | Dumb        |
+|  2 | Angelina | I-kill-you |
+|  3 | Dummy    | p@ssword   |
+|  4 | secure   | crappy      |
+|  5 | stupid   | stupidity  |
+|  6 | superman | genious     |
+|  7 | batman   | mob!le      |
+|  8 | admin    | admin       |
+|  9 | admin1   | admin1      |
+| 10 | admin2   | admin2      |
+| 11 | admin3   | admin3      |
+| 12 | dhakkan  | dumbo       |
+| 14 | admin4   | admin4      |
+| 15 | admin#   | 789          |
++----+----------+------------+</code></pre><p>我们使用栏位进行查询</p>
+<pre><code>select * from users order by 3;</code></pre><p>查询结果按照第三栏进行排序</p>
+<pre><code>+----+----------+------------+
+| id | username | password   |
++----+----------+------------+
+| 15 | admin#   | 789         |
+|  8 | admin    | admin       |
+|  9 | admin1   | admin1      |
+| 10 | admin2   | admin2      |
+| 11 | admin3   | admin3      |
+| 14 | admin4   | admin4      |
+|  4 | secure   | crappy      |
+|  1 | Dumb     | Dumb        |
+| 12 | dhakkan  | dumbo       |
+|  6 | superman | genious     |
+|  2 | Angelina | I-kill-you |
+|  7 | batman   | mob!le      |
+|  3 | Dummy    | p@ssword   |
+|  5 | stupid   | stupidity  |
++----+----------+------------+</code></pre><p>如果我们查询一个不存在的栏位呢？</p>
+<pre><code>select * from users order by 4;</code></pre><p>数据库将会报错</p>
+<pre><code>ERROR 1054 (42S22): Unknown column &#39;4&#39; in &#39;order clause&#39;</code></pre><p>基于此，我们可以利用二分法来对列数进行猜解。</p>
+<p>我们使用UNION来判断回显位，UNION的作用是将两个select查询结果合并</p>
+<pre><code> select id,username from users where id=4 union select 1,2;</code></pre><p>查询结果如下</p>
+<pre><code>+----+----------+
+| id | username |
++----+----------+
+|  4 | secure   |
+|  1 | 2          |
++----+----------+</code></pre><p>在展示数据的时候通常指取结果集的第一行数据，如果我们想取出后半部分的结果，就要使原来的查询查不出结果</p>
+<pre><code>select id,username from users where id=-4 union select 1,2;</code></pre><p>通过查询负数，这样就可以得到我们先要的数据了</p>
+<pre><code>+----+----------+
+| id | username |
++----+----------+
+|  1 | 2        |
++----+----------+</code></pre><p>得到回显位之后，获取数据库名就在回显位使用database()函数</p>
+<pre><code>select id,username from users where id=-4 union select 1,database();</code></pre><p>接下来查询库中所有表名，仍然是在回显位进行查询</p>
+<pre><code>select id,username from users where id=-4 union select 1,group_concat(table_name) from information_schema.tables where table_schema=database();</code></pre><p>然后是表中的列名</p>
+<pre><code>select id,username from users where id=-4 union select 1,group_concat(column_name) from information_schema.columns where table_name=&#39;users&#39;;</code></pre><p>最后是数据</p>
+<pre><code>select id,username from users where id=-4 union select 1,username from users;</code></pre>
+        </div>
+    
 
-    </div>
 </div>
-<a class="" id="rocket" href="javascript:void(0)"></a>
-    </div>
-</div>
-<div class="acParent"></div>
+            
+                
+<div class="post">
 
-<div class="hide_box" onclick="dashangToggle()"></div>
-<div class="shang_box">
-    <a class="shang_close" href="javascript:void(0)" onclick="dashangToggle()">×</a>
-    <div class="shang_tit">
-        <p>喜欢就点赞,疼爱就打赏</p>
-    </div>
-    <div class="shang_payimg">
-        <div class="pay_img">
-            <img src="/img/alipay.jpg" class="alipay" title="扫码支持">
-            <img src="/img/weixin.jpg" class="weixin" title="扫码支持">
+    <div class="post-header index">
+        <h1 class="title">
+            <a href="/2019/08/01/JarvisOJ/">
+                JarvisOJ WP
+            </a>
+        </h1>
+        <div class="post-info">
+            
+                <span class="date">2019-08-01</span>
+            
+            
+                <a href="https://github.com/BrainLyh/2019/08/01/JarvisOJ/#disqus_thread" class="comments article-comment-link">Comments</a>
+            
+            
+                <span class="category">
+                    <a href="/categories/WP/">WP</a>
+                </span>
+            
         </div>
     </div>
-    <div class="shang_payselect">
-        <span><label><input type="radio" name="pay" checked value="alipay">支付宝</label></span><span><label><input type="radio" name="pay" value="weixin">微信</label></span>
+
+    
+        <div class="content">
+            <p>真是被自己菜哭了，暑假第一个月一定要把WEB刷完写完WP！</p>
+        </div>
+        <a href="/2019/08/01/JarvisOJ/" class="read-more">Read More</a>
+    
+
+</div>
+            
+                
+<div class="post">
+
+    <div class="post-header index">
+        <h1 class="title">
+            <a href="/2019/08/01/session_unserialize/">
+                Session_unserlize
+            </a>
+        </h1>
+        <div class="post-info">
+            
+                <span class="date">2019-08-01</span>
+            
+            
+                <a href="https://github.com/BrainLyh/2019/08/01/session_unserialize/#disqus_thread" class="comments article-comment-link">Comments</a>
+            
+            
+                <span class="category">
+                    <a href="/categories/ctf/">ctf</a>
+                </span>
+            
+        </div>
+    </div>
+
+    
+        <div class="content">
+            <p>session的反序列化利用</p>
+        </div>
+        <a href="/2019/08/01/session_unserialize/" class="read-more">Read More</a>
+    
+
+</div>
+            
+                
+<div class="post">
+
+    <div class="post-header index">
+        <h1 class="title">
+            <a href="/2019/07/28/SQL/">
+                SQL
+            </a>
+        </h1>
+        <div class="post-info">
+            
+                <span class="date">2019-07-28</span>
+            
+            
+                <a href="https://github.com/BrainLyh/2019/07/28/SQL/#disqus_thread" class="comments article-comment-link">Comments</a>
+            
+            
+                <span class="category">
+                    <a href="/categories/ctf/">ctf</a>
+                </span>
+            
+        </div>
+    </div>
+
+    
+        <div class="content">
+            <p>大大小小比赛碰到了好多要不没见过要不不会的注入，这里记录一下吧</p>
+        </div>
+        <a href="/2019/07/28/SQL/" class="read-more">Read More</a>
+    
+
+</div>
+            
+                
+<div class="post">
+
+    <div class="post-header index">
+        <h1 class="title">
+            <a href="/2019/07/26/peaCTF-WP/">
+                peaCTF WP
+            </a>
+        </h1>
+        <div class="post-info">
+            
+                <span class="date">2019-07-26</span>
+            
+            
+                <a href="https://github.com/BrainLyh/2019/07/26/peaCTF-WP/#disqus_thread" class="comments article-comment-link">Comments</a>
+            
+            
+                <span class="category">
+                    <a href="/categories/WP/">WP</a>
+                </span>
+            
+        </div>
+    </div>
+
+    
+        <div class="content">
+            <p>和同学报名了这个比赛，全英文果然有压力，半天找不到怎么答题，哭了</p>
+        </div>
+        <a href="/2019/07/26/peaCTF-WP/" class="read-more">Read More</a>
+    
+
+</div>
+            
+                
+<div class="post">
+
+    <div class="post-header index">
+        <h1 class="title">
+            <a href="/2019/03/23/Command-Execution/">
+                命令执行漏洞(Command Execution)
+            </a>
+        </h1>
+        <div class="post-info">
+            
+                <span class="date">2019-03-23</span>
+            
+            
+                <a href="https://github.com/BrainLyh/2019/03/23/Command-Execution/#disqus_thread" class="comments article-comment-link">Comments</a>
+            
+            
+                <span class="category">
+                    <a href="/categories/ctf/">ctf</a>
+                </span>
+            
+        </div>
+    </div>
+
+    
+        <div class="content">
+            <p>当应用需要调用一些外部程序去处理内容的情况下，就会用到一些执行系统命令的函数。如PHP中的system,exec,shell_exec等，当用户可以执行函数中的参数时，将可注入恶意系统命令到正常命令中，造成命令执行漏洞。</p>
+        </div>
+        <a href="/2019/03/23/Command-Execution/" class="read-more">Read More</a>
+    
+
+</div>
+            
+                
+<div class="post">
+
+    <div class="post-header index">
+        <h1 class="title">
+            <a href="/2019/03/23/序列化与反序列化/">
+                序列化与反序列化
+            </a>
+        </h1>
+        <div class="post-info">
+            
+                <span class="date">2019-03-23</span>
+            
+            
+                <a href="https://github.com/BrainLyh/2019/03/23/序列化与反序列化/#disqus_thread" class="comments article-comment-link">Comments</a>
+            
+            
+                <span class="category">
+                    <a href="/categories/ctf/">ctf</a>
+                </span>
+            
+        </div>
+    </div>
+
+    
+        <div class="content">
+            <p>老生长谈了，可是我还是不会</p>
+        </div>
+        <a href="/2019/03/23/序列化与反序列化/" class="read-more">Read More</a>
+    
+
+</div>
+            
+                
+<div class="post">
+
+    <div class="post-header index">
+        <h1 class="title">
+            <a href="/2019/03/23/ZIP伪加密/">
+                ZIP's things
+            </a>
+        </h1>
+        <div class="post-info">
+            
+                <span class="date">2019-03-23</span>
+            
+            
+                <a href="https://github.com/BrainLyh/2019/03/23/ZIP伪加密/#disqus_thread" class="comments article-comment-link">Comments</a>
+            
+            
+                <span class="category">
+                    <a href="/categories/ctf/">ctf</a>
+                </span>
+            
+        </div>
+    </div>
+
+    
+        <div class="content">
+            <a id="more"></a>
+<p>##0x01 zip文件组成 ##</p>
+<p><strong>压缩源文件数据区+压缩源文件目录区+压缩源文件目录结束标志</strong></p>
+<h3 id="1-压缩源文件数据区"><a href="#1-压缩源文件数据区" class="headerlink" title="1 压缩源文件数据区"></a>1 压缩源文件数据区</h3><p>在这个数据区中每个压缩文件的源文件/目录都是一条记录，记录格式如下[文件头+文件数据+数据描述符]</p>
+<h4 id="文件头结构"><a href="#文件头结构" class="headerlink" title="文件头结构"></a>文件头结构</h4><hr>
+<pre><code>          组成    　                长度
+      文件头标记                  4 bytes  (0x04034b50)
+      解压文件所需 pkware 版本    2 bytes
+     全局方式位标记              2 bytes
+    压缩方式                    2 bytes
+    最后修改文件时间             2 bytes
+    最后修改文件日期             2 bytes
+    CRC-32校验                  4 bytes
+    压缩后尺寸                  4 bytes
+    未压缩尺寸                  4 bytes
+    文件名长度                  2 bytes
+      扩展记录长度                2 bytes
+    文件名                     （不定长度）
+    扩展字段                   （不定长度）</code></pre><h4 id="文件数据"><a href="#文件数据" class="headerlink" title="文件数据"></a>文件数据</h4><p>就是数据</p>
+<h4 id="数据描述符"><a href="#数据描述符" class="headerlink" title="数据描述符"></a>数据描述符</h4><hr>
+<pre><code> 　　　组成    　长度
+CRC-32校验                  4 bytes
+压缩后尺寸                   4 bytes
+未压缩尺寸                   4 bytes</code></pre><p>这个数据描述符只在全局方式位标记的第三位设为1时才存在，紧接在压缩数据的最后一个字节后。</p>
+<h3 id="2-压缩源文件目录区"><a href="#2-压缩源文件目录区" class="headerlink" title="2.压缩源文件目录区"></a>2.压缩源文件目录区</h3><p>在这个数据区中每一条记录对应在压缩源文件区中的一条数据</p>
+<hr>
+<pre><code>   　　　组成               　            长度
+　　目录中文件文件头标记             4 bytes  (0x02014b50)
+　　压缩使用的　pkware 版本          2 bytes
+　　解压文件所需 pkware 版本         2 bytes
+　　全局方式位标记                   2 bytes
+　　压缩方式                        2 bytes
+　　最后修改文件时间                 2 bytes
+　　最后修改文件日期                 2 bytes
+　　ＣＲＣ－３２校验                 4 bytes
+　　压缩后尺寸                      4 bytes
+　　未压缩尺寸                      4 bytes
+　　文件名长度                      2 bytes
+　　扩展字段长度                    2 bytes
+　　文件注释长度                    2 bytes
+　　磁盘开始号                      2 bytes
+　　内部文件属性                    2 bytes
+　　外部文件属性                    4 bytes
+    局部头部偏移量                  4 bytes
+　　文件名                       （不定长度）
+　　扩展字段                     （不定长度）
+    文件注释                     （不定长度）</code></pre><h3 id="3-压缩源文件目录结束标志"><a href="#3-压缩源文件目录结束标志" class="headerlink" title="3.压缩源文件目录结束标志"></a>3.压缩源文件目录结束标志</h3><hr>
+<pre><code>　　　组成               　          长度
+    目录结束标记                    4 bytes  (0x02014b50)
+    当前磁盘编号                    2 bytes
+    目录区开始磁盘编号              2 bytes
+　　本磁盘上纪录总数                 2 bytes
+　　目录区中纪录总数                 2 bytes
+　　目录区尺寸大小                   4 bytes
+　　目录区对第一张磁盘的偏移量        4 bytes
+　　ZIP 文件注释长度                 2 bytes
+
+　　ZIP 文件注释                   （不定长度）</code></pre><p>这里可以注意到文件目录结束标志只有22位，如果超出这部分则可能是隐藏数据(今天真的是被桂电的MISC给虐哭了/(ㄒoㄒ)/~~)。</p>
+<h2 id="0x02-ZIP伪加密"><a href="#0x02-ZIP伪加密" class="headerlink" title="0x02 ZIP伪加密"></a>0x02 ZIP伪加密</h2><p><img src="http://wx4.sinaimg.cn/mw690/006boCb9ly1g5kazyuumnj30gx0de41x.jpg" alt></p>
+<p>压缩源文件数据区–头文件标志：50 4B 03 04</p>
+<p>压缩源文件目录区：</p>
+<ul>
+<li>目录中文件文件头标志：50 4B 01 02</li>
+<li>压缩使用的pkware:     3F 00</li>
+<li>紧跟着是解压文件所需要的pkware版本：14 00</li>
+<li>全局方式位标记：00 00(更改这里进行伪加密，改为09 00就会提示有密码，实际上只要是以奇数结尾即可)</li>
+</ul>
+<p>压缩源文件目录结束标志：50 4B 05 06</p>
+<p><img src="http://wx4.sinaimg.cn/mw690/006boCb9ly1g5kb023lp3j30gx0d4jug.jpg" alt></p>
+<p>如何判断伪加密？</p>
+<p>无加密</p>
+<p>压缩源文件数据区的全局加密应当为00 00<br>且压缩源文件目录区的全局方式位标记应当为00 00</p>
+<p>假加密</p>
+<p>压缩源文件数据区的全局加密应当为00 00<br>且压缩源文件目录区的全局方式位标记应当为09 00</p>
+<p>真加密</p>
+<p>压缩源文件数据区的全局加密应当为09 00<br>且压缩源文件目录区的全局方式位标记应当为09 00</p>
+<h2 id="0x03-ZIP明文攻击"><a href="#0x03-ZIP明文攻击" class="headerlink" title="0x03 ZIP明文攻击"></a>0x03 ZIP明文攻击</h2><p>如果一个压缩包你不知道密码，但是压缩包里有一个已知文件（文件大小大于12Byte），因为同一个压缩包里的文件都是采用同一个密钥加密，所以可以用已知文件来找密钥。</p>
+<p><img src="http://wx2.sinaimg.cn/mw690/006boCb9ly1g5kb052ll8j30g70fhwhx.jpg" alt></p>
+<h2 id="0x03-ZIP掩码攻击"><a href="#0x03-ZIP掩码攻击" class="headerlink" title="0x03 ZIP掩码攻击"></a>0x03 ZIP掩码攻击</h2><p>已知密码的某几位进行构造，这里以桂电的MISC为例，前面我们已经解开两层加密，得到了最后的111.zip,<br>里面有</p>
+<p><img src="http://wx2.sinaimg.cn/mw690/006boCb9ly1g5kb0bwn1ej305b02bt8i.jpg" alt></p>
+<p>打开.sh文件是这样的内容</p>
+<pre><code>#!/bin/bash
+#
+zip -e --password=`python -c &quot;print(__import__(&#39;time&#39;).time())&quot;` flag.zip flag</code></pre><p>跑一下命令</p>
+<pre><code>&gt;&gt;&gt; print(__import__(&#39;time&#39;).time())
+1558685006.11</code></pre><p>大概形式知道了尝试掩码攻击</p>
+<p><img src="http://wx3.sinaimg.cn/mw690/006boCb9ly1g5kb0ltqooj30fh0f0gp8.jpg" alt></p>
+<p><img src="http://wx3.sinaimg.cn/mw690/006boCb9ly1g5kb0oiik6j30f206d0tr.jpg" alt></p>
+<h2 id="0x04-CRC32碰撞"><a href="#0x04-CRC32碰撞" class="headerlink" title="0x04 CRC32碰撞"></a>0x04 CRC32碰撞</h2><p>CRC本身是循环冗余校验码的意思，CRC32则表示产生一个32bit（8位十六进制数）的校验值</p>
+<p>在生成该校验值的时候源数据每一位都参与了运算，因此即使数据块中只有一位发生改变也会得到不同的CRC32值，利用这个原理我们可以直接爆破出加密文件的内容。<br>这里做测试用我们创建了一个内容只有‘1234’的txt文件并进行压缩，得到压缩的CRC值，写脚本进行爆破</p>
+<pre><code>import binascii
+
+crc=0x9BE3E0A3
+for i in range(1000,9999+1):
+if (binascii.crc32(str(i)) &amp; 0xffffffff) == crc:
+    print i</code></pre><p>由于内容较短几秒就碰撞出文件内容。</p>
+<p>在PY2.x版本中。binascii.crc32中所计算出的CRC值域为[-2^31,2^31-1]之间的有符号整数，为了与一般的CRC结果对比，需要将其转换为无符号整数，所以加上 &amp; 0xfffffffff来进行转换</p>
+<pre><code>&gt;&gt;&gt; str1=0x4D2
+&gt;&gt;&gt; str2=str1 &amp; 0xffff
+&gt;&gt;&gt; print str2
+1234</code></pre><p>如果是py3.x版本计算结果为无符号整数，就不用加了。 </p>
+<h2 id="0x05-其他乱七八糟的"><a href="#0x05-其他乱七八糟的" class="headerlink" title="0x05 其他乱七八糟的"></a>0x05 其他乱七八糟的</h2><h3 id="关于fcrackzip"><a href="#关于fcrackzip" class="headerlink" title="关于fcrackzip"></a>关于fcrackzip</h3><p>作为kali自带的工具，可以使用它来进行爆破工作，这里还是用桂电的MISC-222.zip为例</p>
+<p><img src="http://wx1.sinaimg.cn/mw690/006boCb9ly1g5kb0955f3j30ls0fndvz.jpg" alt></p>
+<p>由菜单可知-b 是爆破，-c 指定字符集,-l指定长度,-u 用解压的方式淘汰掉错误的密码。当然我们也可以跑字典</p>
+<pre><code># fcrackzip -D -p /字典位置/xxx.txt  -u crack_this.zip</code></pre><h3 id="关于图片格式问题"><a href="#关于图片格式问题" class="headerlink" title="关于图片格式问题"></a>关于图片格式问题</h3><p>png文件署名域</p>
+<ul>
+<li>十进制数：137 80 78 71 13 10 26 10</li>
+<li>十六进制：89 50 4e 47 0d 0a 1a 0a</li>
+</ul>
+<h3 id="文件头总结"><a href="#文件头总结" class="headerlink" title="文件头总结"></a>文件头总结</h3><pre><code>JPEG (jpg)，                        　　文件头：FFD8FF　　　　　　　　　　　　　　　　　　　　　　　 文件尾：FF D9　　　　　　　　　　　　　　　
+PNG (png)，                       　　 文件头：89504E47　　　　　　　　　　　　　　　　　　　　　　文件尾：AE 42 60 82
+GIF (gif)，                           　　文件头：47494638　　　　　　　　　　　　　　　　　　　　　　文件尾：00 3B                                                                 ZIP Archive (zip)，                     文件头：504B0304　　　　　　　　　　　　　　　　　　　　　　文件尾：50 4B
+
+TIFF (tif)，                           　  文件头：49492A00　　　　　　　　　　　　　　　　　　　　　　文件尾：
+Windows Bitmap (bmp)，      　  文件头：424D　　　　　　　　　　　　　　　　　　　　　　　　 文件尾：
+CAD (dwg)，                        　  文件头：41433130　　　　　　　　　　　　　　　　　　　　　　文件尾：
+Adobe Photoshop (psd)，          文件头：38425053　　　　　　　　　　　　　　　　　　　　　　文件尾：
+Rich Text Format (rtf)，             文件头：7B5C727466　　　　　　　　　　　　　　　　　　　　  文件尾：
+XML (xml)，                              文件头：3C3F786D6C　　　　　　　　　　　　　　　　　　　　 文件尾：
+HTML (html)，                           文件头：68746D6C3E
+Email [thorough only] (eml)，     文件头：44656C69766572792D646174653A
+Outlook Express (dbx)，            文件头：CFAD12FEC5FD746F
+Outlook (pst)，                         文件头：2142444E
+MS Word/Excel (xls.or.doc)，      文件头：D0CF11E0
+MS Access (mdb)，                    文件头：5374616E64617264204A
+WordPerfect (wpd)，                  文件头：FF575043
+Adobe Acrobat (pdf)，               文件头：255044462D312E
+Quicken (qdf)，                         文件头：AC9EBD8F
+Windows Password (pwl)，         文件头：E3828596
+
+RAR Archive (rar)，                    文件头：52617221
+Wave (wav)，                            文件头：57415645
+AVI (avi)，                                 文件头：41564920
+Real Audio (ram)，                     文件头：2E7261FD
+Real Media (rm)，                       文件头：2E524D46
+MPEG (mpg)，                           文件头：000001BA
+MPEG (mpg)，                           文件头：000001B3
+Quicktime (mov)，                     文件头：6D6F6F76
+Windows Media (asf)，               文件头：3026B2758E66CF11
+MIDI (mid)，                              文件头：4D546864</code></pre><h3 id="zip文件格式"><a href="#zip文件格式" class="headerlink" title="zip文件格式"></a>zip文件格式</h3><p>翻译作者的文章链接<br><a href="https://blog.csdn.net/luoye7422/article/details/41878969" target="_blank" rel="noopener">https://blog.csdn.net/luoye7422/article/details/41878969</a></p>
+<p>参考链接</p>
+<blockquote>
+<p><a href="https://www.jianshu.com/p/4d8cace82028" title="图片格式详解" target="_blank" rel="noopener">https://www.jianshu.com/p/4d8cace82028</a><br>更详细解释：<a href="https://blog.csdn.net/u012611878/article/details/52215985" target="_blank" rel="noopener">https://blog.csdn.net/u012611878/article/details/52215985</a><br><a href="https://blog.csdn.net/xiangshangbashaonian/article/details/80156865" target="_blank" rel="noopener">https://blog.csdn.net/xiangshangbashaonian/article/details/80156865</a></p>
+</blockquote>
+
+        </div>
+    
+
+</div>
+            
+                
+<div class="post">
+
+    <div class="post-header index">
+        <h1 class="title">
+            <a href="/2018/07/22/ISCC线下赛回顾/">
+                2019 ISCC线下赛回顾
+            </a>
+        </h1>
+        <div class="post-info">
+            
+                <span class="date">2018-07-22</span>
+            
+            
+                <a href="https://github.com/BrainLyh/2018/07/22/ISCC线下赛回顾/#disqus_thread" class="comments article-comment-link">Comments</a>
+            
+            
+                <span class="category">
+                    <a href="/categories/比赛回顾/">比赛回顾</a>
+                </span>
+            
+        </div>
+    </div>
+
+    
+        <div class="content">
+            <p>不比不知道自己跟大佬差距有多大！开局直接全场被大佬挂黑页，等着运维回复几个小时之后好不容易找到shell路径，shell又被其他大佬删了…真是菜哭了，一下午的比赛毫无作为…</p>
+        </div>
+        <a href="/2018/07/22/ISCC线下赛回顾/" class="read-more">Read More</a>
+    
+
+</div>
+            
+        </section>
     </div>
 </div>
+
+
+
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="wrap-pagination">
+                <a class="" href="/">
+                    <i class="fa fa-chevron-left" aria-hidden="true"></i>
+                </a>
+                <a class="" href="/page/3/">
+                    <i class="fa fa-chevron-right" aria-hidden="true"></i>
+                </a>
+            </div>
+        </div>
+    </div>
+
+
+
+
+</div>
+
+<!-- Footer -->
+<div class="push"></div>
+
+<footer class="footer-content">
+    <div class="container">
+        <div class="row">
+            <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6 footer-about">
+                <h2>About</h2>
+                <p>
+                    This theme was developed by <a href="https://github.com/klugjo">Jonathan Klughertz</a>. The source code is available on Github. Create Websites. Make Magic.
+                </p>
+            </div>
+            
+    <div class="col-xs-6 col-sm-6 col-md-3 col-lg-3 recent-posts">
+        <h2>Recent Posts</h2>
+        <ul>
+            
+            <li>
+                <a class="footer-post" href="/2019/08/31/JavaScript原型污染/">JavaScript Prototype 污染攻击</a>
+            </li>
+            
+            <li>
+                <a class="footer-post" href="/2019/08/30/SSTI/">SSTI-服务器端模板注入</a>
+            </li>
+            
+            <li>
+                <a class="footer-post" href="/2019/08/22/HostSplit/">HostSplit-Exploitable</a>
+            </li>
+            
+            <li>
+                <a class="footer-post" href="/2019/08/19/Black_magic/">black_magic</a>
+            </li>
+            
+        </ul>
+    </div>
+
+
+
+            
+<div class="col-xs-6 col-sm-6 col-md-3 col-lg-3 footer-categories">
+    <h2>Categories</h2>
+    <ul>
+        
+        <li>
+            <a class="footer-post" href="/categories/比赛回顾/">比赛回顾</a>
+        </li>
+        
+        <li>
+            <a class="footer-post" href="/categories/wp/">wp</a>
+        </li>
+        
+        <li>
+            <a class="footer-post" href="/categories/docker/">docker</a>
+        </li>
+        
+        <li>
+            <a class="footer-post" href="/categories/渗透测试/">渗透测试</a>
+        </li>
+        
+    </ul>
+</div>
+
+        </div>
+        <div class="row">
+            <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                <ul class="list-inline footer-social-icons">
+                    
+                    <li class="list-inline-item">
+                        <a href="https://github.com/BrainLyh">
+                            <span class="footer-icon-container">
+                                <i class="fa fa-github"></i>
+                            </span>
+                        </a>
+                    </li>
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                    <li class="list-inline-item">
+                        <a href="mailto:brainsemail@163.com">
+                            <span class="footer-icon-container">
+                                <i class="fa fa-envelope-o"></i>
+                            </span>
+                        </a>
+                    </li>
+                    
+                    
+                    <li class="list-inline-item">
+                        <a href="\#">
+                            <span class="footer-icon-container">
+                                <i class="fa fa-rss"></i>
+                            </span>
+                        </a>
+                    </li>
+                    
+                </ul>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                <div class="footer-copyright">
+                    @Untitled. All right reserved | Design & Hexo <a href="http://www.codeblocq.com/">Jonathan Klughertz</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<!-- After footer scripts -->
+
+<!-- jQuery -->
+<script src="//code.jquery.com/jquery-2.1.4.min.js"></script>
+
+<!-- Tween Max -->
+<script src="//cdnjs.cloudflare.com/ajax/libs/gsap/1.18.5/TweenMax.min.js"></script>
+
+<!-- Gallery -->
+<script src="//cdnjs.cloudflare.com/ajax/libs/featherlight/1.3.5/featherlight.min.js" type="text/javascript" charset="utf-8"></script>
+
+<!-- Custom JavaScript -->
+<script src="/js/main.js"></script>
+
+<!-- Disqus Comments -->
+
+<script type="text/javascript">
+    var disqus_shortname = 'klugjotest';
+
+    (function(){
+        var dsq = document.createElement('script');
+        dsq.type = 'text/javascript';
+        dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/count.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    }());
+</script>
+
 
 
 </body>
-<script src="//cdn.bootcss.com/jquery.pjax/2.0.1/jquery.pjax.min.js"></script>
-
-<script src="/js/script.js?v=1.0.1" ></script>
-<script>
-    var img_resize = 'default';
-    /*作者、标签的自动补全*/
-    $(function () {
-        $('.search').AutoComplete({
-            'data': ['#WP','#python','#比赛回顾','#LSB','#MISC','#隐写','#javascript','#mysql load data','#工具','#渗透测试','#redis','#ssrf','#SQL','#SSTI','#Xdebuf','#ctf','#RSA','#docker','#serialize','#php','#弱类型','#命令执行','#zip','#misc','#xxe','#哈希长度扩展攻击',],
-            'itemHeight': 20,
-            'width': 418
-        }).AutoComplete('show');
-    })
-    function initArticle() {
-        /*渲染对应的表格样式*/
-        
-            $(".post .pjax table").addClass("green_title");
-        
-
-        /*渲染打赏样式*/
-        
-        $("input[name=pay]").on("click", function () {
-            if($("input[name=pay]:checked").val()=="weixin"){
-                $(".shang_box .shang_payimg .pay_img").addClass("weixin_img");
-            } else {
-                $(".shang_box .shang_payimg .pay_img").removeClass("weixin_img");
-            }
-        })
-        
-
-        /*高亮代码块行号*/
-        
-        $('pre code').each(function(){
-            var lines = $(this).text().split('\n').length - 1, widther='';
-            if (lines>99) {
-                widther = 'widther'
-            }
-            var $numbering = $('<ul/>').addClass('pre-numbering ' + widther).attr("unselectable","on");
-            $(this).addClass('has-numbering ' + widther)
-                    .parent()
-                    .append($numbering);
-            for(var i=1;i<=lines;i++){
-                $numbering.append($('<li/>').text(i));
-            }
-        });
-        
-
-        /*访问数量*/
-        
-        $.getScript("//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js");
-        
-
-        /*代码高亮，行号对齐*/
-        $('.pre-numbering').css('line-height',$('.has-numbering').css('line-height'));
-
-        
-    }
-
-    /*打赏页面隐藏与展示*/
-    
-    function dashangToggle() {
-        $(".shang_box").fadeToggle();
-        $(".hide_box").fadeToggle();
-    }
-    
-
-</script>
-
-<!--加入行号的高亮代码块样式-->
-
-<style>
-    pre{
-        position: relative;
-        margin-bottom: 24px;
-        border-radius: 10px;
-        border: 1px solid #e2dede;
-        background: #FFF;
-        overflow: hidden;
-    }
-    code.has-numbering{
-        margin-left: 30px;
-    }
-    code.has-numbering.widther{
-        margin-left: 35px;
-    }
-    .pre-numbering{
-        margin: 0px;
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 20px;
-        padding: 0.5em 3px 0.7em 5px;
-        border-right: 1px solid #C3CCD0;
-        text-align: right;
-        color: #AAA;
-        background-color: ;
-    }
-    .pre-numbering.widther {
-        width: 35px;
-    }
-</style>
-
-<!--自定义样式设置-->
-<style>
-    
-    .nav-right .title-list nav a .post-title, .nav-right .title-list #local-search-result a .post-title {
-        color: #383636;
-    }
-    
-    
-    .nav-right .title-list nav a .post-date, .nav-right .title-list #local-search-result a .post-date {
-        color: #5e5e5f;
-    }
-    
-    
-    .nav-right nav a.hover, #local-search-result a.hover{
-        background-color: #e2e0e0;
-    }
-    
-    
-
-    /*列表样式*/
-    
-    .post .pjax article .article-entry>ol, .post .pjax article .article-entry>ul, .post .pjax article>ol, .post .pjax article>ul{
-        border: #e2dede solid 1px;
-        border-radius: 10px;
-        padding: 10px 32px 10px 56px;
-    }
-    .post .pjax article .article-entry li>ol, .post .pjax article .article-entry li>ul,.post .pjax article li>ol, .post .pjax article li>ul{
-        padding-top: 5px;
-        padding-bottom: 5px;
-    }
-    .post .pjax article .article-entry>ol>li, .post .pjax article .article-entry>ul>li,.post .pjax article>ol>li, .post .pjax article>ul>li{
-        margin-bottom: auto;
-        margin-left: auto;
-    }
-    .post .pjax article .article-entry li>ol>li, .post .pjax article .article-entry li>ul>li,.post .pjax article li>ol>li, .post .pjax article li>ul>li{
-        margin-bottom: auto;
-        margin-left: auto;
-    }
-    
-
-    /* 背景图样式 */
-    
-    
-
-
-    /*引用块样式*/
-    
-
-    /*文章列表背景图*/
-    
-    .nav-right:before {
-        content: ' ';
-        display: block;
-        position: absolute;
-        left: 0;
-        top: 0;
-        width: 100%;
-        height: 100%;
-        opacity: 0.5;
-        background: url("http://wx3.sinaimg.cn/mw690/006boCb9ly1g5kej6ap1bj31hc0u0wn6.jpg");
-        background-repeat: no-repeat;
-        background-position: 50% 0;
-        -ms-background-size: cover;
-        -o-background-size: cover;
-        -moz-background-size: cover;
-        -webkit-background-size: cover;
-        background-size: cover;
-    }
-    
-
-    
-</style>
-
-
-
-
-
-
 
 </html>
