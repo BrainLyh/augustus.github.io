@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<!-- Head tag -->
+<head><meta name="generator" content="Hexo 3.9.0">
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!--Description-->
+    
+        <meta name="description" content="对未来的最大慷慨，就是把一切都献给现在。">
+    
+
+    <!--Author-->
+    
+        <meta name="author" content="Luc1fer">
+    
+
+    <!--Open Graph Title-->
+    
+        <meta property="og:title" content="Ubuntu 16.04 配置docker">
+    
+
+    <!--Open Graph Description-->
+    
+        <meta property="og:description" content="对未来的最大慷慨，就是把一切都献给现在。">
+    
+
+    <!--Open Graph Site Name-->
+    <meta property="og:site_name" content="Luc1fer&#39;blog">
+
+    <!--Type page-->
+    
+        <meta property="og:type" content="article">
+    
+
+    <!--Page Cover-->
+    
+
+    <meta name="twitter:card" content="summary">
+    
+
+    <!-- Title -->
+    
+    <title>Ubuntu 16.04 配置docker - Luc1fer&#39;blog</title>
+
+    <!-- Bootstrap Core CSS -->
+    <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.2/css/bootstrap.min.css" integrity="sha384-y3tfxAZXuh4HwSYylfB+J125MxIs6mR5FOHamPBG064zB+AFeWH94NdvaCBm8qnd" crossorigin="anonymous">
+
+    <!-- Custom Fonts -->
+    <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        <script src="//oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="//oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- Gallery -->
+    <link href="//cdnjs.cloudflare.com/ajax/libs/featherlight/1.3.5/featherlight.min.css" type="text/css" rel="stylesheet">
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/css/style.css">
+
+    <!-- Google Analytics -->
+    
+
+
+</head>
+
+
+<body>
+
+<div class="bg-gradient"></div>
+<div class="bg-pattern"></div>
+
+<!-- Menu -->
+<!--Menu Links and Overlay-->
+<div class="menu-bg">
+    <div class="menu-container">
+        <ul>
+            
+            <li class="menu-item">
+                <a href="/">
+                    Home
+                </a>
+            </li>
+            
+            <li class="menu-item">
+                <a href="/archives">
+                    Archives
+                </a>
+            </li>
+            
+            <li class="menu-item">
+                <a href="/tags">
+                    Tags
+                </a>
+            </li>
+            
+            <li class="menu-item">
+                <a href="/categories/">
+                    Categories
+                </a>
+            </li>
+            
+        </ul>
+    </div>
+</div>
+
+<!--Hamburger Icon-->
+<nav>
+    <a href="#menu"></a>
+</nav>
+
+<div class="container">
+
+    <!-- Main Content -->
+    <div class="row">
+    <div class="col-sm-12">
+
+        <!--Title and Logo-->
+        <header>
+    <div class="logo">
+        <a href="/"><i class="logo-icon fa fa-cube" aria-hidden="true"></i></a>
+        
+    </div>
+</header>
+
+        <section class="main">
+            
+<div class="post">
+
+    <div class="post-header">
+        <h1 class="title">
+            <a href="/2019/08/02/ubuntu配置docker/">
+                Ubuntu 16.04 配置docker
+            </a>
+        </h1>
+        <div class="post-info">
+            
+                <span class="date">2019-08-02</span>
+            
+            
+            
+                <span class="category">
+                    <a href="/categories/docker/">docker</a>
+                </span>
+            
+        </div>
+    </div>
+
+    <div class="content">
+
+        <!-- Gallery -->
+        
+
+        <!-- Post Content -->
+        <p>学会装docker，走遍天下都不怕!<br>😊 🆒</p>
+<a id="more"></a>
+<h1 id="Ubuntu-16-04-配置docker"><a href="#Ubuntu-16-04-配置docker" class="headerlink" title="Ubuntu 16.04 配置docker"></a>Ubuntu 16.04 配置docker</h1><p>想装个docker好好学学p神的vulhub:<a href="https://github.com/vulhub/vulhub" title="p神-vulhub">https://github.com/vulhub/vulhub</a></p>
+<h2 id="更新源"><a href="#更新源" class="headerlink" title="更新源"></a>更新源</h2><p>先备份</p>
+<pre><code>sudo cp /etc/apt/sources.list /etc/apt/sources_init.list</code></pre><p>更换</p>
+<pre><code>sudo gedit /etc/apt/sources.list</code></pre><p>阿里</p>
+<pre><code>deb http://mirrors.aliyun.com/ubuntu/ xenial main
+deb-src http://mirrors.aliyun.com/ubuntu/ xenial main
+
+deb http://mirrors.aliyun.com/ubuntu/ xenial-updates main
+deb-src http://mirrors.aliyun.com/ubuntu/ xenial-updates main
+
+deb http://mirrors.aliyun.com/ubuntu/ xenial universe
+deb-src http://mirrors.aliyun.com/ubuntu/ xenial universe
+deb http://mirrors.aliyun.com/ubuntu/ xenial-updates universe
+deb-src http://mirrors.aliyun.com/ubuntu/ xenial-updates universe
+
+deb http://mirrors.aliyun.com/ubuntu/ xenial-security main
+deb-src http://mirrors.aliyun.com/ubuntu/ xenial-security main
+deb http://mirrors.aliyun.com/ubuntu/ xenial-security universe
+deb-src http://mirrors.aliyun.com/ubuntu/ xenial-security universe</code></pre><p>清华</p>
+<pre><code>deb https://mirrors.tuna.tsinghua.edu.cn/ubuntu/ xenial main restricted universe multiverse
+# deb-src https://mirrors.tuna.tsinghua.edu.cn/ubuntu/ xenial main restricted universe multiverse
+deb https://mirrors.tuna.tsinghua.edu.cn/ubuntu/ xenial-updates main restricted universe multiverse
+# deb-src https://mirrors.tuna.tsinghua.edu.cn/ubuntu/ xenial-updates main restricted universe multiverse
+deb https://mirrors.tuna.tsinghua.edu.cn/ubuntu/ xenial-backports main restricted universe multiverse
+# deb-src https://mirrors.tuna.tsinghua.edu.cn/ubuntu/ xenial-backports main restricted universe multiverse
+deb https://mirrors.tuna.tsinghua.edu.cn/ubuntu/ xenial-security main restricted universe multiverse
+# deb-src https://mirrors.tuna.tsinghua.edu.cn/ubuntu/ xenial-security main restricted universe multiverse</code></pre><p>网易</p>
+<pre><code>deb http://mirrors.163.com/ubuntu/ wily main restricted universe multiverse
+deb http://mirrors.163.com/ubuntu/ wily-security main restricted universe multiverse
+deb http://mirrors.163.com/ubuntu/ wily-updates main restricted universe multiverse
+deb http://mirrors.163.com/ubuntu/ wily-proposed main restricted universe multiverse
+deb http://mirrors.163.com/ubuntu/ wily-backports main restricted universe multiverse
+deb-src http://mirrors.163.com/ubuntu/ wily main restricted universe multiverse
+deb-src http://mirrors.163.com/ubuntu/ wily-security main restricted universe multiverse
+deb-src http://mirrors.163.com/ubuntu/ wily-updates main restricted universe multiverse
+deb-src http://mirrors.163.com/ubuntu/ wily-proposed main restricted universe multiverse
+deb-src http://mirrors.163.com/ubuntu/ wily-backports main restricted universe multiverse</code></pre><p>执行更新</p>
+<pre><code>sudo apt-get update</code></pre><h2 id="安装"><a href="#安装" class="headerlink" title="安装"></a>安装</h2><p>查看内核版本</p>
+<pre><code>uname -r</code></pre><p>启动服务</p>
+<pre><code>sudo service docker start</code></pre><p>测试</p>
+<pre><code>docker run hello-world</code></pre><h2 id="镜像加速"><a href="#镜像加速" class="headerlink" title="镜像加速"></a>镜像加速</h2><p>新建<code>/etc/docker/daemon.json</code>文件来配置daemon，在该文件中加入</p>
+<pre><code>{
+  &quot;registry-mirrors&quot;: [&quot;http://hub-mirror.c.163.com&quot;]
+}</code></pre><h2 id="docker使用"><a href="#docker使用" class="headerlink" title="docker使用"></a>docker使用</h2><p>我们通过使用<code>-t -i</code>参数来进入交互式终端</p>
+<pre><code>docker run -i -t ubuntu:15.10 /bin/bash</code></pre><p>我们已进入终端，可以使用<code>ls</code>，<code>cat /proc/version</code>查看信息.</p>
+<p>我们使用 -d 参数创建一个以进程方式运行的容器</p>
+<p>docker -d </p>
+<p>我们使用 ps 来查看容器信息</p>
+<pre><code>docker ps</code></pre><p>我们使用 stop 来停止容器</p>
+<pre><code>docker stop name</code></pre><p>我们使用<code>docker images</code> 来列出本地镜像列表</p>
+<p>使用 <code>docker pull</code> 来获得一个镜像</p>
+<p>使用 <code>docker search name</code> 来查找一个镜像</p>
+<h3 id="运行一个web应用"><a href="#运行一个web应用" class="headerlink" title="运行一个web应用"></a>运行一个web应用</h3><p>在docker中运行一个Python flask 应用来运行一个web应用。</p>
+<pre><code>docker pull training/webapp #载入镜像
+docker run -d -P training/webapp python app.py</code></pre><p>-P将容器内部使用的网络端口随机映射到我们使用的主机高端口上<br>-p容器内部端口绑定到指定主机端口</p>
+<p>另外 我们也可以指定IP地址。</p>
+<h2 id="下载vulhub"><a href="#下载vulhub" class="headerlink" title="下载vulhub"></a>下载vulhub</h2><pre><code>wget https://github.com/vulhub/vulhub/archive/master.zip -O vulhub-master.zip
+unzip vulhub-master.zip</code></pre><p>解压时候可能会报错</p>
+<pre><code>unzip:  cannot find zipfile directory in one of vulhub-master.zip or
+vulhub-master.zip.zip, and cannot find vulhub-master.zip.ZIP, period.</code></pre><p>我们换个压缩方式就成</p>
+<pre><code>sudo apt-get install fastjar
+jar xvf vulhub-master.zip</code></pre><p>然后</p>
+<pre><code>cd vulhub-master
+
+# Enter the directory of vulnerability/environment
+cd flask/ssti
+
+# Compile environment
+docker-compose build
+
+# Run environment
+docker-compose up -d</code></pre><p>愉快的学习吧！</p>
+<h2 id="复现ctf环境"><a href="#复现ctf环境" class="headerlink" title="复现ctf环境"></a>复现ctf环境</h2><h3 id="dockerfile"><a href="#dockerfile" class="headerlink" title="dockerfile"></a>dockerfile</h3><p>先进入dockerfile目录，建立一个images</p>
+<pre><code>docker build -t name . 
+docker run -i -d -p 20000:80 name</code></pre><h3 id="docker-compose-yml"><a href="#docker-compose-yml" class="headerlink" title="docker-compose.yml"></a>docker-compose.yml</h3><pre><code>docker-compose build
+docker-compose up -d</code></pre><h2 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h2><blockquote>
+<p><a href="https://github.com/vulhub/vulhub">https://github.com/vulhub/vulhub</a><br><a href="https://www.runoob.com/docker/docker-container-connection.html" target="_blank" rel="noopener">https://www.runoob.com/docker/docker-container-connection.html</a><br><a href="https://askubuntu.com/questions/54904/unzip-error-end-of-central-directory-signature-not-found" target="_blank" rel="noopener">https://askubuntu.com/questions/54904/unzip-error-end-of-central-directory-signature-not-found</a><br><a href="https://blog.csdn.net/qq_35451572/article/details/79516563" target="_blank" rel="noopener">https://blog.csdn.net/qq_35451572/article/details/79516563</a></p>
+</blockquote>
+
+    </div>
+
+    
+
+    
+        <div class="post-tags">
+            <i class="fa fa-tags" aria-hidden="true"></i>
+            <a href="/tags/docker/">#docker</a>
+        </div>
+    
+
+    <!-- Comments -->
+    
+
+</div>
+        </section>
+
+    </div>
+</div>
+
+
+</div>
+
+<!-- Footer -->
+<div class="push"></div>
+
+<footer class="footer-content">
+    <div class="container">
+        <div class="row">
+            <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6 footer-about">
+                <h2>About</h2>
+                <p>
+                    This theme was developed by <a href="">Jonathan Klughertz</a>. The source code is available on Github. Create Websites. Make Magic.
+                </p>
+            </div>
+            
+    <div class="col-xs-6 col-sm-6 col-md-3 col-lg-3 recent-posts">
+        <h2>Recent Posts</h2>
+        <ul>
+            
+            <li>
+                <a class="footer-post" href="/2019/08/31/JavaScript原型污染/">JavaScript Prototype 污染攻击</a>
+            </li>
+            
+            <li>
+                <a class="footer-post" href="/2019/08/30/SSTI/">SSTI-服务器端模板注入</a>
+            </li>
+            
+            <li>
+                <a class="footer-post" href="/2019/08/22/HostSplit/">HostSplit-Exploitable</a>
+            </li>
+            
+            <li>
+                <a class="footer-post" href="/2019/08/19/Black-magic/">black_magic</a>
+            </li>
+            
+        </ul>
+    </div>
+
+
+
+            
+<div class="col-xs-6 col-sm-6 col-md-3 col-lg-3 footer-categories">
+    <h2>Categories</h2>
+    <ul>
+        
+        <li>
+            <a class="footer-post" href="/categories/比赛回顾/">比赛回顾</a>
+        </li>
+        
+        <li>
+            <a class="footer-post" href="/categories/docker/">docker</a>
+        </li>
+        
+        <li>
+            <a class="footer-post" href="/categories/wp/">wp</a>
+        </li>
+        
+        <li>
+            <a class="footer-post" href="/categories/渗透测试/">渗透测试</a>
+        </li>
+        
+    </ul>
+</div>
+
+        </div>
+        <div class="row">
+            <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                <ul class="list-inline footer-social-icons">
+                    
+                    <li class="list-inline-item">
+                        <a href="https://github.com/BrainLyh">
+                            <span class="footer-icon-container">
+                                <i class="fa fa-github"></i>
+                            </span>
+                        </a>
+                    </li>
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                    <li class="list-inline-item">
+                        <a href="mailto:brainsemail@163.com">
+                            <span class="footer-icon-container">
+                                <i class="fa fa-envelope-o"></i>
+                            </span>
+                        </a>
+                    </li>
+                    
+                    
+                    <li class="list-inline-item">
+                        <a href="\#">
+                            <span class="footer-icon-container">
+                                <i class="fa fa-rss"></i>
+                            </span>
+                        </a>
+                    </li>
+                    
+                </ul>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                <div class="footer-copyright">
+                    @Untitled. All right reserved | Design & Hexo <a href="http://www.codeblocq.com/">Jonathan Klughertz</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<!-- After footer scripts -->
+
+<!-- jQuery -->
+<script src="//code.jquery.com/jquery-2.1.4.min.js"></script>
+
+<!-- Tween Max -->
+<script src="//cdnjs.cloudflare.com/ajax/libs/gsap/1.18.5/TweenMax.min.js"></script>
+
+<!-- Gallery -->
+<script src="//cdnjs.cloudflare.com/ajax/libs/featherlight/1.3.5/featherlight.min.js" type="text/javascript" charset="utf-8"></script>
+
+<!-- Custom JavaScript -->
+<script src="/js/main.js"></script>
+
+<!-- Disqus Comments -->
+
+
+
+</body>
+
+</html>

