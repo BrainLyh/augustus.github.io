@@ -166,7 +166,7 @@ PHP_INI_ALL        可在任何地方设定</code></pre><p>这里提到了我们
 <p>我们利用的重点是第一个配置，同时我们从文档也可以看出在利用时我们需要一个<strong>正常</strong>的php文件来包含我们的webshell，*<em>也就是说我们只有在文件夹里有可以正常解析(使用fastcgi模式解析)的php文件时才能这样利用。<br>*</em><br>使用时也简单直接写在<code>.user.ini</code>中</p>
 <pre><code>auto_prepend_file=webshell.jpg</code></pre><h3 id="效果如何？"><a href="#效果如何？" class="headerlink" title="效果如何？"></a>效果如何？</h3><p>环境win10+php-5.45-nts+Nginx</p>
 <p>结果如下：</p>
-<p><img src="F:/all_kinds_file/md%E6%96%87%E6%A1%A3/suctf-2019/%E6%B5%8B%E8%AF%95user.ini.png" alt></p>
+<p><img src="https://wx3.sinaimg.cn/mw690/006boCb9ly1g7c0otmfxdj313c0f476s.jpg" alt="效果如图"></p>
 <h2 id="htaccess"><a href="#htaccess" class="headerlink" title=".htaccess"></a>.htaccess</h2><h3 id="htaccess是什么？"><a href="#htaccess是什么？" class="headerlink" title=".htaccess是什么？"></a>.htaccess是什么？</h3><p>翻阅apaceh官方文档<a href="https://httpd.apache.org/docs/current/howto/htaccess.html" target="_blank" rel="noopener">https://httpd.apache.org/docs/current/howto/htaccess.html</a>可知</p>
 <blockquote>
 <p>.htaccess files provide a way to make configuration changes on a per-directory basis.</p>
