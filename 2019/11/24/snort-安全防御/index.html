@@ -89,7 +89,7 @@
     </div>
     
         <div id="toc" class="toc-article">
-    <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#安全防御-snort"><span class="toc-text">安全防御-snort</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#Snort-简介"><span class="toc-text">Snort 简介</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#snort体系结构"><span class="toc-text">snort体系结构</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#snort三种工作方式"><span class="toc-text">snort三种工作方式</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#如何使用0x01"><span class="toc-text">如何使用0x01</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#snort-规则定义"><span class="toc-text">snort 规则定义</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#编写规则"><span class="toc-text">编写规则</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#如何使用-进阶"><span class="toc-text">如何使用-进阶</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#使用-snort-检测局域网内-sqlmap-行为"><span class="toc-text">使用 snort 检测局域网内 sqlmap 行为</span></a></li></ol></li></ol></li></ol>
+    <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#安全防御-snort"><span class="toc-text">安全防御-snort</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#Snort-简介"><span class="toc-text">Snort 简介</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#snort体系结构"><span class="toc-text">snort体系结构</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#snort三种工作方式"><span class="toc-text">snort三种工作方式</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#如何使用0x01"><span class="toc-text">如何使用0x01</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#snort-规则定义"><span class="toc-text">snort 规则定义</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#编写规则"><span class="toc-text">编写规则</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#如何使用0x02"><span class="toc-text">如何使用0x02</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#使用-snort-检测局域网内-sqlmap-行为"><span class="toc-text">使用 snort 检测局域网内 sqlmap 行为</span></a></li></ol></li></ol></li></ol>
 </div>
     
 </div>
@@ -128,7 +128,7 @@
         
         <span class="attr">Tags：/
         
-        <a class="tag" href="/tags/#安全监测工具" title="安全监测工具">安全监测工具</a>
+        <a class="tag" href="/tags/#渗透测试" title="渗透测试">渗透测试</a>
         <span>/</span>
         
         
@@ -187,7 +187,7 @@
 <p>执行命令：</p>
 <pre><code>snort -i 2 -c ../etc/snort.conf -l ./log</code></pre><p>我们将编写的规则写入<code>snort.conf</code>中，在这里我们需要 <code>-c</code> 来指定我们用的规则，并将日志记录到 log 文件加中。</p>
 <p>日志是二进制保存的，对于查看日志文件我们需要执行</p>
-<pre><code>snort -dvr snort.log.xxxx</code></pre><h2 id="如何使用-进阶"><a href="#如何使用-进阶" class="headerlink" title="如何使用-进阶"></a>如何使用-进阶</h2><h3 id="使用-snort-检测局域网内-sqlmap-行为"><a href="#使用-snort-检测局域网内-sqlmap-行为" class="headerlink" title="使用 snort 检测局域网内 sqlmap 行为"></a>使用 snort 检测局域网内 sqlmap 行为</h3><p>先编写规则</p>
+<pre><code>snort -dvr snort.log.xxxx</code></pre><h2 id="如何使用0x02"><a href="#如何使用0x02" class="headerlink" title="如何使用0x02"></a>如何使用0x02</h2><h3 id="使用-snort-检测局域网内-sqlmap-行为"><a href="#使用-snort-检测局域网内-sqlmap-行为" class="headerlink" title="使用 snort 检测局域网内 sqlmap 行为"></a>使用 snort 检测局域网内 sqlmap 行为</h3><p>先编写规则</p>
 <pre><code>alert any any -&gt; any any (msg:&quot;webscan sqlmap&quot;;content:&quot;sqlmap&quot;;sid=10000;classtype:webscan;rev=1)</code></pre><p>在 <code>classification.conf</code> 中添加 webscan 类型的规则</p>
 <pre><code>config classfiction 描述，描述，危险等级
 config classification:shortname,short description,priority
