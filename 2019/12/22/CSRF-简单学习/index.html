@@ -153,7 +153,30 @@
   &lt;input type=&apos;hidden&apos; name=&apos;id&apos; value=&apos;3&apos;&gt;
   &lt;input type=&apos;submit&apos; value=&apos;submit&apos;&gt;
 &lt;/form&gt;
-&lt;script&gt;document.getElementById(&quot;csrf-form&quot;).submit()&lt;/script&gt;</code></pre><p>还可以使用 burp 自带的 generate CSRF poc,选择测试 URL 右键选择生成 CSRF poc,将要替换的值然后保存访问即可。</p>
+&lt;script&gt;document.getElementById(&quot;csrf-form&quot;).submit()&lt;/script&gt;</code></pre><p>在某些页面中可能进行了 referer 检查，但是我们也要检测是否存在逻辑问题：</p>
+<ol>
+<li>Referer 过滤不严谨</li>
+</ol>
+<p>比如我构造了一个表单 <strong>register</strong></p>
+<pre><code>&lt;!DOCTYPE html&gt;
+&lt;html&gt;
+&lt;head&gt;
+    &lt;title&gt;csrf test&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;form action=&quot;../csrf/server.php&quot; id= &quot;regesiter&quot; method=&quot;post&quot;&gt;
+    &lt;input type=&quot;text&quot; name=&quot;username&quot; value=&quot;&quot; /&gt;
+    &lt;input type=&quot;submit&quot; name=&quot;submit&quot; value=&quot;submit&quot; /&gt;
+&lt;/form&gt;
+&lt;/body&gt;
+&lt;/html&gt;</code></pre><p>在 server.php 中我对 referer 进行了检测，如果含有 qq.com 我就可以认为是合法的，但是如果我采取以下的请求方式：</p>
+<p><img src="https://wx3.sinaimg.cn/small/006boCb9ly1ga5drxec7uj30su014jr9.jpg" alt="构造请求"></p>
+<p><img src="https://wx4.sinaimg.cn/small/006boCb9ly1ga5druqi6ej30df047glu.jpg" alt="referer已经含有关键词"></p>
+<ol start="2">
+<li>空referer</li>
+</ol>
+<p>某些浏览器的防御部署是允许空 REFERER 的。</p>
+<p>还可以使用 burp 自带的 generate CSRF poc,选择测试 URL 右键选择生成 CSRF poc,将要替换的值然后保存访问即可。</p>
 <p>还可以使用 CSRFTester 软件来测试</p>
 <h2 id="漏洞检测"><a href="#漏洞检测" class="headerlink" title="漏洞检测"></a>漏洞检测</h2><ol>
 <li>GET</li>
