@@ -322,9 +322,9 @@
       
         <tags>
             
-            <tag> RSA </tag>
-            
             <tag> SSTI </tag>
+            
+            <tag> RSA </tag>
             
         </tags>
       
@@ -753,33 +753,6 @@
     
     
     <entry>
-      <title>命令执行漏洞(Command Execution)</title>
-      <link href="/2019/03/23/Command-Execution/"/>
-      <url>/2019/03/23/Command-Execution/</url>
-      
-        <content type="html"><![CDATA[<p>当应用需要调用一些外部程序去处理内容的情况下，就会用到一些执行系统命令的函数。如PHP中的system,exec,shell_exec等，当用户可以执行函数中的参数时，将可注入恶意系统命令到正常命令中，造成命令执行漏洞。</p><a id="more"></a><h2 id="漏洞概念"><a href="#漏洞概念" class="headerlink" title="漏洞概念"></a>漏洞概念</h2><p>当应用需要调用一些外部程序去处理内容的情况下，就会用到一些执行系统命令的函数。如PHP中的system,exec,shell_exec等，当用户可以执行函数中的参数时，将可注入恶意系统命令到正常命令中，造成命令执行漏洞。</p><h2 id="要区别命令执行漏洞和代码执行漏洞"><a href="#要区别命令执行漏洞和代码执行漏洞" class="headerlink" title="要区别命令执行漏洞和代码执行漏洞"></a>要区别命令执行漏洞和代码执行漏洞</h2><p><strong>命令执行漏洞直接调用操作系统命令</strong></p><p><strong>原理</strong>：在操作系统中”&amp;,|,||”都可以作为命令连接符使用，用户通过浏览器提交执行命令，由于服务器端没有针对执行函数做过滤，导致在没有指定绝对路径的情况下就执行命令</p><p><strong>代码执行漏洞靠执行脚本代码调用系统命令</strong></p><p><strong>原理</strong>：应用有时现需要调用一些执行系统命令的函数，如PHP中的system,exec,shell_exec,passthru,popen,proc_popen等，当用户能控制这些函数中的参数时，就可以将恶意系统命令拼接到正常命令中，从而执行攻击。</p><h2 id="linux的特殊字符"><a href="#linux的特殊字符" class="headerlink" title="linux的特殊字符"></a>linux的特殊字符</h2><ol><li><p>‘;’的用法</p><p> 先执行它之前的命令，知道前面的命令执行完（无论对与错）就立即执行后面的命令。</p></li><li><p>‘|’的用法</p><p> 上一条命令的输出，作为下一条命令的参数</p></li><li><p>‘&amp;&amp;’的用法</p><p> 只用前面的命令执行成功，才能执行后面的命令</p></li></ol><h2 id="常见危险函数"><a href="#常见危险函数" class="headerlink" title="常见危险函数"></a>常见危险函数</h2><p>8/20/2019 7:32:16 PM </p><h3 id="php代码执行"><a href="#php代码执行" class="headerlink" title="php代码执行"></a>php代码执行</h3><p>eval()</p><blockquote><p>eval — 把字符串作为PHP代码执行</p></blockquote><pre><code>mixed eval( string $code)&lt;?php    eval($_GET[&apos;a&apos;]);    ?&gt;</code></pre><p>常见的一句话木马，访问：</p><pre><code>http://xxx/php_cmd.php?a=phpinfo();</code></pre><p>得到phpinfo页面。这里注意将字符串当作code执行，也就是说我们传入的字符串要符合php规范，分号不能忘。</p><p>assert()</p><blockquote><p>assert — 检查一个断言是否为 FALSE</p></blockquote><p>php5</p><pre><code>bool assert( mixed $assertion[, string $description] )</code></pre><p>php7</p><pre><code>bool assert( mixed $assertion[, Throwable $exception] )</code></pre><blockquote><p>如果 assertion 是字符串，它将会被 assert() 当做 PHP 代码来执行。 assertion 是字符串的优势是当禁用断言时它的开销会更小，并且在断言失败时消息会包含 assertion 表达式。这意味着如果你传入了 boolean 的条件作为 assertion，这个条件将不会显示为断言函数的参数；在调用你定义的 assert_options() 处理函数时，条件会转换为字符串，而布尔值 FALSE 会被转换成空字符串。 </p></blockquote><pre><code>&lt;?php    assert($_GET[&apos;a&apos;]);    ?&gt;</code></pre><p>此时访问phpinfo()不用加分号也能得到对应页面。</p><p>preg_replace</p><blockquote><pre><code>preg_replace — 执行一个正则表达式的搜索和替换</code></pre></blockquote><pre><code>mixed preg_replace( mixed $pattern, mixed $replacement, mixed $subject[, int $limit = -1[, int &amp;$count]] )</code></pre><p>搜索subject中匹配pattern的部分，以replacement进行替换。</p><p>搜索subject中匹配pattern的部分， 以replacement进行替换。当使用被弃用的 e 修饰符时, 这个函数会转义一些字符即(：’、”、 \ 和 NULL) 然后进行后向引用替换，在完成替换后，引擎会将结果字符串作为php代码使用eval方式进行评估并将返回值作为最终参与替换的字符串。如果要在replacement 中使用反斜线，必须使用4个(“\\“，译注：因为这首先是php的字符串，经过转义后，是两个，再经过正则表达式引擎后才被认为是一个原文反斜线)。 </p><blockquote><p>PHP 5.5.0 起， 传入 “\e” 修饰符的时候，会产生一个 E_DEPRECATED 错误； PHP 7.0.0 起，会产生 E_WARNING 错误，同时 “\e” 也无法起效。</p></blockquote><p>call_user_func()</p><blockquote><p>call_user_func — 把第一个参数作为回调函数调用</p></blockquote><pre><code>mixed call_user_func( callable $callback[, mixed $parameter[, mixed $...]] )&lt;?php    call_user_func($_GET[&apos;a&apos;],$_GET[&apos;b&apos;]);?&gt;</code></pre><p>访问：</p><pre><code>http://xxx/php_cmd.php?a=assert&amp;b=phpinfo()</code></pre><p>call_user_func_array()</p><blockquote><p>call_user_func_array — 调用回调函数，并把一个数组参数作为回调函数的参数</p></blockquote><pre><code>mixed call_user_func_array( callable $callback, array $param_arr)</code></pre><p>把第一个参数作为回调函数（callback）调用，把参数数组作（param_arr）为回调函数的的参数传入。 </p><pre><code>&lt;?php    call_user_func_array($_GET[&apos;a&apos;],$_GET[&apos;b&apos;]);?&gt;</code></pre><p>访问：</p><pre><code>http://xxx/php_cmd.php?a=assert&amp;b[]=phpinfo()</code></pre><p>create_function</p><blockquote><p>create_function — Create an anonymous (lambda-style) function</p></blockquote><pre><code>string create_function( string $args, string $code)</code></pre><p>Creates an anonymous function from the parameters passed, and returns a unique name for it.<br>第一个参数args是后面定义函数的参数，第二个参数是函数的代码。</p><blockquote><p>This function internally performs an eval() and as such has thesame security issues as eval(). </p></blockquote><pre><code>&lt;?php    $a = $_GET[&apos;c&apos;];    $b = create_function(&apos;$a&apos;,&quot;echo $a&quot;);    $b(&apos;&apos;);?&gt;</code></pre><p>访问</p><pre><code>http://xxx/php_cmd.php?c=phpinfo();</code></pre><p>array_map</p><blockquote><p>array_map — 为数组的每个元素应用回调函数 </p></blockquote><pre><code>array array_map( callable $callback, array $array1[, array $...] )</code></pre><p>array_map()：返回数组，是为 array1 每个元素应用 callback函数之后的数组。 callback 函数形参的数量和传给 array_map() 数组数量，两者必须一样。 </p><pre><code>&lt;?php    $array = array(0,1,2,3,4,5);    array_map($_GET[&apos;a&apos;],$array);?&gt;</code></pre><p>访问</p><pre><code>http://xxx/php_cmd.php?a=phpinfo</code></pre><p>没有分号<code>;</code>也没有括号<code>()</code>！同时从返回结果也可以看出array中的数组数量决定了返回值的数量。</p><h3 id="系统命令执行"><a href="#系统命令执行" class="headerlink" title="系统命令执行"></a>系统命令执行</h3><p>system()</p><blockquote><p>system — 执行外部程序，并且显示输出</p></blockquote><pre><code>string system( string $command[, int &amp;$return_var] )</code></pre><blockquote><p>同 C 版本的 system() 函数一样，本函数执行 command 参数所指定的命令，并且输出执行结果。 如果提供 return_var 参数， 则外部命令执行后的返回状态将会被设置到此变量中。</p><p>如果 PHP 运行在服务器模块中， system() 函数还会尝试在每行输出完毕之后，自动刷新 web 服务器的输出缓存。 </p></blockquote><pre><code>&lt;?php    system(&apos;whoami&apos;);?&gt;</code></pre><p>passthru()</p><blockquote><p>passthru — 执行外部程序并且显示原始输出</p></blockquote><pre><code>void passthru( string $command[, int &amp;$return_var] )</code></pre><blockquote><p>同 exec() 函数类似， passthru() 函数也是用来执行外部命令（command）的。当所执行的 Unix 命令输出二进制数据，并且需要直接传送到浏览器的时候，需要用此函数来替代 exec() 或 system() 函数。常用来执行诸如 pbmplus 之类的可以直接输出图像流的命令。通过设置 Content-type 为 image/gif，然后调用 pbmplus 程序输出 gif 文件，就可以从 PHP 脚本中直接输出图像到浏览器。<br>如果提供 return_var 参数， Unix 命令的返回状态会被记录到此参数。 </p></blockquote><pre><code>&lt;?php    passthru(&quot;whoami&quot;);?&gt;</code></pre><p>exec()</p><blockquote><p>exec — 执行一个外部程序</p></blockquote><pre><code>string exec( string $command[, array &amp;$output[, int &amp;$return_var]] )</code></pre><p>exec() 执行 command 参数所指定的命令。</p><blockquote><p>如果提供了 output 参数，那么会用命令执行的输出填充此数组，每行输出填充数组中的一个元素。数组中的数据不包含行尾的空白字符，例如 \n 字符。请注意，如果数组中已经包含了部分元素，exec() 函数会在数组末尾追加内容。如果你不想在数组末尾进行追加，请在传入 exec() 函数之前对数组使用 unset() 函数进行重置。<br>如果同时提供 output 和 return_var 参数，命令执行后的返回状态会被写入到此变量</p></blockquote><pre><code>&lt;?php    echo exec(&quot;whoami&quot;);?&gt;</code></pre><p>pcntl_exec()</p><blockquote><p>pcntl_exec — 在当前进程空间执行指定程序</p></blockquote><pre><code>void pcntl_exec( string $path[, array $args[, array $envs]] )</code></pre><p>以给定的参数执行程序</p><blockquote><p>path必须时可执行二进制文件路径或一个在文件第一行指定了一个可执行文件路径标头的脚本（比如文件第一行是#!/usr/local/bin/perl的perl脚本）。<br>args是一个要传递给程序的参数的字符串数组。<br>envs是一个要传递给程序作为环境变量的字符串数组。这个数组是 key =&gt; value格式的，key代表要传递的环境变量的名称，value代表该环境变量值。 </p></blockquote><pre><code>&lt;?php    pcntl_exec ( &quot;/bin/bash&quot; , array(&quot;whoami&quot;));?&gt;</code></pre><p>shell_exec()</p><blockquote><p>shell_exec — 通过 shell 环境执行命令，并且将完整的输出以字符串的方式返回。</p></blockquote><pre><code>&lt;?php    echo shell_exec(&quot;whoami&quot;);?&gt;</code></pre><p>popen()</p><blockquote><p>popen — 打开进程文件指针</p></blockquote><pre><code>resource popen( string $command, string $mode)</code></pre><blockquote><p>打开一个指向进程的管道，该进程由派生给定的 command 命令执行而产生。<br>当模式为 ‘r’，返回的文件指针等于命令的 STDOUT，当模式为 ‘w’，返回的文件指针等于命令的 STDIN。 </p></blockquote><pre><code>&lt;?php$handle = popen(&quot;/bin/ls&quot;, &quot;r&quot;);?&gt; </code></pre><p>proc_open()</p><blockquote><p>proc_open — 执行一个命令，并且打开用来输入/输出的文件指针。 </p></blockquote><pre><code>resource proc_open( string $cmd, array $descriptorspec, array &amp;$pipes[, string $cwd[, array $env[, array $other_options]]] )</code></pre><blockquote><p>descriptorspec<br>一个索引数组。数组的键表示描述符，数组元素值表示 PHP 如何将这些描述符传送至子进程。 0 表示标准输入（stdin），1 表示标准输出（stdout），2 表示标准错误（stderr）。 </p><p>数组中的元素可以是：<br>•包含了要传送至进程的管道的描述信息。第一个元素为描述符类型，第二个元素是针对该描述符的选项。有效的类型有：pipe （第二个元素可以是： r 向进程传送该管道的读取端，w 向进程传送该管道的写入端），以及 file（第二个元素为文件名）。<br>•表达一个真实文件描述符的流资源类型（例如：已打开的文件，一个 socket 端口，STDIN）。 </p></blockquote><p>`(反单引号)</p><p>在php中称之为执行运算符，PHP 将尝试将反引号中的内容作为 shell 命令来执行，并将其输出信息返回（即，可以赋给一个变量而不是简单地丢弃到标准输出，使用反引号运算符“`”的效果与函数 shell_exec() 相同。</p><pre><code>&lt;?php    echo `whoami`;?&gt;</code></pre><p>ob_start()</p><blockquote><p>ob_start — 打开输出控制缓冲</p></blockquote><pre><code>bool ob_start([ callback $output_callback[, int $chunk_size[, bool $erase]]] )</code></pre><blockquote><p>此函数将打开输出缓冲。当输出缓冲激活后，脚本将不会输出内容（除http标头外），相反需要输出的内容被存储在内部缓冲区中。 </p></blockquote><p>下面的代码，由于调用了ob_end_flush()，所以会调用ob_start(cmd)中的cmd，把我们输入的_GET[a]作为cmd的参数。</p><pre><code>&lt;?php    $cmd = &apos;system&apos;;    ob_start($cmd);    echo &quot;$_GET[a]&quot;;    ob_end_flush();?&gt;</code></pre><p>访问：</p><pre><code>http://xxx/php_cmd.php?a=whoami</code></pre><p>php mail()</p><p>mail()文档<a href="http://php.net/manual/zh/function.mail.php" title="mail文档" target="_blank" rel="noopener">http://php.net/manual/zh/function.mail.php</a></p><pre><code>bool mail (    string $to ,    string $subject ,    string $message [,    string $additional_headers [,    string $additional_parameters ]])</code></pre><p>要使用mail()函数，需要配置对应的服务器等，在php.ini中有两个选项：</p><pre><code>配置SMTP服务器的主机名和端口配置PHP用作邮件传输代理（MTA）的文件路径</code></pre><p>当PHP配置了第二个选项时，对该mail()函数的调用将导致执行配置对MTA程序。虽然PHP内部使用escapeshellcmd()用于程序调用，防止新的shell命令注入，但第5个参数$additional_parameters中mail()允许添加的新程序。因此，攻击者可以附加程序标志，在某些MTA中可以创建具有用户控制内容的文件。</p><p>实例：<a href="http://blog.nsfocus.net/tag/php-mail%E5%87%BD%E6%95%B0%E5%BC%95%E5%8F%91%E5%91%BD%E4%BB%A4%E6%89%A7%E8%A1%8C-%E6%BC%8F%E6%B4%9E/" title="多个php mail函数引发的命令执行漏洞" target="_blank" rel="noopener">http://blog.nsfocus.net/tag/php-mail%E5%87%BD%E6%95%B0%E5%BC%95%E5%8F%91%E5%91%BD%E4%BB%A4%E6%89%A7%E8%A1%8C-%E6%BC%8F%E6%B4%9E/</a></p><p>参考：<a href="http://www.91ri.org/17039.html" title="为什么mail()函数在php中是危险的" target="_blank" rel="noopener">http://www.91ri.org/17039.html</a></p><h2 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h2><blockquote><p><a href="https://chybeta.github.io/2017/08/08/php%E4%BB%A3%E7%A0%81-%E5%91%BD%E4%BB%A4%E6%89%A7%E8%A1%8C%E6%BC%8F%E6%B4%9E/" target="_blank" rel="noopener">https://chybeta.github.io/2017/08/08/php%E4%BB%A3%E7%A0%81-%E5%91%BD%E4%BB%A4%E6%89%A7%E8%A1%8C%E6%BC%8F%E6%B4%9E/</a></p></blockquote>]]></content>
-      
-      
-      <categories>
-          
-          <category> ctf </category>
-          
-      </categories>
-      
-      
-        <tags>
-            
-            <tag> php </tag>
-            
-            <tag> 命令执行 </tag>
-            
-        </tags>
-      
-    </entry>
-    
-    
-    
-    <entry>
       <title>序列化与反序列化</title>
       <link href="/2019/03/23/%E5%BA%8F%E5%88%97%E5%8C%96%E4%B8%8E%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96/"/>
       <url>/2019/03/23/%E5%BA%8F%E5%88%97%E5%8C%96%E4%B8%8E%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96/</url>
@@ -799,6 +772,33 @@
             <tag> php </tag>
             
             <tag> serialize </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>命令执行漏洞(Command Execution)</title>
+      <link href="/2019/03/23/Command-Execution/"/>
+      <url>/2019/03/23/Command-Execution/</url>
+      
+        <content type="html"><![CDATA[<p>当应用需要调用一些外部程序去处理内容的情况下，就会用到一些执行系统命令的函数。如PHP中的system,exec,shell_exec等，当用户可以执行函数中的参数时，将可注入恶意系统命令到正常命令中，造成命令执行漏洞。</p><a id="more"></a><h2 id="漏洞概念"><a href="#漏洞概念" class="headerlink" title="漏洞概念"></a>漏洞概念</h2><p>当应用需要调用一些外部程序去处理内容的情况下，就会用到一些执行系统命令的函数。如PHP中的system,exec,shell_exec等，当用户可以执行函数中的参数时，将可注入恶意系统命令到正常命令中，造成命令执行漏洞。</p><h2 id="要区别命令执行漏洞和代码执行漏洞"><a href="#要区别命令执行漏洞和代码执行漏洞" class="headerlink" title="要区别命令执行漏洞和代码执行漏洞"></a>要区别命令执行漏洞和代码执行漏洞</h2><p><strong>命令执行漏洞直接调用操作系统命令</strong></p><p><strong>原理</strong>：在操作系统中”&amp;,|,||”都可以作为命令连接符使用，用户通过浏览器提交执行命令，由于服务器端没有针对执行函数做过滤，导致在没有指定绝对路径的情况下就执行命令</p><p><strong>代码执行漏洞靠执行脚本代码调用系统命令</strong></p><p><strong>原理</strong>：应用有时现需要调用一些执行系统命令的函数，如PHP中的system,exec,shell_exec,passthru,popen,proc_popen等，当用户能控制这些函数中的参数时，就可以将恶意系统命令拼接到正常命令中，从而执行攻击。</p><h2 id="linux的特殊字符"><a href="#linux的特殊字符" class="headerlink" title="linux的特殊字符"></a>linux的特殊字符</h2><ol><li><p>‘;’的用法</p><p> 先执行它之前的命令，知道前面的命令执行完（无论对与错）就立即执行后面的命令。</p></li><li><p>‘|’的用法</p><p> 上一条命令的输出，作为下一条命令的参数</p></li><li><p>‘&amp;&amp;’的用法</p><p> 只用前面的命令执行成功，才能执行后面的命令</p></li></ol><h2 id="常见危险函数"><a href="#常见危险函数" class="headerlink" title="常见危险函数"></a>常见危险函数</h2><p>8/20/2019 7:32:16 PM </p><h3 id="php代码执行"><a href="#php代码执行" class="headerlink" title="php代码执行"></a>php代码执行</h3><p>eval()</p><blockquote><p>eval — 把字符串作为PHP代码执行</p></blockquote><pre><code>mixed eval( string $code)&lt;?php    eval($_GET[&apos;a&apos;]);    ?&gt;</code></pre><p>常见的一句话木马，访问：</p><pre><code>http://xxx/php_cmd.php?a=phpinfo();</code></pre><p>得到phpinfo页面。这里注意将字符串当作code执行，也就是说我们传入的字符串要符合php规范，分号不能忘。</p><p>assert()</p><blockquote><p>assert — 检查一个断言是否为 FALSE</p></blockquote><p>php5</p><pre><code>bool assert( mixed $assertion[, string $description] )</code></pre><p>php7</p><pre><code>bool assert( mixed $assertion[, Throwable $exception] )</code></pre><blockquote><p>如果 assertion 是字符串，它将会被 assert() 当做 PHP 代码来执行。 assertion 是字符串的优势是当禁用断言时它的开销会更小，并且在断言失败时消息会包含 assertion 表达式。这意味着如果你传入了 boolean 的条件作为 assertion，这个条件将不会显示为断言函数的参数；在调用你定义的 assert_options() 处理函数时，条件会转换为字符串，而布尔值 FALSE 会被转换成空字符串。 </p></blockquote><pre><code>&lt;?php    assert($_GET[&apos;a&apos;]);    ?&gt;</code></pre><p>此时访问phpinfo()不用加分号也能得到对应页面。</p><p>preg_replace</p><blockquote><pre><code>preg_replace — 执行一个正则表达式的搜索和替换</code></pre></blockquote><pre><code>mixed preg_replace( mixed $pattern, mixed $replacement, mixed $subject[, int $limit = -1[, int &amp;$count]] )</code></pre><p>搜索subject中匹配pattern的部分，以replacement进行替换。</p><p>搜索subject中匹配pattern的部分， 以replacement进行替换。当使用被弃用的 e 修饰符时, 这个函数会转义一些字符即(：’、”、 \ 和 NULL) 然后进行后向引用替换，在完成替换后，引擎会将结果字符串作为php代码使用eval方式进行评估并将返回值作为最终参与替换的字符串。如果要在replacement 中使用反斜线，必须使用4个(“\\“，译注：因为这首先是php的字符串，经过转义后，是两个，再经过正则表达式引擎后才被认为是一个原文反斜线)。 </p><blockquote><p>PHP 5.5.0 起， 传入 “\e” 修饰符的时候，会产生一个 E_DEPRECATED 错误； PHP 7.0.0 起，会产生 E_WARNING 错误，同时 “\e” 也无法起效。</p></blockquote><p>call_user_func()</p><blockquote><p>call_user_func — 把第一个参数作为回调函数调用</p></blockquote><pre><code>mixed call_user_func( callable $callback[, mixed $parameter[, mixed $...]] )&lt;?php    call_user_func($_GET[&apos;a&apos;],$_GET[&apos;b&apos;]);?&gt;</code></pre><p>访问：</p><pre><code>http://xxx/php_cmd.php?a=assert&amp;b=phpinfo()</code></pre><p>call_user_func_array()</p><blockquote><p>call_user_func_array — 调用回调函数，并把一个数组参数作为回调函数的参数</p></blockquote><pre><code>mixed call_user_func_array( callable $callback, array $param_arr)</code></pre><p>把第一个参数作为回调函数（callback）调用，把参数数组作（param_arr）为回调函数的的参数传入。 </p><pre><code>&lt;?php    call_user_func_array($_GET[&apos;a&apos;],$_GET[&apos;b&apos;]);?&gt;</code></pre><p>访问：</p><pre><code>http://xxx/php_cmd.php?a=assert&amp;b[]=phpinfo()</code></pre><p>create_function</p><blockquote><p>create_function — Create an anonymous (lambda-style) function</p></blockquote><pre><code>string create_function( string $args, string $code)</code></pre><p>Creates an anonymous function from the parameters passed, and returns a unique name for it.<br>第一个参数args是后面定义函数的参数，第二个参数是函数的代码。</p><blockquote><p>This function internally performs an eval() and as such has thesame security issues as eval(). </p></blockquote><pre><code>&lt;?php    $a = $_GET[&apos;c&apos;];    $b = create_function(&apos;$a&apos;,&quot;echo $a&quot;);    $b(&apos;&apos;);?&gt;</code></pre><p>访问</p><pre><code>http://xxx/php_cmd.php?c=phpinfo();</code></pre><p>array_map</p><blockquote><p>array_map — 为数组的每个元素应用回调函数 </p></blockquote><pre><code>array array_map( callable $callback, array $array1[, array $...] )</code></pre><p>array_map()：返回数组，是为 array1 每个元素应用 callback函数之后的数组。 callback 函数形参的数量和传给 array_map() 数组数量，两者必须一样。 </p><pre><code>&lt;?php    $array = array(0,1,2,3,4,5);    array_map($_GET[&apos;a&apos;],$array);?&gt;</code></pre><p>访问</p><pre><code>http://xxx/php_cmd.php?a=phpinfo</code></pre><p>没有分号<code>;</code>也没有括号<code>()</code>！同时从返回结果也可以看出array中的数组数量决定了返回值的数量。</p><h3 id="系统命令执行"><a href="#系统命令执行" class="headerlink" title="系统命令执行"></a>系统命令执行</h3><p>system()</p><blockquote><p>system — 执行外部程序，并且显示输出</p></blockquote><pre><code>string system( string $command[, int &amp;$return_var] )</code></pre><blockquote><p>同 C 版本的 system() 函数一样，本函数执行 command 参数所指定的命令，并且输出执行结果。 如果提供 return_var 参数， 则外部命令执行后的返回状态将会被设置到此变量中。</p><p>如果 PHP 运行在服务器模块中， system() 函数还会尝试在每行输出完毕之后，自动刷新 web 服务器的输出缓存。 </p></blockquote><pre><code>&lt;?php    system(&apos;whoami&apos;);?&gt;</code></pre><p>passthru()</p><blockquote><p>passthru — 执行外部程序并且显示原始输出</p></blockquote><pre><code>void passthru( string $command[, int &amp;$return_var] )</code></pre><blockquote><p>同 exec() 函数类似， passthru() 函数也是用来执行外部命令（command）的。当所执行的 Unix 命令输出二进制数据，并且需要直接传送到浏览器的时候，需要用此函数来替代 exec() 或 system() 函数。常用来执行诸如 pbmplus 之类的可以直接输出图像流的命令。通过设置 Content-type 为 image/gif，然后调用 pbmplus 程序输出 gif 文件，就可以从 PHP 脚本中直接输出图像到浏览器。<br>如果提供 return_var 参数， Unix 命令的返回状态会被记录到此参数。 </p></blockquote><pre><code>&lt;?php    passthru(&quot;whoami&quot;);?&gt;</code></pre><p>exec()</p><blockquote><p>exec — 执行一个外部程序</p></blockquote><pre><code>string exec( string $command[, array &amp;$output[, int &amp;$return_var]] )</code></pre><p>exec() 执行 command 参数所指定的命令。</p><blockquote><p>如果提供了 output 参数，那么会用命令执行的输出填充此数组，每行输出填充数组中的一个元素。数组中的数据不包含行尾的空白字符，例如 \n 字符。请注意，如果数组中已经包含了部分元素，exec() 函数会在数组末尾追加内容。如果你不想在数组末尾进行追加，请在传入 exec() 函数之前对数组使用 unset() 函数进行重置。<br>如果同时提供 output 和 return_var 参数，命令执行后的返回状态会被写入到此变量</p></blockquote><pre><code>&lt;?php    echo exec(&quot;whoami&quot;);?&gt;</code></pre><p>pcntl_exec()</p><blockquote><p>pcntl_exec — 在当前进程空间执行指定程序</p></blockquote><pre><code>void pcntl_exec( string $path[, array $args[, array $envs]] )</code></pre><p>以给定的参数执行程序</p><blockquote><p>path必须时可执行二进制文件路径或一个在文件第一行指定了一个可执行文件路径标头的脚本（比如文件第一行是#!/usr/local/bin/perl的perl脚本）。<br>args是一个要传递给程序的参数的字符串数组。<br>envs是一个要传递给程序作为环境变量的字符串数组。这个数组是 key =&gt; value格式的，key代表要传递的环境变量的名称，value代表该环境变量值。 </p></blockquote><pre><code>&lt;?php    pcntl_exec ( &quot;/bin/bash&quot; , array(&quot;whoami&quot;));?&gt;</code></pre><p>shell_exec()</p><blockquote><p>shell_exec — 通过 shell 环境执行命令，并且将完整的输出以字符串的方式返回。</p></blockquote><pre><code>&lt;?php    echo shell_exec(&quot;whoami&quot;);?&gt;</code></pre><p>popen()</p><blockquote><p>popen — 打开进程文件指针</p></blockquote><pre><code>resource popen( string $command, string $mode)</code></pre><blockquote><p>打开一个指向进程的管道，该进程由派生给定的 command 命令执行而产生。<br>当模式为 ‘r’，返回的文件指针等于命令的 STDOUT，当模式为 ‘w’，返回的文件指针等于命令的 STDIN。 </p></blockquote><pre><code>&lt;?php$handle = popen(&quot;/bin/ls&quot;, &quot;r&quot;);?&gt; </code></pre><p>proc_open()</p><blockquote><p>proc_open — 执行一个命令，并且打开用来输入/输出的文件指针。 </p></blockquote><pre><code>resource proc_open( string $cmd, array $descriptorspec, array &amp;$pipes[, string $cwd[, array $env[, array $other_options]]] )</code></pre><blockquote><p>descriptorspec<br>一个索引数组。数组的键表示描述符，数组元素值表示 PHP 如何将这些描述符传送至子进程。 0 表示标准输入（stdin），1 表示标准输出（stdout），2 表示标准错误（stderr）。 </p><p>数组中的元素可以是：<br>•包含了要传送至进程的管道的描述信息。第一个元素为描述符类型，第二个元素是针对该描述符的选项。有效的类型有：pipe （第二个元素可以是： r 向进程传送该管道的读取端，w 向进程传送该管道的写入端），以及 file（第二个元素为文件名）。<br>•表达一个真实文件描述符的流资源类型（例如：已打开的文件，一个 socket 端口，STDIN）。 </p></blockquote><p>`(反单引号)</p><p>在php中称之为执行运算符，PHP 将尝试将反引号中的内容作为 shell 命令来执行，并将其输出信息返回（即，可以赋给一个变量而不是简单地丢弃到标准输出，使用反引号运算符“`”的效果与函数 shell_exec() 相同。</p><pre><code>&lt;?php    echo `whoami`;?&gt;</code></pre><p>ob_start()</p><blockquote><p>ob_start — 打开输出控制缓冲</p></blockquote><pre><code>bool ob_start([ callback $output_callback[, int $chunk_size[, bool $erase]]] )</code></pre><blockquote><p>此函数将打开输出缓冲。当输出缓冲激活后，脚本将不会输出内容（除http标头外），相反需要输出的内容被存储在内部缓冲区中。 </p></blockquote><p>下面的代码，由于调用了ob_end_flush()，所以会调用ob_start(cmd)中的cmd，把我们输入的_GET[a]作为cmd的参数。</p><pre><code>&lt;?php    $cmd = &apos;system&apos;;    ob_start($cmd);    echo &quot;$_GET[a]&quot;;    ob_end_flush();?&gt;</code></pre><p>访问：</p><pre><code>http://xxx/php_cmd.php?a=whoami</code></pre><p>php mail()</p><p>mail()文档<a href="http://php.net/manual/zh/function.mail.php" title="mail文档" target="_blank" rel="noopener">http://php.net/manual/zh/function.mail.php</a></p><pre><code>bool mail (    string $to ,    string $subject ,    string $message [,    string $additional_headers [,    string $additional_parameters ]])</code></pre><p>要使用mail()函数，需要配置对应的服务器等，在php.ini中有两个选项：</p><pre><code>配置SMTP服务器的主机名和端口配置PHP用作邮件传输代理（MTA）的文件路径</code></pre><p>当PHP配置了第二个选项时，对该mail()函数的调用将导致执行配置对MTA程序。虽然PHP内部使用escapeshellcmd()用于程序调用，防止新的shell命令注入，但第5个参数$additional_parameters中mail()允许添加的新程序。因此，攻击者可以附加程序标志，在某些MTA中可以创建具有用户控制内容的文件。</p><p>实例：<a href="http://blog.nsfocus.net/tag/php-mail%E5%87%BD%E6%95%B0%E5%BC%95%E5%8F%91%E5%91%BD%E4%BB%A4%E6%89%A7%E8%A1%8C-%E6%BC%8F%E6%B4%9E/" title="多个php mail函数引发的命令执行漏洞" target="_blank" rel="noopener">http://blog.nsfocus.net/tag/php-mail%E5%87%BD%E6%95%B0%E5%BC%95%E5%8F%91%E5%91%BD%E4%BB%A4%E6%89%A7%E8%A1%8C-%E6%BC%8F%E6%B4%9E/</a></p><p>参考：<a href="http://www.91ri.org/17039.html" title="为什么mail()函数在php中是危险的" target="_blank" rel="noopener">http://www.91ri.org/17039.html</a></p><h2 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h2><blockquote><p><a href="https://chybeta.github.io/2017/08/08/php%E4%BB%A3%E7%A0%81-%E5%91%BD%E4%BB%A4%E6%89%A7%E8%A1%8C%E6%BC%8F%E6%B4%9E/" target="_blank" rel="noopener">https://chybeta.github.io/2017/08/08/php%E4%BB%A3%E7%A0%81-%E5%91%BD%E4%BB%A4%E6%89%A7%E8%A1%8C%E6%BC%8F%E6%B4%9E/</a></p></blockquote>]]></content>
+      
+      
+      <categories>
+          
+          <category> ctf </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> php </tag>
+            
+            <tag> 命令执行 </tag>
             
         </tags>
       
@@ -884,35 +884,6 @@
     
     
     <entry>
-      <title>LSB图片隐写</title>
-      <link href="/2018/03/23/LSB%E9%9A%90%E5%86%99/"/>
-      <url>/2018/03/23/LSB%E9%9A%90%E5%86%99/</url>
-      
-        <content type="html"><![CDATA[<p>图片隐写题老是一头雾水，借着DD的地铁来学一下吧</p><a id="more"></a><h2 id="LSB隐写"><a href="#LSB隐写" class="headerlink" title="LSB隐写"></a>LSB隐写</h2><p>利用图像中的最低有效位进行数据存储。</p><p><img src="https://i.imgur.com/GQM4keP.png" alt="RGB构成"></p><p>一般来说这种隐写都是用BMP图片，不经过压缩，所有的像素都原样存储。png图片有压缩但是却是无损压缩，所以修改的信息也可以正确表达，jpg图片进行压缩之后隐藏的信息可能会被破坏。<br>像素一般由RGB三原色组成，每种颜色占8位，取值为0x00~0xFF,共256种颜色，包含256的3次方种颜色，即16777216种。而人眼大约只能区分1000万种。<br>LSB隐写就是修改RGB颜色分量的最低有效位，每个像素可以携带3比特的信息。</p><p><img src="https://i.imgur.com/jHssNqf.png" alt></p><p>修改绿色的二进制最低位，颜色几乎没有变化，实现信息隐写。</p><p><img src="https://i.imgur.com/ENiocXR.png" alt></p><p><img src="https://i.imgur.com/IHphbX3.png" alt></p><h2 id="来看DD这道题"><a href="#来看DD这道题" class="headerlink" title="来看DD这道题"></a>来看DD这道题</h2><p>给了一张位图，是北京的地铁图。</p><p><img src="https://i.imgur.com/f8eaJYG.png" alt></p><p>尝试LSB，查看低位信息。得到一串密文。</p><p><img src="https://i.imgur.com/04P5AzP.png" alt></p><p>提示是AES，缺少key<br>异或查看图片有两处不同</p><p><img src="https://i.imgur.com/93KEfF7.png" alt></p><p><img src="https://i.imgur.com/NRCfUQe.png" alt></p><p>提示密钥为小写字母，尝试解密就得到了flag.</p>]]></content>
-      
-      
-      <categories>
-          
-          <category> ctf </category>
-          
-      </categories>
-      
-      
-        <tags>
-            
-            <tag> LSB </tag>
-            
-            <tag> MISC </tag>
-            
-            <tag> 隐写 </tag>
-            
-        </tags>
-      
-    </entry>
-    
-    
-    
-    <entry>
       <title>HITCON-babytrick</title>
       <link href="/2018/03/23/HITCON-Babytrick/"/>
       <url>/2018/03/23/HITCON-Babytrick/</url>
@@ -934,6 +905,35 @@
             <tag> serialize </tag>
             
             <tag> SQL </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>LSB图片隐写</title>
+      <link href="/2018/03/23/LSB%E9%9A%90%E5%86%99/"/>
+      <url>/2018/03/23/LSB%E9%9A%90%E5%86%99/</url>
+      
+        <content type="html"><![CDATA[<p>图片隐写题老是一头雾水，借着DD的地铁来学一下吧</p><a id="more"></a><h2 id="LSB隐写"><a href="#LSB隐写" class="headerlink" title="LSB隐写"></a>LSB隐写</h2><p>利用图像中的最低有效位进行数据存储。</p><p><img src="https://i.imgur.com/GQM4keP.png" alt="RGB构成"></p><p>一般来说这种隐写都是用BMP图片，不经过压缩，所有的像素都原样存储。png图片有压缩但是却是无损压缩，所以修改的信息也可以正确表达，jpg图片进行压缩之后隐藏的信息可能会被破坏。<br>像素一般由RGB三原色组成，每种颜色占8位，取值为0x00~0xFF,共256种颜色，包含256的3次方种颜色，即16777216种。而人眼大约只能区分1000万种。<br>LSB隐写就是修改RGB颜色分量的最低有效位，每个像素可以携带3比特的信息。</p><p><img src="https://i.imgur.com/jHssNqf.png" alt></p><p>修改绿色的二进制最低位，颜色几乎没有变化，实现信息隐写。</p><p><img src="https://i.imgur.com/ENiocXR.png" alt></p><p><img src="https://i.imgur.com/IHphbX3.png" alt></p><h2 id="来看DD这道题"><a href="#来看DD这道题" class="headerlink" title="来看DD这道题"></a>来看DD这道题</h2><p>给了一张位图，是北京的地铁图。</p><p><img src="https://i.imgur.com/f8eaJYG.png" alt></p><p>尝试LSB，查看低位信息。得到一串密文。</p><p><img src="https://i.imgur.com/04P5AzP.png" alt></p><p>提示是AES，缺少key<br>异或查看图片有两处不同</p><p><img src="https://i.imgur.com/93KEfF7.png" alt></p><p><img src="https://i.imgur.com/NRCfUQe.png" alt></p><p>提示密钥为小写字母，尝试解密就得到了flag.</p>]]></content>
+      
+      
+      <categories>
+          
+          <category> ctf </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> LSB </tag>
+            
+            <tag> MISC </tag>
+            
+            <tag> 隐写 </tag>
             
         </tags>
       
