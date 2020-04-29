@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="en">
+<head><meta name="generator" content="Hexo 3.9.0">
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="google-site-verification" content="xBT4GhYoi5qRD5tr338pgPM5OWHHIDR6mNg1a3euekI">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="对未来的最大慷慨，就是把一切都献给现在。">
+    <meta name="keyword" content>
+    <link rel="shortcut icon" href="/img/favicon.ico">
+
+    <title>
+        
+        OS - undefined
+        
+    </title>
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/css/aircloud.css">
+    <link rel="stylesheet" href="/css/gitment.css">
+    <!--<link rel="stylesheet" href="https://imsun.github.io/gitment/style/default.css">-->
+    <link href="//at.alicdn.com/t/font_620856_pl6z7sid89qkt9.css" rel="stylesheet" type="text/css">
+    <!-- ga & ba script hoook -->
+    <script></script>
+</head>
+
+<body>
+
+<div class="site-nav-toggle" id="site-nav-toggle">
+    <button>
+        <span class="btn-bar"></span>
+        <span class="btn-bar"></span>
+        <span class="btn-bar"></span>
+    </button>
+</div>
+
+<div class="index-about">
+    <i>  </i>
+</div>
+
+<div class="index-container">
+    
+    <div class="index-left">
+        
+<div class="nav" id="nav">
+    <div class="avatar-name">
+        <div class="avatar ">
+            <img src="/" />
+        </div>
+        <div class="name">
+            <i>Luc1fer</i>
+        </div>
+    </div>
+    <div class="contents" id="nav-content">
+        <ul>
+            <li >
+                <a href="/">
+                    <i class="iconfont icon-shouye1"></i>
+                    <span>主页</span>
+                </a>
+            </li>
+            <li >
+                <a href="/tags">
+                    <i class="iconfont icon-biaoqian1"></i>
+                    <span>标签</span>
+                </a>
+            </li>
+            <li >
+                <a href="/archives">
+                    <i class="iconfont icon-guidang2"></i>
+                    <span>存档</span>
+                </a>
+            </li>
+            <li >
+                <a href="/about/">
+                    <i class="iconfont icon-guanyu2"></i>
+                    <span>关于</span>
+                </a>
+            </li>
+            
+            <li>
+                <a id="search">
+                    <i class="iconfont icon-sousuo1"></i>
+                    <span>搜索</span>
+                </a>
+            </li>
+            
+        </ul>
+    </div>
+    
+        <div id="toc" class="toc-article">
+    <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#OS"><span class="toc-text">OS</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#实验二-进程同步实验"><span class="toc-text">实验二 进程同步实验</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#example-c"><span class="toc-text">example.c</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#实验三-添加模块"><span class="toc-text">实验三 添加模块</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#readprocess-c"><span class="toc-text">readprocess.c</span></a></li></ol></li></ol></li></ol>
+</div>
+    
+</div>
+
+
+<div class="search-field" id="search-field">
+    <div class="search-container">
+        <div class="search-input">
+            <span id="esc-search"> <i class="icon-fanhui iconfont"></i></span>
+            <input id="search-input"/>
+            <span id="begin-search">搜索</span>
+        </div>
+        <div class="search-result-container" id="search-result-container">
+
+        </div>
+    </div>
+</div>
+
+        <div class="index-about-mobile">
+            <i>  </i>
+        </div>
+    </div>
+    
+    <div class="index-middle">
+        <!-- Main Content -->
+        
+
+
+<div class="post-container">
+    <div class="post-title">
+        OS
+    </div>
+
+    <div class="post-meta">
+        <span class="attr">发布于：<span>2020-04-29 13:40:34</span></span>
+        
+        <span class="attr">标签：/
+        
+        <a class="tag" href="/tags/#os" title="os">os</a>
+        <span>/</span>
+        
+        
+        </span>
+        <span class="attr">访问：<span id="busuanzi_value_page_pv"></span>
+</span>
+</span>
+    </div>
+    <div class="post-content ">
+        <h1 id="OS"><a href="#OS" class="headerlink" title="OS"></a>OS</h1><h2 id="实验二-进程同步实验"><a href="#实验二-进程同步实验" class="headerlink" title="实验二 进程同步实验"></a>实验二 进程同步实验</h2><p>为了简化对多个信号量的操作，Linux系统中提出了信号量集的概念。一个信号量集对象中可以容纳多个信号量，System V 信号量的分配和操作是以信号量集为单位的。</p>
+<p><strong>进程利用信号量获得共享资源的步骤</strong></p>
+<blockquote>
+<p>使用资源时，进程将该信号量减1(P操作)；</p>
+<p>不再使用资源时，进程将该信号量值加1(V操作)；</p>
+</blockquote>
+<p><strong>创建或打开信号量集</strong></p>
+<p><code>semget()</code> 系统调用创建一个新信号量集或获取一个既有信号量集的表示符。</p>
+<p>函数原型：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;sys/sem.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">semget</span><span class="params">(<span class="keyword">key_t</span> key, <span class="keyword">int</span> nsems, <span class="keyword">int</span> flag)</span></span>;</span><br></pre></td></tr></table></figure>
+
+<p>返回值：成功返回信号量集ID，出错返回-1。<strong>注意：建立信号量集时每个信号量的初始值不确定。</strong></p>
+<p><strong>信号量控制操作</strong></p>
+<p><code>semctl()</code> 系统调用在一个信号量集或集合中的单个信号量上执行各种控制操作。</p>
+<p>函数原型：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;sys/sem.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">semctl</span> <span class="params">(<span class="keyword">int</span> semid, <span class="keyword">int</span> semnum, <span class="keyword">int</span> cmd,  …<span class="comment">/*union semun arg*/</span>)</span></span></span><br></pre></td></tr></table></figure>
+
+<p><code>semnum:</code> 信号量编号或0，表示对指定信号量做控制操作；</p>
+<p><code>cmd:</code>  操作命令，实施的控制操作；</p>
+<table>
+<thead>
+<tr>
+<th>IPC_STAT   获取信号量集的属性                                                 IPC_SET   设置信号量集的属性     IPC_RMID  删除信号量集</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>GETVAL   返回 semnum 信号量的值                                                     SETVAL    设置semnum信号量的值</td>
+</tr>
+<tr>
+<td>GETALL   获取所有信号量的值                                                                SETALL    设置所有信号量的初始值</td>
+</tr>
+</tbody></table>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">union</span> semun&#123;</span><br><span class="line">    <span class="keyword">int</span>  val;</span><br><span class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">semid_ds</span>  *<span class="title">buf</span>;</span></span><br><span class="line">    <span class="keyword">unsigned</span> <span class="keyword">short</span>  *<span class="built_in">array</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><strong>信号量集操作</strong></p>
+<p>semop()系统调用在semid标识的信号量集中的信号量上执行一个或多个up或down操作，可用于进程间的同步和互斥。</p>
+<p>函数原型：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;sys/sem.h&gt;</span></span></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">semop</span><span class="params">(<span class="keyword">int</span> semid, struct sembuf *semop, <span class="keyword">size_t</span> nops)</span></span>;</span><br><span class="line">返回：成功返回<span class="number">0</span>，出错返回<span class="number">-1</span>。</span><br><span class="line">Struct sembuf&#123;</span><br><span class="line">	<span class="keyword">unsigned</span> sem_num;   <span class="comment">/*member # in set*/</span></span><br><span class="line">	<span class="keyword">short</span> 	sem_op; <span class="comment">/*operation(negative, 0, positive*/</span></span><br><span class="line">	<span class="keyword">short</span>   sem_flg;      <span class="comment">/*IPC_NOWAIT,SEM_UNDO*/</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><strong>组合权限说明</strong></p>
+<p>0666 文件或目录的所有者、所有者所在组、其他用户对该对象均可读、可写 rw-rw-rw-</p>
+<p>0777 文件或目录的所有者、所有者所在组、其他用户对该对象均可读、可写、可执行 rwxrwxrwx</p>
+<h3 id="example-c"><a href="#example-c" class="headerlink" title="example.c"></a>example.c</h3><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdlib.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;string.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdint.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdbool.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;errno.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;unistd.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;sys/types.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;sys/stat.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;sys/ipc.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;sys/sem.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;sys/wait.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">ifdef</span>	_SEM_SEMUN_UNDEFINED</span></span><br><span class="line"><span class="keyword">union</span> semun</span><br><span class="line">&#123;       <span class="comment">//semctl() 的第四个参数</span></span><br><span class="line">	<span class="keyword">int</span> val;</span><br><span class="line">	<span class="class"><span class="keyword">struct</span> <span class="title">semid_ds</span> *<span class="title">buf</span>;</span></span><br><span class="line">	<span class="keyword">unsigned</span> <span class="keyword">short</span> *<span class="built_in">array</span>;</span><br><span class="line">	<span class="class"><span class="keyword">struct</span> <span class="title">seminfo</span> *__<span class="title">buf</span>;</span></span><br><span class="line">&#125;;</span><br><span class="line"><span class="meta">#<span class="meta-keyword">endif</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span>	ERR_EXIT(m) \</span></span><br><span class="line">	<span class="keyword">do</span> &#123; \</span><br><span class="line">		perror(m); \</span><br><span class="line">		<span class="built_in">exit</span>(EXIT_FAILURE); \</span><br><span class="line">	&#125; <span class="keyword">while</span>(<span class="number">0</span>)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">wait_1chopstick</span><span class="params">(<span class="keyword">int</span> no,<span class="keyword">int</span> semid)</span></span></span><br><span class="line"><span class="function"></span>&#123;	<span class="comment">//p(1) -1，use sourcec</span></span><br><span class="line">	<span class="class"><span class="keyword">struct</span> <span class="title">sembuf</span> <span class="title">sb</span> = &#123;</span>no,<span class="number">-1</span>,<span class="number">0</span>&#125;; <span class="comment">//对第 no 个信号量-1</span></span><br><span class="line">	<span class="keyword">int</span> ret;</span><br><span class="line">	ret = semop(semid,&amp;sb,<span class="number">1</span>); <span class="comment">//对semid信号量集按照sb指示对第一个信号进行操作</span></span><br><span class="line">	<span class="keyword">if</span>(ret &lt; <span class="number">0</span>) &#123;</span><br><span class="line">		ERR_EXIT(<span class="string">"semop"</span>);</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> ret;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">free_1chopstick</span><span class="params">(<span class="keyword">int</span> no,<span class="keyword">int</span> semid)</span></span></span><br><span class="line"><span class="function"></span>&#123;	/V(<span class="number">1</span>) +<span class="number">1</span>, release source</span><br><span class="line">	<span class="class"><span class="keyword">struct</span> <span class="title">sembuf</span> <span class="title">sb</span> = &#123;</span>no,<span class="number">1</span>,<span class="number">0</span>&#125;; <span class="comment">//对第 no 个信号量 +1</span></span><br><span class="line">	<span class="keyword">int</span> ret;</span><br><span class="line">	ret = semop(semid,&amp;sb,<span class="number">1</span>); <span class="comment">//对semid信号量集按照sb指示对第一个信号进行操作</span></span><br><span class="line">	<span class="keyword">if</span>(ret &lt; <span class="number">0</span>) &#123;</span><br><span class="line">		ERR_EXIT(<span class="string">"semop"</span>);  </span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> ret;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span>	DELAY (rand() % 5 + 1)</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">wait_for_2chopstick</span><span class="params">(<span class="keyword">int</span> no,<span class="keyword">int</span> semid)</span></span></span><br><span class="line"><span class="function"></span>&#123;	<span class="comment">// left and right both -1 p(1),use source</span></span><br><span class="line">	<span class="keyword">int</span> left = no;</span><br><span class="line">	<span class="keyword">int</span> right = (no + <span class="number">1</span>) % <span class="number">5</span>;</span><br><span class="line">	<span class="class"><span class="keyword">struct</span> <span class="title">sembuf</span> <span class="title">buf</span>[2] = &#123;</span> <span class="comment">// left and right both -1</span></span><br><span class="line">		&#123;left,<span class="number">-1</span>,<span class="number">0</span>&#125;,</span><br><span class="line">		&#123;right,<span class="number">-1</span>,<span class="number">0</span>&#125;</span><br><span class="line">	&#125;;</span><br><span class="line">	semop(semid,buf,<span class="number">2</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">free_2chopstick</span><span class="params">(<span class="keyword">int</span> no,<span class="keyword">int</span> semid)</span></span></span><br><span class="line"><span class="function"></span>&#123;	<span class="comment">// left and right both +1,release source</span></span><br><span class="line">	<span class="keyword">int</span> left = no;</span><br><span class="line">	<span class="keyword">int</span> right = (no + <span class="number">1</span>) % <span class="number">5</span>;</span><br><span class="line">	<span class="class"><span class="keyword">struct</span> <span class="title">sembuf</span> <span class="title">buf</span>[2] = &#123;</span></span><br><span class="line">		&#123;left,<span class="number">1</span>,<span class="number">0</span>&#125;,</span><br><span class="line">		&#123;right,<span class="number">1</span>,<span class="number">0</span>&#125;</span><br><span class="line">	&#125;;</span><br><span class="line">	semop(semid,buf,<span class="number">2</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">philosophere</span><span class="params">(<span class="keyword">int</span> no,<span class="keyword">int</span> semid)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	srand(getpid()); <span class="comment">//初始化随机数发生器</span></span><br><span class="line">	<span class="keyword">for</span>(;;) &#123;</span><br><span class="line">       <span class="meta">#<span class="meta-keyword">if</span> 0</span></span><br><span class="line">		<span class="built_in">printf</span>(<span class="string">"%d is thinking\n"</span>,no);</span><br><span class="line">		sleep(DELAY);</span><br><span class="line">		<span class="built_in">printf</span>(<span class="string">"%d is hungry\n"</span>,no);</span><br><span class="line">		wait_for_2chopstick(no,semid);</span><br><span class="line">		<span class="built_in">printf</span>(<span class="string">"%d is eating\n"</span>,no);</span><br><span class="line">		sleep(DELAY);</span><br><span class="line">		free_2chopstick(no,semid);</span><br><span class="line">	<span class="meta">#<span class="meta-keyword">else</span></span></span><br><span class="line">		<span class="keyword">int</span> left = no;</span><br><span class="line">		<span class="keyword">int</span> right = (no + <span class="number">1</span>) % <span class="number">5</span>; <span class="comment">// 一个哲学家的两边</span></span><br><span class="line">		<span class="built_in">printf</span>(<span class="string">"%d is thinking\n"</span>,no);</span><br><span class="line">		sleep(DELAY);</span><br><span class="line">		<span class="built_in">printf</span>(<span class="string">"%d is hungry\n"</span>,no);</span><br><span class="line">		wait_1chopstick(left,semid);</span><br><span class="line">		sleep(DELAY);</span><br><span class="line">		wait_1chopstick(right,semid);</span><br><span class="line">		<span class="built_in">printf</span>(<span class="string">"%d is eating\n"</span>,no);</span><br><span class="line">		sleep(DELAY);</span><br><span class="line">		free_1chopstick(left,semid);</span><br><span class="line">        free_1chopstick(right,semid);</span><br><span class="line">	<span class="meta">#<span class="meta-keyword">endif</span></span></span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">(<span class="keyword">int</span> argc,<span class="keyword">char</span> *argv[])</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	<span class="keyword">int</span> semid;</span><br><span class="line">	semid = semget(IPC_PRIVATE,<span class="number">5</span>,IPC_CREAT | <span class="number">0666</span>);</span><br><span class="line">	<span class="keyword">if</span>(semid &lt; <span class="number">0</span>) &#123;</span><br><span class="line">		ERR_EXIT(<span class="string">"semid"</span>);</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">union</span> semun su;</span><br><span class="line">	su.val = <span class="number">1</span>;</span><br><span class="line">	<span class="keyword">int</span> i;</span><br><span class="line">	<span class="keyword">for</span>(i = <span class="number">0</span>;i &lt; <span class="number">5</span>;++i) &#123;</span><br><span class="line">		semctl(semid,i,SETVAL,su);</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">int</span> num = <span class="number">0</span>;</span><br><span class="line">	<span class="keyword">pid_t</span> pid;</span><br><span class="line">	<span class="keyword">for</span>(i = <span class="number">1</span>;i &lt; <span class="number">5</span>;++i) &#123;</span><br><span class="line">		pid = fork();</span><br><span class="line">		<span class="keyword">if</span>(pid &lt; <span class="number">0</span>) &#123;</span><br><span class="line">			ERR_EXIT(<span class="string">"fork"</span>);</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">if</span>(<span class="number">0</span> == pid) &#123;</span><br><span class="line">			num = i;</span><br><span class="line">			<span class="keyword">break</span>;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	philosophere(num,semid);</span><br><span class="line">	<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="实验三-添加模块"><a href="#实验三-添加模块" class="headerlink" title="实验三 添加模块"></a>实验三 添加模块</h2><p>操作系统在处理应用程序时的过程为：</p>
+<p><code>code -&gt; 编辑(debug) -&gt; 编译(产生等待连接的目标程序) -&gt; 连接(确定本模块和其他所需目标模块调用关系，进行主存连接) -&gt; 运行(调入主存启动运行)</code></p>
+<p><strong>Linux的内核模块</strong></p>
+<p>内核模块是Linux内核向外部提供的一个插口，其全称为动态可加载内核模块（Loadable Kernel Module，LKM），简称模块。Linux内核之所以提供模块机制，是因为它本身是一个单内核（monolithic kernel）。单内核的最大优点是效率高，因为所有的内容都集成在一起，但其缺点是可扩展性和可维护性相对较差，模块机制就是为了弥补这一缺陷。 </p>
+<p>模块是具有独立功能的程序，它可以被单独编译，但不能独立运行。它在运行时被链接到内核作为内核的一部分在内核空间运行，这与运行在用户空间的进程是不同的。模块通常由一组函数和数据结构组成，用来实现一种文件系统、一个驱动程序或其他内核上层的功能。</p>
+<p>总之，模块是一个为内核（从某种意义上来说，内核也是一个模块）或其他内核模块提供使用功能的代码块。</p>
+<ol>
+<li>利用内核模块的动态装载性的优点：<br>将内核映象的尺寸保持在最小，并具有最大的灵活性；便于检验新的内核代码，而不需重新编译内核并重新引导。 </li>
+<li>内核模块的缺点：<br>装入的内核模块和其他内核部分一样，具有相同的访问权限，因此，差的内核模块会导致系统崩溃；为了使内核模块访问所有内核资源，内核必须维护符号表，并在装入和卸载模块时修改这些符号表；有些模块要求利用其他模块的功能，因此，内核要维护模块之间的依赖性。内核必须能够在卸载模块时通知模块，并且要释放分配给模块的内存和中断等资源；内核版本和模块版本的不兼容，也可能导致系统崩溃。</li>
+</ol>
+<p><strong>相关操作说明</strong></p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">a、必需模块函数</span><br><span class="line">加载函数    module_init(hello_init);  </span><br><span class="line">卸载函数    module_exit(hello_exit);</span><br><span class="line"></span><br><span class="line">b、可选模块函数</span><br><span class="line">MODULE_LICENSE(“*******”);    许可证申明</span><br><span class="line">MODULE_AUTHOR(“********”);    作者申明</span><br><span class="line">MODELE_DESCRIPTION(“***”);    模块描述</span><br><span class="line">MODULE_VERSION(“V1<span class="number">.0</span>”);       模块版本</span><br><span class="line">MODULE_ALIAS(<span class="string">"*********"</span>);    模块别名</span><br><span class="line">c、加载内核模块</span><br><span class="line">载入模块使用insmod命令：</span><br><span class="line"><span class="meta">#insmod hello.ko</span></span><br><span class="line">卸载内核模块使用rmmod命令：</span><br><span class="line"><span class="meta">#rmmod hello</span></span><br><span class="line">查看内核模块使用lsmod命令：</span><br><span class="line"><span class="meta">#lsmod</span></span><br><span class="line">d、查看模块调用printk输出的信息</span><br><span class="line">   终端方式下，模块加载后即可在屏幕上看到；</span><br><span class="line">   图形界面终端下，使用dmesg命令.</span><br></pre></td></tr></table></figure>
+
+<p>设计一个模块，功能是列出系统中所有内核进程的程序名、<code>PID</code> 号和进程状态。主要步骤：<br>    阅读内核源代码，了解进程描述符 <code>task_struct</code> 中与本实验有关的成员项，以及访问进程队列的宏 <code>for_each_process</code>；<br>    编写 <code>readprocess</code> 模块，获取进程信息；<br>    修改 Makefile 文件，编译、安装模块，查看输出信息；<br>    查看模块信息，卸载模块。</p>
+<p>下面是动态添加模块的示例</p>
+<h3 id="readprocess-c"><a href="#readprocess-c" class="headerlink" title="readprocess.c"></a>readprocess.c</h3><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;linux/init.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;linux/module.h&gt; //每个模块都要包括的头文件</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;linux/kernel.h&gt; //printk()</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;linux/sched.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;linux/init_task.h&gt;</span></span></span><br><span class="line"><span class="function"><span class="keyword">static</span> <span class="keyword">int</span> <span class="title">hello_init</span><span class="params">(<span class="keyword">void</span>)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	<span class="class"><span class="keyword">struct</span> <span class="title">task_struct</span> *<span class="title">p</span>;</span></span><br><span class="line">	p = <span class="literal">NULL</span>;</span><br><span class="line">	p = &amp;init_task;</span><br><span class="line">	printk(KERN_ALERT <span class="string">"名称\t进程号\t状态\t父进程号\t"</span>); <span class="comment">////只能使用内核里定义好的C函数，printk会根据日志级别将指定信息输出到控制台或日志文件中，KERN_ALERT会输出到控制台</span></span><br><span class="line">	for_each_process(p)</span><br><span class="line">	&#123;</span><br><span class="line">		<span class="keyword">if</span>(p-&gt;mm == <span class="literal">NULL</span>)</span><br><span class="line">		&#123;</span><br><span class="line">			printk(KERN_ALERT <span class="string">"%s\t%d\t%d\t%d\n"</span>,p-&gt;comm,p-&gt;pid,p-&gt;state,p-&gt;real_parent);&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">static</span> <span class="keyword">void</span> <span class="title">hello_exit</span><span class="params">(<span class="keyword">void</span>)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	printk(KERN_ALERT <span class="string">"hello world exit\n"</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">module_init(hello_init);</span><br><span class="line">module_exit(hello_exit);</span><br><span class="line">MODULE_LICENSE(<span class="string">"Dual BSD/GPL"</span>);</span><br></pre></td></tr></table></figure>
+
+<p>Makefile</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">ifneq ($(KERNELRELEASE),)</span><br><span class="line">	obj-m:=readprocess.o</span><br><span class="line"><span class="keyword">else</span></span><br><span class="line">	KDIR:= /lib/modules/$(shell uname -r)/build</span><br><span class="line">	PWD:= $(shell pwd)</span><br><span class="line"></span><br><span class="line"><span class="keyword">default</span>:</span><br><span class="line">	$(MAKE) -C $(KDIR) M=$(PWD) modules</span><br><span class="line">clean:</span><br><span class="line">	$(MAKE) -C $(KDIR) M=$(PWD) clean</span><br><span class="line">endif</span><br></pre></td></tr></table></figure>
+
+<p>运行截图</p>
+<p>利用内核模块编程，在 /proc 目录下用自己的学号创建一个目录，如 /proc/201300834101</p>
+<blockquote>
+<p>Linux 内核提供了一种通过 /proc 文件系统，在运行时访问内核内部数据结构、改变内核设置的机制。proc 文件系统是一个伪文件系统，它只存在内存当中，而不占用外存空间。它以文件系统的方式为访问系统内核数据的操作提供接口。</p>
+<p>用户和应用程序可以通过 proc 得到系统的信息，并可以改变内核的某些参数。由于系统的信息，如进程，是动态改变的，所以用户或应用程序读取 proc 文件时，proc 文件系统是动态从系统内核读出所需信息并提交的。下面列出的这些文件或子文件夹，并不是都是在你的系统中存在，这取决于你的内核配置和装载的模块。另外，在 /proc 下还有三个很重要的目录：net，scsi 和sys。 Sys 目录是可写的，可以通过它来访问或修改内核的参数，而 net 和 scsi 则依赖于内核配置。例如，如果系统不支持 scsi，则 scsi 目录不存在。</p>
+<p>还有一些以数字命名的目录，它们是进程目录。系统中当前运行的每一个进程都有对应的一个目录在 /proc下，以进程的 PID号为目录名，它们是读取进程信息的接口。而self目录则是读取进程本身的信息接口，是一个link。</p>
+</blockquote>
+<p>然后在学号目录下创建一个 processinfo 文件，如 /proc/201300834101/processinfo ，此文件为只读文件，用于显示所有内核进程的程序名、PID 号和进程状态。主要步骤：<br>    修改 readprocess 模块，在模块初始化函数中创建目录及 proc 文件，并定义产生 proc 文件内容的函数（获取进程信息）；</p>
+<p>​    在卸载模块函数中删除相应的 proc 文件及目录；<br>​    修改Makefile文件，编译、安装模块；<br>​    执行cat /proc/201300834101/processinfo 命令，查看进程信息。</p>
+
+        
+        <br />
+        <div id="comment-container">
+        </div>
+        <div id="disqus_thread"></div>
+
+        <div id="lv-container">
+        </div>
+
+    </div>
+</div>
+
+    </div>
+</div>
+
+
+<footer class="footer">
+    <ul class="list-inline text-center">
+        
+        
+
+        
+
+        
+
+        
+
+        
+
+    </ul>
+    
+    <p>
+        <span id="busuanzi_container_site_pv">
+            <span id="busuanzi_value_site_pv"></span>PV
+        </span>
+        <span id="busuanzi_container_site_uv">
+            <span id="busuanzi_value_site_uv"></span>UV
+        </span>
+        Created By <a href="https://hexo.io/">Hexo</a>  Theme <a href="https://github.com/aircloud/hexo-theme-aircloud">AirCloud</a></p>
+</footer>
+
+
+
+
+</body>
+
+<script>
+    // We expose some of the variables needed by the front end
+    window.hexo_search_path = "./public/search.xml"
+    window.hexo_root = "/"
+    window.isPost = true
+</script>
+<script src="https://cdn.bootcss.com/jquery/3.3.1/jquery.min.js"></script>
+<script src="/js/index.js"></script>
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+</html>
